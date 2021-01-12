@@ -20,6 +20,8 @@
 
 #if _M_SSE >= 0x501 && (defined(_M_AMD64) || defined(_WIN64))
 
+MULTI_ISA_UNSHARED_IMPL;
+
 #define _rip_local(field) (m_rip ? ptr[rip + &m_local.field] : ptr[t0 + offsetof(GSScanlineLocalData, field)])
 #define _rip_local_v(field, offset) (m_rip ? ptr[rip + &m_local.field] : ptr[t0 + offset])
 

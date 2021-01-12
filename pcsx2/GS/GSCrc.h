@@ -15,6 +15,9 @@
 
 #pragma once
 
+#include "GS_types.h"
+#include <map>
+
 class CRC
 {
 public:

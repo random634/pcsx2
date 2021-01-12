@@ -23,6 +23,8 @@
 #define _rip_local(field) (m_rip ? ptr[rip + &m_local.field] : ptr[t0 + offsetof(GSScanlineLocalData, field)])
 #define _rip_local_v(field, offset) (m_rip ? ptr[rip + &m_local.field] : ptr[t0 + offset])
 
+MULTI_ISA_UNSHARED_IMPL;
+
 void GSSetupPrimCodeGenerator::Generate_AVX()
 {
 	// Technically we just need the delta < 2GB

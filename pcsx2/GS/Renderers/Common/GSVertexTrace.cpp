@@ -18,6 +18,8 @@
 #include "GS/GSUtil.h"
 #include "GS/GSState.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
 CONSTINIT const GSVector4 GSVertexTrace::s_minmax = GSVector4::cxpr(FLT_MAX, -FLT_MAX, 0.f, 0.f);
 
 GSVertexTrace::GSVertexTrace(const GSState* state)

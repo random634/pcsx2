@@ -13,8 +13,6 @@
  *  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if _M_SSE >= 0x500
-
 class alignas(32) GSVector8
 {
 	constexpr static __m256 cxpr_setr_ps(float x0, float y0, float z0, float w0, float x1, float y1, float z1, float w1)
@@ -82,6 +80,7 @@ public:
 	static const GSVector8 m_min;
 
 	GSVector8() = default;
+	constexpr GSVector8(const GSVector8& v) = default;
 
 	static constexpr GSVector8 cxpr(float x0, float y0, float z0, float w0, float x1, float y1, float z1, float w1)
 	{
@@ -108,6 +107,13 @@ public:
 		return cxpr(static_cast<int>(x));
 	}
 
+	__forceinline constexpr explicit GSVector8(__m256 m)
+		: m(m)
+	{
+	}
+
+#if _M_SSE >= 0x500
+
 	__forceinline GSVector8(float x0, float y0, float z0, float w0, float x1, float y1, float z1, float w1)
 	{
 		m = _mm256_set_ps(w1, z1, y1, x1, w0, z0, y0, x0);
@@ -130,8 +136,6 @@ public:
 
 #endif
 	}
-
-	constexpr GSVector8(const GSVector8& v) = default;
 
 	__forceinline explicit GSVector8(float f)
 	{
@@ -156,11 +160,6 @@ public:
 	__forceinline explicit GSVector8(__m128 m)
 	{
 		*this = m;
-	}
-
-	__forceinline constexpr explicit GSVector8(__m256 m)
-		: m(m)
-	{
 	}
 
 #if _M_SSE >= 0x501
@@ -912,6 +911,6 @@ public:
 	// TODO: v.(x0|y0|z0|w0|x1|y1|z1|w1) // broadcast element
 
 #endif
-};
 
 #endif
+};

@@ -16,6 +16,8 @@
 #include "PrecompiledHeader.h"
 #include "GSSetupPrimCodeGenerator.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
 using namespace Xbyak;
 
 GSSetupPrimCodeGenerator::GSSetupPrimCodeGenerator(void* param, uint64 key, void* code, size_t maxsize)

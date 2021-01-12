@@ -15,7 +15,14 @@
 
 #include "PrecompiledHeader.h"
 #include "GSRendererOGL.h"
+#include "GS/MultiISA.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
+IGSRenderer* CURRENT_ISA::makeRendererOGL()
+{
+	return new GSRendererOGL();
+}
 
 GSRendererOGL::GSRendererOGL()
 	: GSRendererHW(new GSTextureCacheOGL(this))

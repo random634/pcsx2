@@ -20,6 +20,8 @@
 
 #if _M_SSE >= 0x501 && !(defined(_M_AMD64) || defined(_WIN64))
 
+MULTI_ISA_UNSHARED_IMPL;
+
 static const int _args = 0;
 static const int _vertex = _args + 4;
 static const int _index = _args + 8;

@@ -18,6 +18,8 @@
 #include "GS/Renderers/Common/GSRenderer.h"
 #include "GS/Renderers/Common/GSFastList.h"
 
+MULTI_ISA_UNSHARED_START
+
 class GSTextureCacheSW
 {
 public:
@@ -66,3 +68,5 @@ public:
 	void RemoveAll();
 	void IncAge();
 };
+
+MULTI_ISA_UNSHARED_END

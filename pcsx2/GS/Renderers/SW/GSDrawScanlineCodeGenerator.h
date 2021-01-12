@@ -25,6 +25,8 @@
 #define RegLong Xbyak::Reg32
 #endif
 
+MULTI_ISA_UNSHARED_START
+
 class GSDrawScanlineCodeGenerator : public GSCodeGenerator
 {
 	typedef Xbyak::Ymm Ymm;
@@ -141,3 +143,5 @@ class GSDrawScanlineCodeGenerator : public GSCodeGenerator
 public:
 	GSDrawScanlineCodeGenerator(void* param, uint64 key, void* code, size_t maxsize);
 };
+
+MULTI_ISA_UNSHARED_END

@@ -22,6 +22,8 @@
 #include "GS/GSPerfMon.h"
 #include "GS/GSThread_CXX11.h"
 
+MULTI_ISA_UNSHARED_START
+
 class alignas(32) GSRasterizerData : public GSAlignedClass<32>
 {
 	static int s_counter;
@@ -227,3 +229,5 @@ public:
 	int GetPixels(bool reset);
 	void PrintStats() {}
 };
+
+MULTI_ISA_UNSHARED_END

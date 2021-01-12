@@ -16,6 +16,8 @@
 #include "PrecompiledHeader.h"
 #include "GSTextureCacheSW.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
 GSTextureCacheSW::GSTextureCacheSW(GSState* state)
 	: m_state(state)
 {

@@ -17,6 +17,8 @@
 
 #include "GS/Renderers/Common/GSRenderer.h"
 
+MULTI_ISA_UNSHARED_START
+
 class GSRendererNull : public GSRenderer
 {
 	class GSVertexTraceNull : public GSVertexTrace
@@ -44,3 +46,5 @@ public:
 	{
 	}
 };
+
+MULTI_ISA_UNSHARED_END

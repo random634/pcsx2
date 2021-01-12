@@ -16,6 +16,8 @@
 #include "PrecompiledHeader.h"
 #include "GSDirtyRect.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
 GSDirtyRect::GSDirtyRect()
 	: psm(PSM_PSMCT32)
 {

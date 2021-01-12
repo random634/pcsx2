@@ -15,6 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include "GSUtil.h"
+#include "MultiISA.h"
 #include <locale>
 #include <codecvt>
 
@@ -27,8 +28,6 @@
 #define SVN_REV 0
 #define SVN_MODS 0
 #endif
-
-Xbyak::util::Cpu g_cpu;
 
 static class GSUtilMaps
 {
@@ -148,37 +147,12 @@ bool GSUtil::HasCompatibleBits(uint32 spsm, uint32 dpsm)
 
 bool GSUtil::CheckSSE()
 {
-	bool status = true;
-
-	struct ISA
+	if (currentISA == VectorISA::None)
 	{
-		Xbyak::util::Cpu::Type type;
-		const char* name;
-	};
-
-	ISA checks[] = {
-		{Xbyak::util::Cpu::tSSE41, "SSE41"},
-#if _M_SSE >= 0x500
-		{Xbyak::util::Cpu::tAVX, "AVX1"},
-#endif
-#if _M_SSE >= 0x501
-		{Xbyak::util::Cpu::tAVX2, "AVX2"},
-		{Xbyak::util::Cpu::tBMI1, "BMI1"},
-		{Xbyak::util::Cpu::tBMI2, "BMI2"},
-#endif
-	};
-
-	for (size_t i = 0; i < countof(checks); i++)
-	{
-		if (!g_cpu.has(checks[i].type))
-		{
-			fprintf(stderr, "This CPU does not support %s\n", checks[i].name);
-
-			status = false;
-		}
+		fprintf(stderr, "This CPU does not support at least SSE4.1\n");
+		return false;
 	}
-
-	return status;
+	return true;
 }
 
 CRCHackLevel GSUtil::GetRecommendedCRCHackLevel(GSRendererType type)

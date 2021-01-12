@@ -16,6 +16,8 @@
 #include "PrecompiledHeader.h"
 #include "GSTextureCache11.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
 // GSTextureCache11
 
 GSTextureCache11::GSTextureCache11(GSRenderer* r)

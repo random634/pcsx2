@@ -28,6 +28,9 @@
 #include "GSCrc.h"
 #include "GSAlignedClass.h"
 #include "GSDump.h"
+#include "MultiISA.h"
+
+MULTI_ISA_UNSHARED_START
 
 struct GSFrameInfo
 {
@@ -220,7 +223,6 @@ public:
 	bool m_nativeres;
 	int m_mipmap;
 
-	static int s_n;
 	bool s_dump;
 	bool s_save;
 	bool s_savet;
@@ -278,3 +280,5 @@ public:
 	void SetIrqCallback(void (*irq)());
 	void SetMultithreaded(bool mt = true);
 };
+
+MULTI_ISA_UNSHARED_END

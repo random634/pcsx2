@@ -20,6 +20,9 @@
 #include <X11/keysym.h>
 #endif
 
+MULTI_ISA_UNSHARED_IMPL;
+using namespace GSStateISAShared;
+
 const unsigned int s_interlace_nb = 8;
 const unsigned int s_post_shader_nb = 5;
 const unsigned int s_mipmap_nb = 3;
@@ -31,8 +34,6 @@ GSRenderer::GSRenderer()
 	, m_texture_shuffle(false)
 	, m_fmv_switch(false)
 	, m_real_size(0, 0)
-	, m_wnd()
-	, m_dev(NULL)
 {
 	m_GStitleInfoBuffer[0] = 0;
 
@@ -48,12 +49,6 @@ GSRenderer::GSRenderer()
 
 GSRenderer::~GSRenderer()
 {
-	/*if(m_dev)
-	{
-		m_dev->Reset(1, 1, GSDevice::Windowed);
-	}*/
-
-	delete m_dev;
 }
 
 bool GSRenderer::CreateDevice(GSDevice* dev)

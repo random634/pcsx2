@@ -22,6 +22,9 @@
 #include "GS.h"
 #include "GSLocalMemory.h"
 
+MULTI_ISA_UNSHARED_START
+// TODO: GSDrawingContext should be shared, but it relies on GSOffset which is currently unneccessarily unshared (see GSLocalMemory.h for reasons)
+
 class alignas(32) GSDrawingContext
 {
 public:
@@ -310,3 +313,5 @@ public:
 		fclose(fp);
 	}
 };
+
+MULTI_ISA_UNSHARED_END

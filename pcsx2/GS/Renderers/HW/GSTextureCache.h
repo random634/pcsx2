@@ -19,6 +19,8 @@
 #include "GS/Renderers/Common/GSFastList.h"
 #include "GS/Renderers/Common/GSDirtyRect.h"
 
+MULTI_ISA_UNSHARED_START
+
 class GSTextureCache
 {
 public:
@@ -267,3 +269,5 @@ public:
 
 	void AttachPaletteToSource(Source* s, uint16 pal, bool need_gs_texture);
 };
+
+MULTI_ISA_UNSHARED_END

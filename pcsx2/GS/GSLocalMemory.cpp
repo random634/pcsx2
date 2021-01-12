@@ -16,6 +16,9 @@
 #include "PrecompiledHeader.h"
 #include "GSLocalMemory.h"
 #include "GS.h"
+#include "MultiISA.h"
+
+MULTI_ISA_UNSHARED_IMPL;
 
 #define ASSERT_BLOCK(r, w, h) \
 	ASSERT((r).width() >= (w) && (r).height() >= (h) && !((r).left & ((w) - 1)) && !((r).top & ((h) - 1)) && !((r).right & ((w) - 1)) && !((r).bottom & ((h) - 1))); \

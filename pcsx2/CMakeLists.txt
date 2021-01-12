@@ -642,6 +642,7 @@ set(pcsx2GSSources
 	GS/GSTables.cpp
 	GS/GSUtil.cpp
 	GS/GSVector.cpp
+	GS/MultiISA.cpp
 	GS/Renderers/Common/GSDevice.cpp
 	GS/Renderers/Common/GSDirtyRect.cpp
 	GS/Renderers/Common/GSFunctionMap.cpp
@@ -649,6 +650,7 @@ set(pcsx2GSSources
 	GS/Renderers/Common/GSRenderer.cpp
 	GS/Renderers/Common/GSTexture.cpp
 	GS/Renderers/Common/GSVertexTrace.cpp
+	GS/Renderers/Common/IGSRenderer.cpp
 	GS/Renderers/Null/GSDeviceNull.cpp
 	GS/Renderers/Null/GSRendererNull.cpp
 	GS/Renderers/Null/GSTextureNull.cpp
@@ -714,6 +716,7 @@ set(pcsx2GSHeaders
 	GS/GSVector4i.h
 	GS/GSVector8.h
 	GS/GSVector8i.h
+	GS/MultiISA.h
 	GS/Renderers/Common/GSDevice.h
 	GS/Renderers/Common/GSDirtyRect.h
 	GS/Renderers/Common/GSFastList.h
@@ -724,6 +727,7 @@ set(pcsx2GSHeaders
 	GS/Renderers/Common/GSVertex.h
 	GS/Renderers/Common/GSVertexList.h
 	GS/Renderers/Common/GSVertexTrace.h
+	GS/Renderers/Common/IGSRenderer.h
 	GS/Renderers/Null/GSDeviceNull.h
 	GS/Renderers/Null/GSRendererNull.h
 	GS/Renderers/Null/GSTextureNull.h

@@ -15,7 +15,10 @@
 
 #pragma once
 
+#include "GS/GS_types.h"
 #include "GS/GSLocalMemory.h"
+
+MULTI_ISA_UNSHARED_START
 
 class GSDirtyRect
 {
@@ -38,3 +41,5 @@ public:
 	GSDirtyRectList() {}
 	const GSVector4i GetDirtyRectAndClear(const GIFRegTEX0& TEX0, const GSVector2i& size);
 };
+
+MULTI_ISA_UNSHARED_END

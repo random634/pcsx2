@@ -15,3 +15,8 @@
 
 #include "PrecompiledHeader.h"
 #include "GSRendererNull.h"
+
+IGSRenderer* CURRENT_ISA::makeRendererNull()
+{
+	return new GSRendererNull();
+}

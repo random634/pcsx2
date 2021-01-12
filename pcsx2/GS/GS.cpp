@@ -16,19 +16,17 @@
 #include "PrecompiledHeader.h"
 #include "GS.h"
 #include "GSUtil.h"
-#include "Renderers/SW/GSRendererSW.h"
-#include "Renderers/Null/GSRendererNull.h"
+#include "Renderers/Common/IGSRenderer.h"
 #include "Renderers/Null/GSDeviceNull.h"
 #include "Renderers/OpenGL/GSDeviceOGL.h"
-#include "Renderers/OpenGL/GSRendererOGL.h"
 #include "GSLzma.h"
+#include "MultiISA.h"
 
 #include "gui/AppConfig.h"    // GetSettingsFolder()
 #include "common/pxStreams.h"
 
 #ifdef _WIN32
 
-#include "Renderers/DX11/GSRendererDX11.h"
 #include "Renderers/DX11/GSDevice11.h"
 #include "Window/GSWndDX.h"
 #include "Window/GSWndWGL.h"
@@ -57,7 +55,7 @@ extern bool RunLinuxDialog();
 // debug obscure compiler errors --govanify
 #undef None
 
-static GSRenderer* s_gs = NULL;
+static IGSRenderer* s_gs = NULL;
 static void (*s_irq)() = NULL;
 static uint8* s_basemem = NULL;
 static int s_vsync = 0;
@@ -92,10 +90,8 @@ int GSinit()
 
 	GSUtil::Init();
 
-	if (g_const == nullptr)
+	if (!MULTI_ISA_SELECT(InitGConst)())
 		return -1;
-	else
-		g_const->Init();
 
 #ifdef _WIN32
 	s_hr = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -309,17 +305,17 @@ int _GSopen(void** dsp, const char* title, GSRendererType renderer, int threads 
 				default:
 #ifdef _WIN32
 				case GSRendererType::DX1011_HW:
-					s_gs = (GSRenderer*)new GSRendererDX11();
+					s_gs = MULTI_ISA_SELECT(makeRendererDX11)();
 					break;
 #endif
 				case GSRendererType::OGL_HW:
-					s_gs = (GSRenderer*)new GSRendererOGL();
+					s_gs = MULTI_ISA_SELECT(makeRendererOGL)();
 					break;
 				case GSRendererType::OGL_SW:
-					s_gs = new GSRendererSW(threads);
+					s_gs = MULTI_ISA_SELECT(makeRendererSW)(threads);
 					break;
 				case GSRendererType::Null:
-					s_gs = new GSRendererNull();
+					s_gs = MULTI_ISA_SELECT(makeRendererNull)();
 					break;
 			}
 			if (s_gs == NULL)
@@ -557,7 +553,7 @@ void GSgifTransfer(const uint8* mem, uint32 size)
 {
 	try
 	{
-		s_gs->Transfer<3>(mem, size);
+		s_gs->Transfer3(mem, size);
 	}
 	catch (GSRecoverableError)
 	{
@@ -568,7 +564,7 @@ void GSgifTransfer1(uint8* mem, uint32 addr)
 {
 	try
 	{
-		s_gs->Transfer<0>(const_cast<uint8*>(mem) + addr, (0x4000 - addr) / 16);
+		s_gs->Transfer0(const_cast<uint8*>(mem) + addr, (0x4000 - addr) / 16);
 	}
 	catch (GSRecoverableError)
 	{
@@ -579,7 +575,7 @@ void GSgifTransfer2(uint8* mem, uint32 size)
 {
 	try
 	{
-		s_gs->Transfer<1>(const_cast<uint8*>(mem), size);
+		s_gs->Transfer1(const_cast<uint8*>(mem), size);
 	}
 	catch (GSRecoverableError)
 	{
@@ -590,7 +586,7 @@ void GSgifTransfer3(uint8* mem, uint32 size)
 {
 	try
 	{
-		s_gs->Transfer<2>(const_cast<uint8*>(mem), size);
+		s_gs->Transfer2(const_cast<uint8*>(mem), size);
 	}
 	catch (GSRecoverableError)
 	{

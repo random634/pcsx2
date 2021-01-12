@@ -19,6 +19,8 @@
 #include <gtest/gtest.h>
 #include <string.h>
 
+MULTI_ISA_UNSHARED_IMPL;
+
 static void swizzle(const uint8* table, uint8* dst, const uint8* src, int bpp, bool deswizzle)
 {
 	int pxbytes = bpp / 8;

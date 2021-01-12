@@ -18,6 +18,8 @@
 #include "GS/Renderers/HW/GSTextureCache.h"
 #include "GSDeviceOGL.h"
 
+MULTI_ISA_UNSHARED_START
+
 class GSTextureCacheOGL final : public GSTextureCache
 {
 protected:
@@ -29,3 +31,5 @@ protected:
 public:
 	GSTextureCacheOGL(GSRenderer* r);
 };
+
+MULTI_ISA_UNSHARED_END

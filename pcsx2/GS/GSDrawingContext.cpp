@@ -17,6 +17,8 @@
 #include "GSDrawingContext.h"
 #include "GS.h"
 
+MULTI_ISA_UNSHARED_IMPL;
+
 static int findmax(int tl, int br, int limit, int wm, int minuv, int maxuv)
 {
 	// return max possible texcoord

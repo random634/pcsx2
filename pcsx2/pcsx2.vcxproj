@@ -473,8 +473,10 @@
     <ClCompile Include="GS\GSPerfMon.cpp" />
     <ClCompile Include="GS\Renderers\Common\GSOsdManager.cpp" />
     <ClCompile Include="GS\GSPng.cpp" />
+    <ClCompile Include="GS\MultiISA.cpp" />
     <ClCompile Include="GS\Renderers\SW\GSRasterizer.cpp" />
     <ClCompile Include="GS\Renderers\Common\GSRenderer.cpp" />
+    <ClCompile Include="GS\Renderers\Common\IGSRenderer.cpp" />
     <ClCompile Include="GS\Renderers\DX11\GSRendererDX11.cpp" />
     <ClCompile Include="GS\Renderers\HW\GSRendererHW.cpp" />
     <ClCompile Include="GS\Renderers\Null\GSRendererNull.cpp" />
@@ -839,8 +841,10 @@
     <ClInclude Include="GS\GSPerfMon.h" />
     <ClInclude Include="GS\Renderers\Common\GSOsdManager.h" />
     <ClInclude Include="GS\GSPng.h" />
+    <ClInclude Include="GS\MultiISA.h" />
     <ClInclude Include="GS\Renderers\SW\GSRasterizer.h" />
     <ClInclude Include="GS\Renderers\Common\GSRenderer.h" />
+    <ClInclude Include="GS\Renderers\Common\IGSRenderer.h" />
     <ClInclude Include="GS\Renderers\DX11\GSRendererDX11.h" />
     <ClInclude Include="GS\Renderers\HW\GSRendererHW.h" />
     <ClInclude Include="GS\Renderers\Null\GSRendererNull.h" />
