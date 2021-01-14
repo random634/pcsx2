@@ -1113,8 +1113,7 @@ void MainEmuFrame::Menu_Recording_Config_FrameAdvance(wxCommandEvent& event)
 	{
 		g_Conf->inputRecording.m_frame_advance_amount = result;
 		g_InputRecordingControls.setFrameAdvanceAmount(result);
-		wxString frame_advance_label = wxString(_("Configure Frame Advance"));
-		frame_advance_label.Append(fmt::format(" ({})", result));
+		wxString frame_advance_label = wxString::Format(_("Configure Frame Advance (%d)"), result);
 		m_submenu_recording_settings.SetLabel(MenuId_Recording_Config_FrameAdvance, frame_advance_label);
 	}
 }

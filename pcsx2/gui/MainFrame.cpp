@@ -519,8 +519,7 @@ void MainEmuFrame::CreateInputRecordingMenu()
 	m_menuRecording.AppendSeparator();
 
 	m_menuRecording.Append(MenuId_Recording_Settings, _("Settings"), &m_submenu_recording_settings);
-	wxString frame_advance_label = wxString(_("Configure Frame Advance"));
-	frame_advance_label.Append(fmt::format(" ({})", g_Conf->inputRecording.m_frame_advance_amount));
+	wxString frame_advance_label = wxString::Format(_("Configure Frame Advance (%d)"), g_Conf->inputRecording.m_frame_advance_amount);
 	m_submenu_recording_settings.Append(MenuId_Recording_Config_FrameAdvance, frame_advance_label, _("Change the amount of frames advanced each time"));
 	m_menuRecording.AppendSeparator();
 
@@ -825,8 +824,7 @@ void MainEmuFrame::ApplyConfigToGui(AppConfig& configToApply, int flags)
 		menubar.Check(MenuId_Capture_Video_IncludeAudio, configToApply.AudioCapture.EnableAudio);
 #ifndef DISABLE_RECORDING
 		menubar.Check(MenuId_EnableInputRecording, configToApply.EmuOptions.EnableRecordingTools);
-		wxString frame_advance_label = wxString(_("Configure Frame Advance"));
-		frame_advance_label.Append(fmt::format(" ({})", configToApply.inputRecording.m_frame_advance_amount));
+		wxString frame_advance_label = wxString::Format(_("Configure Frame Advance (%d)"), configToApply.inputRecording.m_frame_advance_amount);
 		m_submenu_recording_settings.SetLabel(MenuId_Recording_Config_FrameAdvance, frame_advance_label);
 		g_InputRecordingControls.setFrameAdvanceAmount(configToApply.inputRecording.m_frame_advance_amount);
 #endif
