@@ -1787,7 +1787,7 @@ void GSApp::SetConfigDir()
 	// core settings aren't populated yet, thus we do populate it if needed either when
 	// opening GS settings or init -- govanify
 	wxString iniName(L"GS.ini");
-	m_ini = GetSettingsFolder().Combine(iniName).GetFullPath();
+	m_ini = GetSettingsFolder().Combine(iniName).GetFullPath().ToUTF8();
 }
 
 std::string GSApp::GetConfigS(const char* entry)
