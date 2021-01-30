@@ -83,8 +83,8 @@ if(WIN32)
 		windows/wxResources.rc
 		windows/PCSX2.manifest
 	)
+	target_compile_definitions(PCSX2 PRIVATE _M_SSE=0x401)
 	target_compile_definitions(PCSX2_FLAGS INTERFACE
-		_M_SSE=0x401 # TODO: Multiple ISA
 		DIRECTINPUT_VERSION=0x0800
 		WINVER=0x0603
 		_WIN32_WINNT=0x0603
@@ -623,40 +623,22 @@ else(WIN32)
 	)
 endif(WIN32)
 
-# GS sources
-set(pcsx2GSSources
-	GS/GS.cpp
-	GS/GSAlignedClass.cpp
+set(pcsx2GSSourcesUnshared
 	GS/GSBlock.cpp
-	GS/GSCapture.cpp
 	GS/GSClut.cpp
-	GS/GSCodeBuffer.cpp
-	GS/GSCrc.cpp
 	GS/GSDrawingContext.cpp
-	GS/GSDump.cpp
 	GS/GSLocalMemory.cpp
-	GS/GSLzma.cpp
-	GS/GSPerfMon.cpp
-	GS/GSPng.cpp
 	GS/GSState.cpp
-	GS/GSTables.cpp
-	GS/GSUtil.cpp
-	GS/GSVector.cpp
-	GS/MultiISA.cpp
-	GS/Renderers/Common/GSDevice.cpp
 	GS/Renderers/Common/GSDirtyRect.cpp
 	GS/Renderers/Common/GSFunctionMap.cpp
-	GS/Renderers/Common/GSOsdManager.cpp
 	GS/Renderers/Common/GSRenderer.cpp
-	GS/Renderers/Common/GSTexture.cpp
 	GS/Renderers/Common/GSVertexTrace.cpp
-	GS/Renderers/Common/IGSRenderer.cpp
-	GS/Renderers/Null/GSDeviceNull.cpp
-	GS/Renderers/Null/GSRendererNull.cpp
-	GS/Renderers/Null/GSTextureNull.cpp
 	GS/Renderers/HW/GSHwHack.cpp
 	GS/Renderers/HW/GSRendererHW.cpp
 	GS/Renderers/HW/GSTextureCache.cpp
+	GS/Renderers/Null/GSRendererNull.cpp
+	GS/Renderers/OpenGL/GSRendererOGL.cpp
+	GS/Renderers/OpenGL/GSTextureCacheOGL.cpp
 	GS/Renderers/SW/GSDrawScanline.cpp
 	GS/Renderers/SW/GSDrawScanlineCodeGenerator.cpp
 	GS/Renderers/SW/GSDrawScanlineCodeGenerator.x64.cpp
@@ -675,13 +657,34 @@ set(pcsx2GSSources
 	GS/Renderers/SW/GSSetupPrimCodeGenerator.x86.avx.cpp
 	GS/Renderers/SW/GSSetupPrimCodeGenerator.x86.avx2.cpp
 	GS/Renderers/SW/GSTextureCacheSW.cpp
+)
+
+# GS sources
+set(pcsx2GSSources
+	GS/GS.cpp
+	GS/GSAlignedClass.cpp
+	GS/GSCapture.cpp
+	GS/GSCodeBuffer.cpp
+	GS/GSCrc.cpp
+	GS/GSDump.cpp
+	GS/GSLzma.cpp
+	GS/GSPerfMon.cpp
+	GS/GSPng.cpp
+	GS/GSTables.cpp
+	GS/GSUtil.cpp
+	GS/GSVector.cpp
+	GS/MultiISA.cpp
+	GS/Renderers/Common/GSDevice.cpp
+	GS/Renderers/Common/GSOsdManager.cpp
+	GS/Renderers/Common/GSTexture.cpp
+	GS/Renderers/Common/IGSRenderer.cpp
+	GS/Renderers/Null/GSDeviceNull.cpp
+	GS/Renderers/Null/GSTextureNull.cpp
 	GS/Renderers/SW/GSTextureSW.cpp
 	GS/Renderers/OpenGL/GLLoader.cpp
 	GS/Renderers/OpenGL/GLState.cpp
 	GS/Renderers/OpenGL/GSDeviceOGL.cpp
-	GS/Renderers/OpenGL/GSRendererOGL.cpp
 	GS/Renderers/OpenGL/GSShaderOGL.cpp
-	GS/Renderers/OpenGL/GSTextureCacheOGL.cpp
 	GS/Renderers/OpenGL/GSTextureOGL.cpp
 	GS/Window/GSSetting.cpp
 	GS/Window/GSWnd.cpp
@@ -822,11 +825,13 @@ if(WIN32)
 		USB/Win32/resource_usb.h
 	)
 
+	list(APPEND pcsx2GSSourcesUnshared
+		GS/Renderers/DX11/GSRendererDX11.cpp
+		GS/Renderers/DX11/GSTextureCache11.cpp
+	)
 	list(APPEND pcsx2GSSources
 		GS/Renderers/DX11/GSDevice11.cpp
-		GS/Renderers/DX11/GSRendererDX11.cpp
 		GS/Renderers/DX11/GSTexture11.cpp
-		GS/Renderers/DX11/GSTextureCache11.cpp
 		GS/Renderers/DX11/GSTextureFX11.cpp
 		GS/Window/GSCaptureDlg.cpp
 		GS/Window/GSDialog.cpp
@@ -936,6 +941,37 @@ else(WIN32)
 	)
 endif(WIN32)
 
+if(DISABLE_ADVANCE_SIMD)
+	target_compile_definitions(PCSX2 PRIVATE MULTI_ISA_SHARED_COMPILATION)
+	if(WIN32)
+		set(compile_options_avx2 /arch:AVX2)
+		set(compile_options_avx  /arch:AVX)
+		if (_M_X86_32)
+			set(compile_options_sse4 /arch:SSE2)
+		endif()
+		set(pcsx2_defs_avx2 _M_SSE=0x501)
+		set(pcsx2_defs_avx  _M_SSE=0x500)
+		set(pcsx2_defs_sse4 _M_SSE=0x401)
+	else()
+		set(compile_options_avx2 -march=haswell -mtune=haswell)
+		set(compile_options_avx  -march=sandybridge -mtune=sandybridge)
+		set(compile_options_sse4 -msse4.1 -mtune=nehalem)
+	endif()
+	# ODR violation time!
+	# Everything would be fine if we only defined things in cpp files, but C++ tends to like inline functions (STL anyone?)
+	# Each ISA will bring with it its own copies of these inline header functions, and the linker gets to choose whichever one it wants!  Not fun if the linker chooses the avx2 version and uses it with everything
+	# Thankfully, most linkers don't choose at random.  When presented with a bunch of .o files, most linkers seem to choose the first implementation they see, so make sure you order these from oldest to newest
+	# Note: ld64 (macOS's linker) did not act in the same way when presented with .a files, hence the choice of OBJECT rather than STATIC
+	foreach(isa "sse4" "avx" "avx2")
+		add_library(GS-${isa} OBJECT ${pcsx2GSSourcesUnshared})
+		target_link_libraries(GS-${isa} PRIVATE PCSX2_FLAGS)
+		target_compile_definitions(GS-${isa} PRIVATE MULTI_ISA_UNSHARED_COMPILATION=isa_${isa} ${pcsx2_defs_${isa}})
+		target_compile_options(GS-${isa} PRIVATE ${compile_options_${isa}})
+		target_sources(PCSX2 PRIVATE $<TARGET_OBJECTS:GS-${isa}>)
+	endforeach()
+else()
+	list(APPEND pcsx2GSSources ${pcsx2GSSourcesUnshared})
+endif()
 
 # DebugTools sources
 set(pcsx2DebugToolsSources
