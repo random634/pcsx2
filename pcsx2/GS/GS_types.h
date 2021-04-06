@@ -128,3 +128,11 @@ extern void vmfree(void* ptr, size_t size);
 	#error PCSX2 requires compiling for at least SSE 4.1
 
 #endif
+
+// Starting with AVX, processors have fast unaligned loads
+// Reduce code duplication by not compiling multiple versions
+#if _M_SSE >= 0x500
+	#define FAST_UNALIGNED 1
+#else
+	#define FAST_UNALIGNED 0
+#endif
