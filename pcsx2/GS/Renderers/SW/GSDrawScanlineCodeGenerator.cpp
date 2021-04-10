@@ -117,7 +117,18 @@ void GSDrawScanlineCodeGenerator::mix16(const Xmm& a, const Xmm& b, const Xmm& t
 	}
 	else
 	{
-		pblendw(a, b, 0xaa);
+		if (m_cpu.has(Xbyak::util::Cpu::tSSE41))
+		{
+			pblendw(a, b, 0xaa);
+		}
+		else
+		{
+			pcmpeqd(temp, temp);
+			psrld(temp, 16);
+			pand(a, temp);
+			pandn(temp, b);
+			por(a, temp);
+		}
 	}
 }
 
@@ -140,8 +151,17 @@ void GSDrawScanlineCodeGenerator::clamp16(const Xmm& a, const Xmm& temp)
 	}
 	else
 	{
-		packuswb(a, a);
-		pmovzxbw(a, a);
+		if (m_cpu.has(Xbyak::util::Cpu::tSSE41))
+		{
+			packuswb(a, a);
+			pmovzxbw(a, a);
+		}
+		else
+		{
+			packuswb(a, a);
+			pxor(temp, temp);
+			punpcklbw(a, temp);
+		}
 	}
 }
 
@@ -200,8 +220,10 @@ void GSDrawScanlineCodeGenerator::blend8(const Xmm& a, const Xmm& b)
 {
 	if (m_cpu.has(Xbyak::util::Cpu::tAVX))
 		vpblendvb(a, a, b, xmm0);
-	else
+	else if (m_cpu.has(Xbyak::util::Cpu::tSSE41))
 		pblendvb(a, b);
+	else
+		blend(a, b, xmm0);
 }
 
 void GSDrawScanlineCodeGenerator::blend8r(const Xmm& b, const Xmm& a)
@@ -210,10 +232,14 @@ void GSDrawScanlineCodeGenerator::blend8r(const Xmm& b, const Xmm& a)
 	{
 		vpblendvb(b, a, b, xmm0);
 	}
-	else
+	else if (m_cpu.has(Xbyak::util::Cpu::tSSE41))
 	{
 		pblendvb(a, b);
 		movdqa(b, a);
+	}
+	else
+	{
+		blendr(b, a, xmm0);
 	}
 }
 
