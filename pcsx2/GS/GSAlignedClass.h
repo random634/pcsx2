@@ -32,6 +32,11 @@ public:
 		_aligned_free(p);
 	}
 
+	void* operator new(size_t size, void* ptr)
+	{
+		return ptr;
+	}
+
 	void* operator new[](size_t size)
 	{
 		return _aligned_malloc(size, i);
