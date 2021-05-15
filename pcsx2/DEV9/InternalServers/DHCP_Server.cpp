@@ -358,13 +358,13 @@ namespace InternalServers
 				case 6:
 					// clang-format off
 					if (((((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 0 && dns1.integer == 0) ||
-						 (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 1 && dns1.integer != 0 && dns2.integer == 0) ||
-						 (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 2 && dns2.integer != 0)) == false)
+					     (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 1 && dns1.integer != 0 && dns2.integer == 0) ||
+					     (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 2 && dns2.integer != 0)) == false)
 						Console.Error("DHCP: DNS count missmatch");
 					// clang-format on
 
 					if ((((DHCPopDNS*)dhcp.options[i])->dnsServers.size() > 0 && dns1 != ((DHCPopDNS*)dhcp.options[i])->dnsServers[0]) ||
-						(((DHCPopDNS*)dhcp.options[i])->dnsServers.size() > 1 && dns2 != ((DHCPopDNS*)dhcp.options[i])->dnsServers[1]))
+					    (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() > 1 && dns2 != ((DHCPopDNS*)dhcp.options[i])->dnsServers[1]))
 						Console.Error("DHCP: DNS missmatch");
 					break;
 				case 12:
