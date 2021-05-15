@@ -54,7 +54,7 @@ public:
 	{
 	}
 
-	Device(const Device&);            // copy constructor
+	Device(const Device&); // copy constructor
 	Device& operator=(const Device&); // assignment
 
 	/*

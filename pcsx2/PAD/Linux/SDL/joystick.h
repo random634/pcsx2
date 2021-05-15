@@ -30,7 +30,7 @@ public:
 	JoystickInfo(int id);
 	~JoystickInfo();
 
-	JoystickInfo(const JoystickInfo&) = delete;            // copy constructor
+	JoystickInfo(const JoystickInfo&) = delete; // copy constructor
 	JoystickInfo& operator=(const JoystickInfo&) = delete; // assignment
 
 
