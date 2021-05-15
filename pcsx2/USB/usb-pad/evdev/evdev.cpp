@@ -153,9 +153,9 @@ namespace usb_pad
 					const std::string path = str.str();
 
 					auto it = std::find_if(list_cache.begin(), list_cache.end(),
-										   [&path](evdev_device& dev) {
-											   return dev.path == path;
-										   });
+						[&path](evdev_device& dev) {
+							return dev.path == path;
+						});
 					if (it != list_cache.end())
 						continue;
 

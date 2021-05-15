@@ -30,7 +30,7 @@ namespace usb_eyetoy
 
 		VideoDevice* videodev;
 		//	struct freeze {
-		uint8_t regs[0xFF];     //OV519
+		uint8_t regs[0xFF]; //OV519
 		uint8_t i2c_regs[0xFF]; //OV764x
 
 		int hw_camera_running;
@@ -61,7 +61,10 @@ namespace usb_eyetoy
 	Product String:   2 "EyeToy USB camera Namtai"
 	*/
 
-	static const uint8_t eyetoy_dev_descriptor[] = {
+	// clang-format off
+
+	static const uint8_t eyetoy_dev_descriptor[] =
+	{
 		0x12,          /* bLength */
 		0x01,          /* bDescriptorType */
 		WBVAL(0x0110), /* bcdUSB */
@@ -78,7 +81,8 @@ namespace usb_eyetoy
 		0x01,          /* bNumConfigurations */
 	};
 
-	static const uint8_t eyetoy_config_descriptor[] = {
+	static const uint8_t eyetoy_config_descriptor[] =
+	{
 		0x09,       // bLength
 		0x02,       // bDescriptorType (Configuration)
 		0xB4, 0x00, // wTotalLength 180
@@ -311,6 +315,8 @@ namespace usb_eyetoy
 		memcpy(s->i2c_regs, ov7648_defaults, sizeof(s->regs));
 	}
 
+	// clang-format on
+
 	static void eyetoy_handle_reset(USBDevice* dev)
 	{
 		reset_ov519((EYETOYState*)dev);
@@ -318,7 +324,7 @@ namespace usb_eyetoy
 	}
 
 	static void eyetoy_handle_control(USBDevice* dev, USBPacket* p, int request, int value,
-									  int index, int length, uint8_t* data)
+		int index, int length, uint8_t* data)
 	{
 		EYETOYState* s = (EYETOYState*)dev;
 		int ret = 0;

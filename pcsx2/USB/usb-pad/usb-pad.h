@@ -23,20 +23,20 @@
 namespace usb_pad
 {
 
-#define CHECK(exp)      \
-	do                  \
-	{                   \
-		if (!(exp))     \
+#define CHECK(exp) \
+	do \
+	{ \
+		if (!(exp)) \
 			goto Error; \
 	} while (0)
-#define SAFE_FREE(p)    \
-	do                  \
-	{                   \
-		if (p)          \
-		{               \
-			free(p);    \
+#define SAFE_FREE(p) \
+	do \
+	{ \
+		if (p) \
+		{ \
+			free(p); \
 			(p) = NULL; \
-		}               \
+		} \
 	} while (0)
 
 #define S_CONFIG_JOY TEXT("Joystick")
@@ -199,10 +199,10 @@ namespace usb_pad
 
 	enum PS2WheelTypes
 	{
-		WT_GENERIC,                // DF or any other LT wheel in non-native mode
-		WT_DRIVING_FORCE_PRO,      //LPRC-11000? DF GT can be downgraded to Pro (?)
+		WT_GENERIC, // DF or any other LT wheel in non-native mode
+		WT_DRIVING_FORCE_PRO, //LPRC-11000? DF GT can be downgraded to Pro (?)
 		WT_DRIVING_FORCE_PRO_1102, //hw with buggy hid report?
-		WT_GT_FORCE,               //formula gp
+		WT_GT_FORCE, //formula gp
 		WT_ROCKBAND1_DRUMKIT,
 		WT_BUZZ_CONTROLLER,
 		WT_SEGA_SEAMIC,
@@ -236,11 +236,11 @@ namespace usb_pad
 	{
 		uint8_t dead1 : 8; //Lower limit of central dead band
 		uint8_t dead2 : 8; //Upper limit of central dead band
-		uint8_t k1 : 4;    //Low (left or push) side spring constant selector
-		uint8_t k2 : 4;    //High (right or pull) side spring constant selector
-		uint8_t s1 : 4;    //Low side slope inversion (1 = inverted)
-		uint8_t s2 : 4;    //High side slope inversion (1 = inverted)
-		uint8_t clip : 8;  //Clip level (maximum force), on either side
+		uint8_t k1    : 4; //Low (left or push) side spring constant selector
+		uint8_t k2    : 4; //High (right or pull) side spring constant selector
+		uint8_t s1    : 4; //Low side slope inversion (1 = inverted)
+		uint8_t s2    : 4; //High side slope inversion (1 = inverted)
+		uint8_t clip  : 8; //Clip level (maximum force), on either side
 	};
 
 	struct autocenter
@@ -252,8 +252,8 @@ namespace usb_pad
 
 	struct variable
 	{
-		uint8_t l1;     //Initial level for Force 0
-		uint8_t l2;     //Initial level for Force 2
+		uint8_t l1; //Initial level for Force 0
+		uint8_t l2; //Initial level for Force 2
 		uint8_t s1 : 4; //Force 0 Step size
 		uint8_t t1 : 4; //Force 0 Step duration (in main loops)
 		uint8_t s2 : 4;
@@ -293,7 +293,7 @@ namespace usb_pad
 	struct ff_data
 	{
 		uint8_t cmdslot; // 0x0F cmd, 0xF0 slot
-		uint8_t type;    // force type or cmd param
+		uint8_t type; // force type or cmd param
 		union u
 		{
 			uint8_t params[5];
@@ -423,11 +423,11 @@ namespace usb_pad
 	enum PS2Buttons : uint32_t
 	{
 		PAD_CROSS = 0, //menu up - GT Force
-		PAD_SQUARE,    //menu down
-		PAD_CIRCLE,    //X
-		PAD_TRIANGLE,  //Y
-		PAD_R1,        //A? <pause> in GT4
-		PAD_L1,        //B
+		PAD_SQUARE, //menu down
+		PAD_CIRCLE, //X
+		PAD_TRIANGLE, //Y
+		PAD_R1, //A? <pause> in GT4
+		PAD_L1, //B
 		PAD_R2,
 		PAD_L2,
 		PAD_SELECT,
@@ -473,36 +473,39 @@ namespace usb_pad
 
 	static const int HATS_8TO4[] = {PAD_HAT_N, PAD_HAT_E, PAD_HAT_S, PAD_HAT_W};
 
-#define PAD_VID 0x046D
-#define PAD_MOMO 0xCA03    //black MOMO
+	// clang-format off
+
+#define PAD_VID     0x046D
+#define PAD_MOMO    0xCA03 //black MOMO
 #define GENERIC_PID 0xC294 //actually Driving Force aka PID that most logitech wheels initially report
-#define PID_DF 0xC294
-#define PID_DFP 0xC298 //SELECT + R3 + RIGHT SHIFT PADDLE (R1) ???
-#define PID_DFGT 0xC29A
+#define PID_DF      0xC294
+#define PID_DFP     0xC298 //SELECT + R3 + RIGHT SHIFT PADDLE (R1) ???
+#define PID_DFGT    0xC29A
 #define PID_FORMULA 0xC202 //Yellow Wingman Formula
-#define PID_FGP 0xC20E     //Formula GP (maybe GT FORCE LPRC-1000)
-#define PID_FFGP 0xC293    // Formula Force GP
-#define PID_GTF 0xC293     // as is Formula Force GP
-#define PID_G25 0xC299     // OutRun 2 (jp) supports it apparently
-#define PID_G27 0xC29B
+#define PID_FGP     0xC20E //Formula GP (maybe GT FORCE LPRC-1000)
+#define PID_FFGP    0xC293 // Formula Force GP
+#define PID_GTF     0xC293 // as is Formula Force GP
+#define PID_G25     0xC299 // OutRun 2 (jp) supports it apparently
+#define PID_G27     0xC29B
 #define MAX_BUTTONS 32
-#define MAX_AXES 7 //random 7: axes + hatswitch
-#define MAX_JOYS 32
+#define MAX_AXES    7      //random 7: axes + hatswitch
+#define MAX_JOYS    32
 #define PAD_LG_FFB_WHITELIST \
-    PAD_MOMO, PID_DF, PID_DFP, PID_DFGT, PID_FORMULA, PID_FGP, PID_FFGP, PID_GTF, PID_G25, PID_G27
+	PAD_MOMO, PID_DF, PID_DFP, PID_DFGT, PID_FORMULA, PID_FGP, PID_FFGP, PID_GTF, PID_G25, PID_G27
 
 	/**
-  linux hid-lg4ff.c
-  http://www.spinics.net/lists/linux-input/msg16570.html
-  Every Logitech wheel reports itself as generic Logitech Driving Force wheel (VID 046d, PID c294). This is done to ensure that the
-  wheel will work on every USB HID-aware system even when no Logitech driver is available. It however limits the capabilities of the
-  wheel - range is limited to 200 degrees, G25/G27 don't report the clutch pedal and there is only one combined axis for throttle and
-  brake. The switch to native mode is done via hardware-specific command which is different for each wheel. When the wheel
-  receives such command, it simulates reconnect and reports to the OS with its actual PID.
-  Currently not emulating reattachment. Any games that expect to?
-**/
+	 linux hid-lg4ff.c
+	 http://www.spinics.net/lists/linux-input/msg16570.html
+	 Every Logitech wheel reports itself as generic Logitech Driving Force wheel (VID 046d, PID c294). This is done to ensure that the
+	 wheel will work on every USB HID-aware system even when no Logitech driver is available. It however limits the capabilities of the
+	 wheel - range is limited to 200 degrees, G25/G27 don't report the clutch pedal and there is only one combined axis for throttle and
+	 brake. The switch to native mode is done via hardware-specific command which is different for each wheel. When the wheel
+	 receives such command, it simulates reconnect and reports to the OS with its actual PID.
+	 Currently not emulating reattachment. Any games that expect to?
+	 **/
 
-	static const uint8_t df_dev_descriptor[] = {
+	static const uint8_t df_dev_descriptor[] =
+	{
 		/* bLength             */ 0x12,          //(18)
 		/* bDescriptorType     */ 0x01,          //(1)
 		/* bcdUSB              */ WBVAL(0x0100), //(272) //USB 1.1
@@ -520,7 +523,8 @@ namespace usb_pad
 	};
 
 	//XXX different pedal data than 0x1106, buggy hw?
-	static const uint8_t dfp_dev_descriptor_1102[] = {
+	static const uint8_t dfp_dev_descriptor_1102[] =
+	{
 		/* bLength             */ 0x12,          //(18)
 		/* bDescriptorType     */ 0x01,          //(1)
 		/* bcdUSB              */ WBVAL(0x0100), //(272) //USB 1.1
@@ -537,7 +541,8 @@ namespace usb_pad
 		/* bNumConfigurations  */ 0x01,          //(1)
 	};
 
-	static const uint8_t dfp_dev_descriptor[] = {
+	static const uint8_t dfp_dev_descriptor[] =
+	{
 		/* bLength             */ 0x12,          //(18)
 		/* bDescriptorType     */ 0x01,          //(1)
 		/* bcdUSB              */ WBVAL(0x0100), //(272) //USB 1.1
@@ -554,7 +559,8 @@ namespace usb_pad
 		/* bNumConfigurations  */ 0x01,          //(1)
 	};
 
-	static const uint8_t gtf_dev_descriptor[] = {
+	static const uint8_t gtf_dev_descriptor[] =
+	{
 		/* bLength             */ 0x12, //(18)
 		/* bDescriptorType     */ 0x01, //(1)
 		/* bcdUSB              */ WBVAL(0x0100),
@@ -574,7 +580,8 @@ namespace usb_pad
 	//https://lkml.org/lkml/2011/5/28/140
 	//https://github.com/torvalds/linux/blob/master/drivers/hid/hid-lg.c
 	// separate axes version
-	static const uint8_t pad_driving_force_hid_separate_report_descriptor[] = {
+	static const uint8_t pad_driving_force_hid_separate_report_descriptor[] =
+	{
 		0x05, 0x01,       /* Usage Page (Desktop), */
 		0x09, 0x04,       /* Usage (Joystik), */
 		0xA1, 0x01,       /* Collection (Application), */
@@ -640,7 +647,8 @@ namespace usb_pad
 		0xC0              /* End Collection */
 	};
 
-	static const uint8_t pad_driving_force_hid_report_descriptor[] = {
+	static const uint8_t pad_driving_force_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       // Usage Page (Generic Desktop Ctrls)
 		0x09, 0x04,       // Usage (Joystick)
 		0xA1, 0x01,       // Collection (Application)
@@ -706,7 +714,8 @@ namespace usb_pad
 		// 130 bytes
 	};
 
-	static const uint8_t pad_driving_force_pro_hid_report_descriptor[] = {
+	static const uint8_t pad_driving_force_pro_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       /* Usage Page (Desktop), */
 		0x09, 0x04,       /* Usage (Joystik), */
 		0xA1, 0x01,       /* Collection (Application), */
@@ -754,7 +763,8 @@ namespace usb_pad
 		0xC0              /* End Collection */
 	};
 
-	static const uint8_t pad_momo_hid_report_descriptor[] = {
+	static const uint8_t pad_momo_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       /* Usage Page (Desktop), */
 		0x09, 0x04,       /* Usage (Joystik), */
 		0xA1, 0x01,       /* Collection (Application), */
@@ -800,7 +810,8 @@ namespace usb_pad
 		0xC0              /* End Collection */
 	};
 
-	static const uint8_t pad_generic_hid_report_descriptor[] = {
+	static const uint8_t pad_generic_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       /* Usage Page (Desktop), */
 		0x09, 0x04,       /* Usage (Joystik), */
 		0xA1, 0x01,       /* Collection (Application), */
@@ -849,7 +860,8 @@ namespace usb_pad
 	};
 
 	//TODO
-	static const uint8_t pad_gtforce_hid_report_descriptor[] = {
+	static const uint8_t pad_gtforce_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       // Usage Page (Generic Desktop Ctrls)
 		0x09, 0x04,       // Usage (Joystick)
 		0xA1, 0x01,       // Collection (Application)
@@ -893,7 +905,8 @@ namespace usb_pad
 		0xC0,       // End Collection
 	};
 
-	static const uint8_t pad_gtforce_hid_report_descriptor_prolly_incorrect[] = {
+	static const uint8_t pad_gtforce_hid_report_descriptor_prolly_incorrect[] =
+	{
 		0x05, 0x01,       /* Usage Page (Desktop), */
 		0x09, 0x04,       /* Usage (Joystik), */
 		0xA1, 0x01,       /* Collection (Application), */
@@ -946,7 +959,8 @@ namespace usb_pad
 #define USB_PSIZE 8
 #define DESC_CONFIG_WORD(a) (a & 0xFF), ((a >> 8) & 0xFF)
 
-	static const uint8_t df_config_descriptor[] = {
+	static const uint8_t df_config_descriptor[] =
+	{
 		USB_CONFIGURATION_DESC_SIZE,       /* bLength */
 		USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType */
 		WBVAL(41),                         /* wTotalLength */
@@ -968,12 +982,12 @@ namespace usb_pad
 		0,                             // Interface string index
 
 		/* HID Class-Specific Descriptor */
-		0x09,                                                              // Size of this descriptor in bytes RRoj hack
-		USB_DT_HID,                                                        // HID descriptor type
-		DESC_CONFIG_WORD(0x0100),                                          // HID Spec Release Number in BCD format (1.11)
-		0x21,                                                              // Country Code (0x00 for Not supported, 0x21 for US)
-		1,                                                                 // Number of class descriptors, see usbcfg.h
-		USB_DT_REPORT,                                                     // Report descriptor type
+		0x09,                     // Size of this descriptor in bytes RRoj hack
+		USB_DT_HID,               // HID descriptor type
+		DESC_CONFIG_WORD(0x0100), // HID Spec Release Number in BCD format (1.11)
+		0x21,                     // Country Code (0x00 for Not supported, 0x21 for US)
+		1,                        // Number of class descriptors, see usbcfg.h
+		USB_DT_REPORT,            // Report descriptor type
 		DESC_CONFIG_WORD(sizeof(pad_driving_force_hid_report_descriptor)), // Size of the report descriptor
 
 		/* Endpoint Descriptor */
@@ -993,7 +1007,8 @@ namespace usb_pad
 		0x0A,                         //Interval
 	};
 
-	static const uint8_t dfp_config_descriptor[] = {
+	static const uint8_t dfp_config_descriptor[] =
+	{
 		USB_CONFIGURATION_DESC_SIZE,       /* bLength */
 		USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType */
 		WBVAL(41),                         /* wTotalLength */
@@ -1040,7 +1055,8 @@ namespace usb_pad
 		0x0A,                         //Interval
 	};
 
-	static const uint8_t gtforce_config_descriptor[] = {
+	static const uint8_t gtforce_config_descriptor[] =
+	{
 		USB_CONFIGURATION_DESC_SIZE,       /* bLength */
 		USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType */
 		WBVAL(41),                         /* wTotalLength */
@@ -1062,12 +1078,12 @@ namespace usb_pad
 		0,                       // Interface string index
 
 		/* HID Class-Specific Descriptor */
-		0x09,                                                        // Size of this descriptor in bytes
-		USB_DT_HID,                                                  // HID descriptor type
-		DESC_CONFIG_WORD(0x0100),                                    // HID Spec Release Number in BCD format (1.11)
-		0x21,                                                        // Country Code (0x00 for Not supported, 0x21 for US)
-		1,                                                           // Number of class descriptors, see usbcfg.h
-		USB_DT_REPORT,                                               // Report descriptor type
+		0x09,                     // Size of this descriptor in bytes
+		USB_DT_HID,               // HID descriptor type
+		DESC_CONFIG_WORD(0x0100), // HID Spec Release Number in BCD format (1.11)
+		0x21,                     // Country Code (0x00 for Not supported, 0x21 for US)
+		1,                        // Number of class descriptors, see usbcfg.h
+		USB_DT_REPORT,            // Report descriptor type
 		DESC_CONFIG_WORD(sizeof(pad_gtforce_hid_report_descriptor)), // Size of the report descriptor
 
 		/* Endpoint Descriptor */
@@ -1088,7 +1104,8 @@ namespace usb_pad
 	};
 
 	// Should be usb 2.0, but seems to make no difference with Rock Band games
-	static const uint8_t rb1_dev_descriptor[] = {
+	static const uint8_t rb1_dev_descriptor[] =
+	{
 		/* bLength             */ 0x12,          //(18)
 		/* bDescriptorType     */ 0x01,          //(1)
 		/* bcdUSB              */ WBVAL(0x0110), //USB 1.1
@@ -1106,7 +1123,8 @@ namespace usb_pad
 	};
 
 	//Wii Rock Band drum kit
-	static const uint8_t rb1_config_descriptor[] = {
+	static const uint8_t rb1_config_descriptor[] =
+	{
 		0x09,       // bLength
 		0x02,       // bDescriptorType (Configuration)
 		0x29, 0x00, // wTotalLength 41
@@ -1151,7 +1169,8 @@ namespace usb_pad
 	};
 
 	//Wii Rock Band drum kit
-	static const uint8_t rb1_hid_report_descriptor[] = {
+	static const uint8_t rb1_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       // Usage Page (Generic Desktop Ctrls)
 		0x09, 0x05,       // Usage (Game Pad)
 		0xA1, 0x01,       // Collection (Application)
@@ -1225,7 +1244,8 @@ namespace usb_pad
 	// Buzz //
 	//////////
 
-	static const uint8_t buzz_dev_descriptor[] = {
+	static const uint8_t buzz_dev_descriptor[] =
+	{
 		0x12,       // bLength
 		0x01,       // bDescriptorType (Device)
 		0x00, 0x02, // bcdUSB 2.00
@@ -1242,7 +1262,8 @@ namespace usb_pad
 		0x01,       // bNumConfigurations 1
 	};
 
-	static const uint8_t buzz_config_descriptor[] = {
+	static const uint8_t buzz_config_descriptor[] =
+	{
 		0x09,       // bLength
 		0x02,       // bDescriptorType (Configuration)
 		0x22, 0x00, // wTotalLength 34
@@ -1278,7 +1299,8 @@ namespace usb_pad
 		0x0A,       // bInterval 10 (unit depends on device speed)
 	};
 
-	static const uint8_t buzz_hid_report_descriptor[] = {
+	static const uint8_t buzz_hid_report_descriptor[] =
+	{
 		0x05, 0x01,       // Usage Page (Generic Desktop Ctrls)
 		0x09, 0x04,       // Usage (Joystick)
 		0xA1, 0x01,       // Collection (Application)
@@ -1317,7 +1339,7 @@ namespace usb_pad
 		0x91, 0x02,       //     Output (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
 		0xC0,             //   End Collection
 		0xC0,             // End Collection
-						  // 78 bytes
+		// 78 bytes
 	};
 
 	///////////////////
@@ -1454,6 +1476,8 @@ namespace usb_pad
 		0x81, 0x01, //   INPUT (Constant,Array,Absolute)
 		0xc0        // END_COLLECTION
 	};
+
+	// clang-format on
 
 	struct dfp_buttons_t
 	{

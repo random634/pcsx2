@@ -43,7 +43,7 @@ namespace usb_pad
 		DWORD listentimeout = 10000;
 		DWORD listeninterval = 500;
 
-		extern BYTE diks[256];      // DirectInput keyboard state buffer
+		extern BYTE diks[256]; // DirectInput keyboard state buffer
 		extern DIMOUSESTATE2 dims2; // DirectInput mouse state structure
 
 		std::vector<DIJOYSTATE2> jso; // DInput joystick old state, only for config
@@ -724,33 +724,33 @@ namespace usb_pad
 		void InitDialog(int port, const char* dev_type)
 		{
 			hFont = CreateFont(18,
-							   0,
-							   0,
-							   0,
-							   FW_BOLD,
-							   0,
-							   0,
-							   0,
-							   ANSI_CHARSET,
-							   OUT_DEFAULT_PRECIS,
-							   CLIP_DEFAULT_PRECIS,
-							   DEFAULT_QUALITY,
-							   DEFAULT_PITCH | FF_DONTCARE,
-							   TEXT("Tahoma"));
+				0,
+				0,
+				0,
+				FW_BOLD,
+				0,
+				0,
+				0,
+				ANSI_CHARSET,
+				OUT_DEFAULT_PRECIS,
+				CLIP_DEFAULT_PRECIS,
+				DEFAULT_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				TEXT("Tahoma"));
 			HFONT hFont2 = CreateFont(14,
-									  0,
-									  0,
-									  0,
-									  FW_BOLD,
-									  0,
-									  0,
-									  0,
-									  ANSI_CHARSET,
-									  OUT_DEFAULT_PRECIS,
-									  CLIP_DEFAULT_PRECIS,
-									  DEFAULT_QUALITY,
-									  DEFAULT_PITCH | FF_DONTCARE,
-									  TEXT("Tahoma"));
+				0,
+				0,
+				0,
+				FW_BOLD,
+				0,
+				0,
+				0,
+				ANSI_CHARSET,
+				OUT_DEFAULT_PRECIS,
+				CLIP_DEFAULT_PRECIS,
+				DEFAULT_QUALITY,
+				DEFAULT_PITCH | FF_DONTCARE,
+				TEXT("Tahoma"));
 
 			//pFnPrevFunc = (WNDPROC)SetWindowLongPtr(GetDlgItem(hWnd,IDC_PICTURE),GWLP_WNDPROC,(LONG_PTR) StaticProc);
 			InitDirectInput(hWnd, port);

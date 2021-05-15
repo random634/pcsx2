@@ -31,7 +31,10 @@ namespace usb_pad
 
 #define EVDEV_DIR "/dev/input/by-id/"
 
-		const std::array<const char*, 525> key_to_str = {
+		// clang-format off
+
+		const std::array<const char*, 525> key_to_str =
+		{
 			"RESERVED",         /* linux:0 (KEY_RESERVED) */
 			"ESC",              /* linux:1 (KEY_ESC) */
 			"1",                /* linux:2 (KEY_1) */
@@ -558,6 +561,8 @@ namespace usb_pad
 			"NUMERIC_POUND",    /* linux:523 (KEY_NUMERIC_POUND) */
 			"KEY_NUMERIC_A",    /* linux:524 (KEY_NUMERIC_A) */
 		};
+
+		// clang-format on
 
 		static bool GetEventName(const char* dev_type, int map, int event, bool is_button, const char** name)
 		{
