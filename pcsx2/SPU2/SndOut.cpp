@@ -80,19 +80,19 @@ public:
 } NullOut;
 
 SndOutModule* mods[] =
-	{
-		&NullOut,
+{
+	&NullOut,
 #ifdef _MSC_VER
-		XAudio2Out,
-		WaveOut,
+	XAudio2Out,
+	WaveOut,
 #endif
 #if defined(SPU2X_PORTAUDIO)
-		PortaudioOut,
+	PortaudioOut,
 #endif
 #if defined(__linux__) || defined(__APPLE__)
-		SDLOut,
+	SDLOut,
 #endif
-		nullptr // signals the end of our list
+	nullptr // signals the end of our list
 };
 
 int FindOutputModuleById(const wchar_t* omodid)
@@ -495,7 +495,7 @@ void SndBuffer::Write(const StereoOut32& Sample)
 		if (m_dsp_progress > 0)
 		{
 			memcpy(sndTempBuffer16, &sndTempBuffer16[ei],
-				   sizeof(sndTempBuffer16[0]) * m_dsp_progress);
+				sizeof(sndTempBuffer16[0]) * m_dsp_progress);
 		}
 	}
 #endif
