@@ -1417,7 +1417,7 @@ void GSDrawScanlineCodeGenerator2::SampleTexture()
 	// xym7 = used[x86] vf[x64&&!needsMoreRegs]
 	// Free: xym0, xym1, xym5, xym6
 
-	SampleTexture_TexelReadHelper();
+	SampleTexture_TexelReadHelper(0);
 
 	// xym5 = rb (xym5[x86], xym2[x64])
 	// xym6 = ga (xym6[x86], xym3[x64])
@@ -1427,7 +1427,7 @@ void GSDrawScanlineCodeGenerator2::SampleTexture()
 /// Input[x64]: xym2=uv0, xym3=uv1 (ltf), xym4=uf, xym7=vf (!needsMoreRegs)
 /// Output: _rb, _ga
 /// Destroys all registers except outputs, xmm4 and xmm7
-void GSDrawScanlineCodeGenerator2::SampleTexture_TexelReadHelper()
+void GSDrawScanlineCodeGenerator2::SampleTexture_TexelReadHelper(int mip_offset)
 {
 	const bool needsMoreRegs = !hasSSE41 || isYmm;
 
@@ -1491,7 +1491,7 @@ void GSDrawScanlineCodeGenerator2::SampleTexture_TexelReadHelper()
 		const XYm& tmp1 = is64 ? xym7 : xym4; // OK to destroy if needsMoreRegs
 		const XYm& tmp2 = is64 ? xym4 : xym7;
 		//         d0    d1    d2s0  d3s1  s1    s2
-		ReadTexel4(xym5, xym6, xym0, xym2, xym1, xym3, tmp1, tmp2, 0);
+		ReadTexel4(xym5, xym6, xym0, xym2, xym1, xym3, tmp1, tmp2, mip_offset);
 
 		// xym0 = c01
 		// xym2 = c10
@@ -1584,7 +1584,7 @@ void GSDrawScanlineCodeGenerator2::SampleTexture_TexelReadHelper()
 
 		// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
 
-		ReadTexel1(xym5, xym2, xym0, xym1, 0);
+		ReadTexel1(xym5, xym2, xym0, xym1, mip_offset);
 
 		// GSVector4i mask = GSVector4i::x00ff();
 
@@ -2045,7 +2045,7 @@ void GSDrawScanlineCodeGenerator2::SampleTextureLOD()
 	// xym7 = used[x86] vf[x64&&!needsMoreRegs]
 	// Free: xym0, xym1, xym5, xym6
 
-	SampleTexture_TexelReadHelper();
+	SampleTexture_TexelReadHelper(0);
 
 	// xym5: rb
 	// xym6: ga
@@ -2129,7 +2129,7 @@ void GSDrawScanlineCodeGenerator2::SampleTextureLOD()
 		// xym7 = used[x86] vf[x64&&!needsMoreRegs]
 		// Free: xym0, xym1, xym5, xym6
 
-		SampleTexture_TexelReadHelper();
+		SampleTexture_TexelReadHelper(1);
 
 		// xym5: rb
 		// xym6: ga

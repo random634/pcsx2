@@ -144,7 +144,7 @@ private:
 	void Step();
 	void TestZ(const XYm& temp1, const XYm& temp2);
 	void SampleTexture();
-	void SampleTexture_TexelReadHelper();
+	void SampleTexture_TexelReadHelper(int mip_offset);
 	void Wrap(const XYm& uv);
 	void Wrap(const XYm& uv0, const XYm& uv1);
 	void SampleTextureLOD();
