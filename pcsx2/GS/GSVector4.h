@@ -15,34 +15,6 @@
 
 class alignas(16) GSVector4
 {
-	constexpr static __m128 cxpr_setr_ps(float x, float y, float z, float w)
-	{
-#ifdef __GNUC__
-		return __m128{x, y, z, w};
-#else
-		__m128 m = {};
-		m.m128_f32[0] = x;
-		m.m128_f32[1] = y;
-		m.m128_f32[2] = z;
-		m.m128_f32[3] = w;
-		return m;
-#endif
-	}
-
-	constexpr static __m128 cxpr_setr_epi32(int x, int y, int z, int w)
-	{
-#ifdef __GNUC__
-		return (__m128)(__v4si{x, y, z, w});
-#else
-		__m128 m = {};
-		m.m128_i32[0] = x;
-		m.m128_i32[1] = y;
-		m.m128_i32[2] = z;
-		m.m128_i32[3] = w;
-		return m;
-#endif
-	}
-
 public:
 	union
 	{
@@ -79,22 +51,40 @@ public:
 
 	constexpr static GSVector4 cxpr(float x, float y, float z, float w)
 	{
-		return GSVector4(cxpr_setr_ps(x, y, z, w));
+#ifdef __GNUC__
+		__m128 m = __m128{x, y, z, w};
+#else
+		__m128 m = {};
+		m.m128_f32[0] = x;
+		m.m128_f32[1] = y;
+		m.m128_f32[2] = z;
+		m.m128_f32[3] = w;
+#endif
+		return GSVector4(m);
 	}
 
 	constexpr static GSVector4 cxpr(float x)
 	{
-		return GSVector4(cxpr_setr_ps(x, x, x, x));
+		return cxpr(x, x, x, x);
 	}
 
 	constexpr static GSVector4 cxpr(int x, int y, int z, int w)
 	{
-		return GSVector4(cxpr_setr_epi32(x, y, z, w));
+#ifdef __GNUC__
+		__m128 m = (__m128)(__v4si{x, y, z, w});
+#else
+		__m128 m = {};
+		m.m128_i32[0] = x;
+		m.m128_i32[1] = y;
+		m.m128_i32[2] = z;
+		m.m128_i32[3] = w;
+#endif
+		return GSVector4(m);
 	}
 
 	constexpr static GSVector4 cxpr(int x)
 	{
-		return GSVector4(cxpr_setr_epi32(x, x, x, x));
+		return cxpr(x, x, x, x);
 	}
 
 	__forceinline GSVector4(float x, float y, float z, float w)
