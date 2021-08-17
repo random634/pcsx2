@@ -121,7 +121,7 @@ jobs:
           call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\%vcvars%"
           echo ::set-output name=buildtype::%type%
           echo ::set-output name=vcvars::%vcvars%
-          cmake . -B build -DCMAKE_BUILD_TYPE=%type% -DLTO_PCSX2_CORE=ON -G Ninja -DCMAKE_C_COMPILER_LAUNCHER=..\buildcache\bin\buildcache.exe -DCMAKE_CXX_COMPILER_LAUNCHER=..\buildcache\bin\buildcache.exe -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON
+          cmake . -B build -DCMAKE_BUILD_TYPE=%type% -DLTO_PCSX2_CORE=ON -DDISABLE_ADVANCE_SIMD=ON -G Ninja -DCMAKE_C_COMPILER_LAUNCHER=..\buildcache\bin\buildcache.exe -DCMAKE_CXX_COMPILER_LAUNCHER=..\buildcache\bin\buildcache.exe -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON
         if: matrix.configuration == 'CMake'
 
       - name: Build PCSX2
