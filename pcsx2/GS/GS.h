@@ -42,10 +42,6 @@
 
 #endif
 
-#ifdef __x86_64__
-#define _M_AMD64
-#endif
-
 #include "Renderers/OpenGL/GLLoader.h"
 #include "Renderers/OpenGL/PFN_GLLOADER_HPP.h"
 
