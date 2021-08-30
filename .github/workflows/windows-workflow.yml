@@ -4,8 +4,6 @@ name: 🖥️ Windows Builds
 # events but only for the master branch
 on:
   push:
-    branches:
-      - master
     paths-ignore:
       - '**/*.md'
       - '.clang-format'
@@ -91,6 +89,13 @@ jobs:
       #   env:
       #     GITHUB_CONTEXT: ${{ toJson(github) }}
       #   run: echo "$GITHUB_CONTEXT"
+
+      - name: Check Free Space
+        run: Get-Volume
+
+      - name: Check Disk Usage
+        run: du -sh /d/*
+        shell: bash
 
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -197,3 +202,6 @@ jobs:
           name: ${{ steps.artifact-metadata.outputs.name }}
           path: bin
           retention-days: 30 # https://docs.github.com/en/free-pro-team@latest/actions/reference/usage-limits-billing-and-administration#artifact-and-log-retention-policy
+
+      - name: Check Space Usage
+        run: Get-Volume
