@@ -4,8 +4,6 @@ name: 🖥️ Windows Builds
 # events but only for the master branch
 on:
   push:
-    branches:
-      - master
     paths-ignore:
       - '**/*.md'
       - '.clang-format'
@@ -121,7 +119,7 @@ jobs:
           call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\%vcvars%"
           echo ::set-output name=buildtype::%type%
           echo ::set-output name=vcvars::%vcvars%
-          cmake . -B build -DCMAKE_BUILD_TYPE=%type% -G Ninja -DCMAKE_C_COMPILER_LAUNCHER=..\buildcache\bin\buildcache.exe -DCMAKE_CXX_COMPILER_LAUNCHER=..\buildcache\bin\buildcache.exe -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON
+          cmake . -B build -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON -DCMAKE_BUILD_TYPE=%type% -G Ninja
         if: matrix.configuration == 'CMake'
 
       - name: Build PCSX2
