@@ -17,6 +17,9 @@
 
 #include "GS.h"
 #include "Utilities/boost_spsc_queue.hpp"
+#include <condition_variable>
+#include <functional>
+#include <mutex>
 
 template <class T, int CAPACITY>
 class GSJobQueue final

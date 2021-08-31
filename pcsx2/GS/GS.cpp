@@ -16,6 +16,7 @@
 #include "PrecompiledHeader.h"
 #include "GS.h"
 #include "GSUtil.h"
+#include "GS_types.h"
 #include "Renderers/SW/GSRendererSW.h"
 #include "Renderers/Null/GSRendererNull.h"
 #include "Renderers/Null/GSDeviceNull.h"

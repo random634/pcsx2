@@ -16,6 +16,7 @@
 #include "PrecompiledHeader.h"
 #include "GS.h"
 #include "GSSettingsDlg.h"
+#include "GS/GS_types.h"
 #include "GS/GSUtil.h"
 #include "GS/Renderers/DX11/GSDevice11.h"
 #include "GS/resource.h"

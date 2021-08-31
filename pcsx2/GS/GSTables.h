@@ -15,8 +15,6 @@
 
 #pragma once
 
-#include "GS_types.h"
-
 extern const u8 blockTable32[4][8];
 extern const u8 blockTable32Z[4][8];
 extern const u8 blockTable16[8][4];
