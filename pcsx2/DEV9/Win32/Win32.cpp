@@ -228,7 +228,7 @@ void OnBrowse(HWND hW)
 	ofn.hwndOwner = hW;
 	ofn.lpstrTitle = L"HDD image file";
 	ofn.lpstrFile = wbuff;
-	ofn.nMaxFile = ArraySize(wbuff);
+	ofn.nMaxFile = std::size(wbuff);
 	ofn.lpstrFilter = L"HDD\0*.raw\0";
 	ofn.nFilterIndex = 1;
 	ofn.lpstrFileTitle = NULL;

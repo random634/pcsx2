@@ -239,14 +239,14 @@ bool GSDevice11::Create(const std::shared_ptr<GSWnd>& wnd)
 
 	std::vector<char> shader;
 	theApp.LoadResource(IDR_CONVERT_FX, shader);
-	CreateShader(shader, "convert.fx", nullptr, "vs_main", sm_model.GetPtr(), &m_convert.vs, il_convert, countof(il_convert), &m_convert.il);
+	CreateShader(shader, "convert.fx", nullptr, "vs_main", sm_model.GetPtr(), &m_convert.vs, il_convert, std::size(il_convert), &m_convert.il);
 
 	ShaderMacro sm_convert(m_shader.model);
 	sm_convert.AddMacro("PS_SCALE_FACTOR", std::max(1, m_upscale_multiplier));
 
 	D3D_SHADER_MACRO* sm_convert_ptr = sm_convert.GetPtr();
 
-	for (size_t i = 0; i < countof(m_convert.ps); i++)
+	for (size_t i = 0; i < std::size(m_convert.ps); i++)
 	{
 		CreateShader(shader, "convert.fx", nullptr, format("ps_main%d", i).c_str(), sm_convert_ptr, &m_convert.ps[i]);
 	}
@@ -278,7 +278,7 @@ bool GSDevice11::Create(const std::shared_ptr<GSWnd>& wnd)
 	hr = m_dev->CreateBuffer(&bd, NULL, &m_merge.cb);
 
 	theApp.LoadResource(IDR_MERGE_FX, shader);
-	for (size_t i = 0; i < countof(m_merge.ps); i++)
+	for (size_t i = 0; i < std::size(m_merge.ps); i++)
 	{
 		CreateShader(shader, "merge.fx", nullptr, format("ps_main%d", i).c_str(), sm_model.GetPtr(), &m_merge.ps[i]);
 	}
@@ -307,7 +307,7 @@ bool GSDevice11::Create(const std::shared_ptr<GSWnd>& wnd)
 	hr = m_dev->CreateBuffer(&bd, NULL, &m_interlace.cb);
 
 	theApp.LoadResource(IDR_INTERLACE_FX, shader);
-	for (size_t i = 0; i < countof(m_interlace.ps); i++)
+	for (size_t i = 0; i < std::size(m_interlace.ps); i++)
 	{
 		CreateShader(shader, "interlace.fx", nullptr, format("ps_main%d", i).c_str(), sm_model.GetPtr(), &m_interlace.ps[i]);
 	}
@@ -790,7 +790,7 @@ void GSDevice11::StretchRect(GSTexture* sTex, const GSVector4& sRect, GSTexture*
 
 
 
-	IASetVertexBuffer(vertices, sizeof(vertices[0]), countof(vertices));
+	IASetVertexBuffer(vertices, sizeof(vertices[0]), std::size(vertices));
 	IASetInputLayout(m_convert.il);
 	IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -1314,7 +1314,7 @@ void GSDevice11::PSSetShader(ID3D11PixelShader* ps, ID3D11Buffer* ps_cb)
 void GSDevice11::PSUpdateShaderState()
 {
 	m_ctx->PSSetShaderResources(0, m_state.ps_sr_views.size(), m_state.ps_sr_views.data());
-	m_ctx->PSSetSamplers(0, countof(m_state.ps_ss), m_state.ps_ss);
+	m_ctx->PSSetSamplers(0, std::size(m_state.ps_ss), m_state.ps_ss);
 }
 
 void GSDevice11::OMSetDepthStencilState(ID3D11DepthStencilState* dss, uint8 sref)

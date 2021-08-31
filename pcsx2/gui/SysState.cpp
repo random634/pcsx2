@@ -417,7 +417,7 @@ protected:
 		internals.SetDataSize(saveme.GetCurrentPos() - internals.GetDataIndex());
 		m_dest_list->Add(internals);
 
-		for (uint i = 0; i < ArraySize(SavestateEntries); ++i)
+		for (uint i = 0; i < std::size(SavestateEntries); ++i)
 		{
 			uint startpos = saveme.GetCurrentPos();
 			SavestateEntries[i]->FreezeOut(saveme);
@@ -603,10 +603,10 @@ protected:
 
 		bool foundVersion = false;
 		//bool foundScreenshot = false;
-		//bool foundEntry[ArraySize(SavestateEntries)] = false;
+		//bool foundEntry[std::size(SavestateEntries)] = false;
 
 		std::unique_ptr<wxZipEntry> foundInternal;
-		std::unique_ptr<wxZipEntry> foundEntry[ArraySize(SavestateEntries)];
+		std::unique_ptr<wxZipEntry> foundEntry[std::size(SavestateEntries)];
 
 		while (true)
 		{
@@ -638,7 +638,7 @@ protected:
 				foundScreenshot = true;
 			}*/
 
-			for (uint i = 0; i < ArraySize(SavestateEntries); ++i)
+			for (uint i = 0; i < std::size(SavestateEntries); ++i)
 			{
 				if (entry->GetName().CmpNoCase(SavestateEntries[i]->GetFilename()) == 0)
 				{
@@ -659,7 +659,7 @@ protected:
 
 		// Log any parts and pieces that are missing, and then generate an exception.
 		bool throwIt = false;
-		for (uint i = 0; i < ArraySize(SavestateEntries); ++i)
+		for (uint i = 0; i < std::size(SavestateEntries); ++i)
 		{
 			if (foundEntry[i])
 				continue;
@@ -684,7 +684,7 @@ protected:
 		GetCoreThread().Pause();
 		SysClearExecutionCache();
 
-		for (uint i = 0; i < ArraySize(SavestateEntries); ++i)
+		for (uint i = 0; i < std::size(SavestateEntries); ++i)
 		{
 			if (!foundEntry[i])
 				continue;
