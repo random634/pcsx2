@@ -21,7 +21,7 @@
 #include "GSLocalMemory.h"
 
 GSLocalMemory::psm_t GSLocalMemory::m_psm[64];
-GSOffset* GSLocalMemory::GetOffset(uint32 bp, uint32 bw, uint32 psm)
+GSOffset* GSLocalMemory::GetOffset(u32 bp, u32 bw, u32 psm)
 {
 	abort();
 }

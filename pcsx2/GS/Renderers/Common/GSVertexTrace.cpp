@@ -48,14 +48,14 @@ GSVertexTrace::GSVertexTrace(const GSState* state)
 	InitUpdate(GS_SPRITE_CLASS);
 }
 
-void GSVertexTrace::Update(const void* vertex, const uint32* index, int v_count, int i_count, GS_PRIM_CLASS primclass)
+void GSVertexTrace::Update(const void* vertex, const u32* index, int v_count, int i_count, GS_PRIM_CLASS primclass)
 {
 	m_primclass = primclass;
 
-	uint32 iip = m_state->PRIM->IIP;
-	uint32 tme = m_state->PRIM->TME;
-	uint32 fst = m_state->PRIM->FST;
-	uint32 color = !(m_state->PRIM->TME && m_state->m_context->TEX0.TFX == TFX_DECAL && m_state->m_context->TEX0.TCC);
+	u32 iip = m_state->PRIM->IIP;
+	u32 tme = m_state->PRIM->TME;
+	u32 fst = m_state->PRIM->FST;
+	u32 color = !(m_state->PRIM->TME && m_state->m_context->TEX0.TFX == TFX_DECAL && m_state->m_context->TEX0.TCC);
 
 	(this->*m_fmm[m_accurate_stq][color][fst][tme][iip][primclass])(vertex, index, i_count);
 
@@ -150,8 +150,8 @@ void GSVertexTrace::Update(const void* vertex, const uint32* index, int v_count,
 	}
 }
 
-template <GS_PRIM_CLASS primclass, uint32 iip, uint32 tme, uint32 fst, uint32 color, uint32 accurate_stq>
-void GSVertexTrace::FindMinMax(const void* vertex, const uint32* index, int count)
+template <GS_PRIM_CLASS primclass, u32 iip, u32 tme, u32 fst, u32 color, u32 accurate_stq>
+void GSVertexTrace::FindMinMax(const void* vertex, const u32* index, int count)
 {
 	const GSDrawingContext* context = m_state->m_context;
 
@@ -516,7 +516,7 @@ void GSVertexTrace::CorrectDepthTrace(const void* vertex, int count)
 
 
 	const GSVertex* RESTRICT v = (GSVertex*)vertex;
-	uint32 z = v[0].XYZ.Z;
+	u32 z = v[0].XYZ.Z;
 
 	// ought to check only 1/2 for sprite
 	if (z & 1)

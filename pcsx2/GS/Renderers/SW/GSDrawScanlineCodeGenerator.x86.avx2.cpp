@@ -637,7 +637,7 @@ void GSDrawScanlineCodeGenerator::TestZ(const Ymm& temp1, const Ymm& temp2)
 		if (m_sel.zclamp)
 		{
 			vpcmpeqd(temp1, temp1);
-			vpsrld(temp1, (uint8)((m_sel.zpsm & 0x3) * 8));
+			vpsrld(temp1, (u8)((m_sel.zpsm & 0x3) * 8));
 			vpminsd(ymm0, temp1);
 		}
 
@@ -660,8 +660,8 @@ void GSDrawScanlineCodeGenerator::TestZ(const Ymm& temp1, const Ymm& temp2)
 
 		if (m_sel.zpsm)
 		{
-			vpslld(ymm1, (uint8)(m_sel.zpsm * 8));
-			vpsrld(ymm1, (uint8)(m_sel.zpsm * 8));
+			vpslld(ymm1, (u8)(m_sel.zpsm * 8));
+			vpsrld(ymm1, (u8)(m_sel.zpsm * 8));
 		}
 
 		if (m_sel.zoverflow || m_sel.zpsm == 0)
@@ -801,7 +801,7 @@ void GSDrawScanlineCodeGenerator::SampleTexture()
 
 	vpunpcklwd(ymm4, ymm2, ymm0);
 	vpunpckhwd(ymm2, ymm2, ymm0);
-	vpslld(ymm2, (uint8)(m_sel.tw + 3));
+	vpslld(ymm2, (u8)(m_sel.tw + 3));
 
 	// ymm0 = 0
 	// ymm2 = y0
@@ -817,7 +817,7 @@ void GSDrawScanlineCodeGenerator::SampleTexture()
 
 		vpunpcklwd(ymm6, ymm3, ymm0);
 		vpunpckhwd(ymm3, ymm3, ymm0);
-		vpslld(ymm3, (uint8)(m_sel.tw + 3));
+		vpslld(ymm3, (u8)(m_sel.tw + 3));
 
 		// ymm2 = y0
 		// ymm3 = y1
@@ -843,10 +843,10 @@ void GSDrawScanlineCodeGenerator::SampleTexture()
 		// ymm1, ymm4, ymm6 = free
 		// ymm7 = used
 
-		// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
-		// c01 = addr01.gather32_32((const uint32/uint8*)tex[, clut]);
-		// c10 = addr10.gather32_32((const uint32/uint8*)tex[, clut]);
-		// c11 = addr11.gather32_32((const uint32/uint8*)tex[, clut]);
+		// c00 = addr00.gather32_32((const u32/u8*)tex[, clut]);
+		// c01 = addr01.gather32_32((const u32/u8*)tex[, clut]);
+		// c10 = addr10.gather32_32((const u32/u8*)tex[, clut]);
+		// c11 = addr11.gather32_32((const u32/u8*)tex[, clut]);
 
 		ReadTexel(4, 0);
 
@@ -946,7 +946,7 @@ void GSDrawScanlineCodeGenerator::SampleTexture()
 
 		vpaddd(ymm5, ymm2, ymm4);
 
-		// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
+		// c00 = addr00.gather32_32((const u32/u8*)tex[, clut]);
 
 		ReadTexel(1, 0);
 
@@ -1267,7 +1267,7 @@ return;
 	{
 		// lod = K
 
-		vmovd(xmm0, ptr[&m_local.gd->lod.i.u32[0]]);
+		vmovd(xmm0, ptr[&m_local.gd->lod.i.U32[0]]);
 
 		vpsrad(ymm2, xmm0);
 		vpsrad(ymm3, xmm0);
@@ -1349,7 +1349,7 @@ return;
 
 	vpunpcklwd(ymm4, ymm2, ymm0);
 	vpunpckhwd(ymm2, ymm2, ymm0);
-	vpslld(ymm2, (uint8)(m_sel.tw + 3));
+	vpslld(ymm2, (u8)(m_sel.tw + 3));
 
 	// ymm0 = 0
 	// ymm2 = y0
@@ -1365,7 +1365,7 @@ return;
 
 		vpunpcklwd(ymm6, ymm3, ymm0);
 		vpunpckhwd(ymm3, ymm3, ymm0);
-		vpslld(ymm3, (uint8)(m_sel.tw + 3));
+		vpslld(ymm3, (u8)(m_sel.tw + 3));
 
 		// ymm2 = y0
 		// ymm3 = y1
@@ -1391,10 +1391,10 @@ return;
 		// ymm1, ymm4, ymm6 = free
 		// ymm7 = used
 
-		// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
-		// c01 = addr01.gather32_32((const uint32/uint8*)tex[, clut]);
-		// c10 = addr10.gather32_32((const uint32/uint8*)tex[, clut]);
-		// c11 = addr11.gather32_32((const uint32/uint8*)tex[, clut]);
+		// c00 = addr00.gather32_32((const u32/u8*)tex[, clut]);
+		// c01 = addr01.gather32_32((const u32/u8*)tex[, clut]);
+		// c10 = addr10.gather32_32((const u32/u8*)tex[, clut]);
+		// c11 = addr11.gather32_32((const u32/u8*)tex[, clut]);
 
 		ReadTexel(4, 0);
 
@@ -1494,7 +1494,7 @@ return;
 
 		vpaddd(ymm5, ymm2, ymm4);
 
-		// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
+		// c00 = addr00.gather32_32((const u32/u8*)tex[, clut]);
 
 		ReadTexel(1, 0);
 
@@ -1590,7 +1590,7 @@ return;
 
 		vpunpcklwd(ymm4, ymm2, ymm0);
 		vpunpckhwd(ymm2, ymm2, ymm0);
-		vpslld(ymm2, (uint8)(m_sel.tw + 3));
+		vpslld(ymm2, (u8)(m_sel.tw + 3));
 
 		// ymm0 = 0
 		// ymm2 = y0
@@ -1606,7 +1606,7 @@ return;
 
 			vpunpcklwd(ymm6, ymm3, ymm0);
 			vpunpckhwd(ymm3, ymm3, ymm0);
-			vpslld(ymm3, (uint8)(m_sel.tw + 3));
+			vpslld(ymm3, (u8)(m_sel.tw + 3));
 
 			// ymm2 = y0
 			// ymm3 = y1
@@ -1632,10 +1632,10 @@ return;
 			// ymm1, ymm4, ymm6 = free
 			// ymm7 = used
 
-			// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
-			// c01 = addr01.gather32_32((const uint32/uint8*)tex[, clut]);
-			// c10 = addr10.gather32_32((const uint32/uint8*)tex[, clut]);
-			// c11 = addr11.gather32_32((const uint32/uint8*)tex[, clut]);
+			// c00 = addr00.gather32_32((const u32/u8*)tex[, clut]);
+			// c01 = addr01.gather32_32((const u32/u8*)tex[, clut]);
+			// c10 = addr10.gather32_32((const u32/u8*)tex[, clut]);
+			// c11 = addr11.gather32_32((const u32/u8*)tex[, clut]);
 
 			ReadTexel(4, 1);
 
@@ -1735,7 +1735,7 @@ return;
 
 			vpaddd(ymm5, ymm2, ymm4);
 
-			// c00 = addr00.gather32_32((const uint32/uint8*)tex[, clut]);
+			// c00 = addr00.gather32_32((const u32/u8*)tex[, clut]);
 
 			ReadTexel(1, 1);
 
@@ -2382,7 +2382,7 @@ void GSDrawScanlineCodeGenerator::WriteZBuf()
 	if (m_sel.zclamp)
 	{
 		vpcmpeqd(ymm7, ymm7);
-		vpsrld(ymm7, (uint8)((m_sel.zpsm & 0x3) * 8));
+		vpsrld(ymm7, (u8)((m_sel.zpsm & 0x3) * 8));
 		vpminsd(ymm1, ymm7);
 	}
 
@@ -2865,7 +2865,7 @@ void GSDrawScanlineCodeGenerator::WritePixel(const Ymm& src, const Ymm& temp, co
 
 static const int s_offsets[] = {0, 2, 8, 10, 16, 18, 24, 26};
 
-void GSDrawScanlineCodeGenerator::WritePixel(const Xmm& src, const Reg32& addr, uint8 i, uint8 j, int psm)
+void GSDrawScanlineCodeGenerator::WritePixel(const Xmm& src, const Reg32& addr, u8 i, u8 j, int psm)
 {
 	Address dst = ptr[addr * 2 + (size_t)m_local.gd->vm + s_offsets[i] * 2];
 
@@ -2933,14 +2933,14 @@ void GSDrawScanlineCodeGenerator::ReadTexel(int pixels, int mip_offset)
 
 			vextracti128(Xmm(t1.getIdx()), src, 1);
 
-			for (uint8 j = 0; j < 4; j++)
+			for (u8 j = 0; j < 4; j++)
 			{
-				mov(ebx, ptr[&lod_i->u32[j + 0]]);
+				mov(ebx, ptr[&lod_i->U32[j + 0]]);
 				mov(ebx, ptr[ebp + ebx * sizeof(void*) + mip_offset]);
 
 				ReadTexel(dst, src, j);
 
-				mov(ebx, ptr[&lod_i->u32[j + 4]]);
+				mov(ebx, ptr[&lod_i->U32[j + 4]]);
 				mov(ebx, ptr[ebp + ebx * sizeof(void*) + mip_offset]);
 
 				ReadTexel(t2, t1, j);
@@ -2956,7 +2956,7 @@ void GSDrawScanlineCodeGenerator::ReadTexel(int pixels, int mip_offset)
 
 		if (m_sel.mmin && m_sel.lcm)
 		{
-			mov(ebx, ptr[&lod_i->u32[0]]);
+			mov(ebx, ptr[&lod_i->U32[0]]);
 			mov(ebx, ptr[ebp + ebx * sizeof(void*) + mip_offset]);
 		}
 
@@ -2976,7 +2976,7 @@ void GSDrawScanlineCodeGenerator::ReadTexel(int pixels, int mip_offset)
 			{
 				vextracti128(Xmm(t1.getIdx()), src, 1);
 
-				for (uint8 j = 0; j < 4; j++)
+				for (u8 j = 0; j < 4; j++)
 				{
 					ReadTexel(dst, src, j);
 					ReadTexel(t2, t1, j);
@@ -2996,7 +2996,7 @@ void GSDrawScanlineCodeGenerator::ReadTexel(int pixels, int mip_offset)
 	}
 }
 
-void GSDrawScanlineCodeGenerator::ReadTexel(const Ymm& dst, const Ymm& addr, uint8 i)
+void GSDrawScanlineCodeGenerator::ReadTexel(const Ymm& dst, const Ymm& addr, u8 i)
 {
 	ASSERT(i < 4);
 

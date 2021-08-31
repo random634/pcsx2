@@ -28,8 +28,8 @@ class GSFunctionMap
 protected:
 	struct ActivePtr
 	{
-		uint64 frame, frames;
-		uint64 ticks, actual, total;
+		u64 frame, frames;
+		u64 ticks, actual, total;
 		VALUE f;
 	};
 
@@ -70,7 +70,7 @@ public:
 
 			memset(p, 0, sizeof(*p));
 
-			p->frame = (uint64)-1;
+			p->frame = (u64)-1;
 
 			p->f = i != m_map.end() ? i->second : GetDefaultFunction(key);
 
@@ -82,7 +82,7 @@ public:
 		return m_active->f;
 	}
 
-	void UpdateStats(uint64 frame, uint64 ticks, int actual, int total)
+	void UpdateStats(u64 frame, u64 ticks, int actual, int total)
 	{
 		if (m_active)
 		{
@@ -102,7 +102,7 @@ public:
 
 	virtual void PrintStats()
 	{
-		uint64 ttpf = 0;
+		u64 ttpf = 0;
 
 		for (const auto& i : m_map_active)
 		{
@@ -123,12 +123,12 @@ public:
 
 			if (p->frames && ttpf)
 			{
-				uint64 tpp = p->actual > 0 ? p->ticks / p->actual : 0;
-				uint64 tpf = p->frames > 0 ? p->ticks / p->frames : 0;
-				uint64 ppf = p->frames > 0 ? p->actual / p->frames : 0;
+				u64 tpp = p->actual > 0 ? p->ticks / p->actual : 0;
+				u64 tpf = p->frames > 0 ? p->ticks / p->frames : 0;
+				u64 ppf = p->frames > 0 ? p->actual / p->frames : 0;
 
 				printf("[%014llx]%c %6.2f%% %5.2f%% f %4llu t %12llu p %12llu w %12lld tpp %4llu tpf %9llu ppf %9llu\n",
-					(uint64)key, m_map.find(key) == m_map.end() ? '*' : ' ',
+					(u64)key, m_map.find(key) == m_map.end() ? '*' : ' ',
 					(float)(tpf * 10000 / 34000000) / 100,
 					(float)(tpf * 10000 / ttpf) / 100,
 					p->frames, p->ticks, p->actual, p->total - p->actual,
@@ -155,7 +155,7 @@ class GSCodeGeneratorFunctionMap : public GSFunctionMap<KEY, VALUE>
 {
 	std::string m_name;
 	void* m_param;
-	std::unordered_map<uint64, VALUE> m_cgmap;
+	std::unordered_map<u64, VALUE> m_cgmap;
 	GSCodeBuffer m_cb;
 	size_t m_total_code_size;
 
@@ -194,7 +194,7 @@ public:
 			ASSERT(cg->getSize() < MAX_SIZE);
 
 #if 0
-			fprintf(stderr, "%s Location:%p Size:%zu Key:%llx\n", m_name.c_str(), code_ptr, cg->getSize(), (uint64)key);
+			fprintf(stderr, "%s Location:%p Size:%zu Key:%llx\n", m_name.c_str(), code_ptr, cg->getSize(), (u64)key);
 			GSScanlineSelector sel(key);
 			sel.Print();
 #endif
@@ -213,7 +213,7 @@ public:
 
 			// if(iJIT_IsProfilingActive()) // always > 0
 			{
-				std::string name = format("%s<%016llx>()", m_name.c_str(), (uint64)key);
+				std::string name = format("%s<%016llx>()", m_name.c_str(), (u64)key);
 
 				iJIT_Method_Load ml;
 
@@ -226,7 +226,7 @@ public:
 
 				iJIT_NotifyEvent(iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED, &ml);
 /*
-				name = format("c:/temp1/%s_%016llx.bin", m_name.c_str(), (uint64)key);
+				name = format("c:/temp1/%s_%016llx.bin", m_name.c_str(), (u64)key);
 
 				if(FILE* fp = fopen(name.c_str(), "wb"))
 				{

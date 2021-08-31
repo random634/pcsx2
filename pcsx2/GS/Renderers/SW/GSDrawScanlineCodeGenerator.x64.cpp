@@ -103,7 +103,7 @@ void GSDrawScanlineCodeGenerator::WritePixel_SSE(const Xmm& src, const RegLong& 
 
 //static const int s_offsets[4] = {0, 2, 8, 10};
 
-void GSDrawScanlineCodeGenerator::WritePixel_SSE(const Xmm& src, const RegLong& addr, uint8 i, int psm)
+void GSDrawScanlineCodeGenerator::WritePixel_SSE(const Xmm& src, const RegLong& addr, u8 i, int psm)
 {
 }
 
@@ -111,7 +111,7 @@ void GSDrawScanlineCodeGenerator::ReadTexel_SSE(int pixels, int mip_offset)
 {
 }
 
-void GSDrawScanlineCodeGenerator::ReadTexel_SSE(const Xmm& dst, const Xmm& addr, uint8 i)
+void GSDrawScanlineCodeGenerator::ReadTexel_SSE(const Xmm& dst, const Xmm& addr, u8 i)
 {
 }
 
