@@ -67,7 +67,7 @@
 // unchanged for long periods of time, or happen to be used by almost everything, so they
 // need a full recompile anyway, when modified (etc)
 
-#include "Pcsx2Defs.h"
+#include "PCSX2Base.h"
 #include "i18n.h"
 
 #include "Utilities/FixedPointTypes.h"
