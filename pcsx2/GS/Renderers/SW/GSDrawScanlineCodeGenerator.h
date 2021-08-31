@@ -64,9 +64,9 @@ class GSDrawScanlineCodeGenerator : public GSCodeGenerator
 	void WriteFrame();
 	void ReadPixel(const Ymm& dst, const Ymm& temp, const RegLong& addr);
 	void WritePixel(const Ymm& src, const Ymm& temp, const RegLong& addr, const Xbyak::Reg32& mask, bool fast, int psm, int fz);
-	void WritePixel(const Xmm& src, const RegLong& addr, uint8 i, uint8 j, int psm);
+	void WritePixel(const Xmm& src, const RegLong& addr, u8 i, u8 j, int psm);
 	void ReadTexel(int pixels, int mip_offset = 0);
-	void ReadTexel(const Ymm& dst, const Ymm& addr, uint8 i);
+	void ReadTexel(const Ymm& dst, const Ymm& addr, u8 i);
 
 #else
 
@@ -93,9 +93,9 @@ class GSDrawScanlineCodeGenerator : public GSCodeGenerator
 	void WriteFrame_SSE();
 	void ReadPixel_SSE(const Xmm& dst, const RegLong& addr);
 	void WritePixel_SSE(const Xmm& src, const RegLong& addr, const Reg8& mask, bool fast, int psm, int fz);
-	void WritePixel_SSE(const Xmm& src, const RegLong& addr, uint8 i, int psm);
+	void WritePixel_SSE(const Xmm& src, const RegLong& addr, u8 i, int psm);
 	void ReadTexel_SSE(int pixels, int mip_offset = 0);
-	void ReadTexel_SSE(const Xmm& dst, const Xmm& addr, uint8 i);
+	void ReadTexel_SSE(const Xmm& dst, const Xmm& addr, u8 i);
 
 	void Generate_AVX();
 	void Init_AVX();
@@ -120,14 +120,14 @@ class GSDrawScanlineCodeGenerator : public GSCodeGenerator
 	void WriteFrame_AVX();
 	void ReadPixel_AVX(const Xmm& dst, const RegLong& addr);
 	void WritePixel_AVX(const Xmm& src, const RegLong& addr, const Reg8& mask, bool fast, int psm, int fz);
-	void WritePixel_AVX(const Xmm& src, const RegLong& addr, uint8 i, int psm);
+	void WritePixel_AVX(const Xmm& src, const RegLong& addr, u8 i, int psm);
 	void ReadTexel_AVX(int pixels, int mip_offset = 0);
-	void ReadTexel_AVX(const Xmm& dst, const Xmm& addr, uint8 i);
+	void ReadTexel_AVX(const Xmm& dst, const Xmm& addr, u8 i);
 
 #endif
 
-	void modulate16(const Xmm& a, const Operand& f, uint8 shift);
-	void lerp16(const Xmm& a, const Xmm& b, const Xmm& f, uint8 shift);
+	void modulate16(const Xmm& a, const Operand& f, u8 shift);
+	void lerp16(const Xmm& a, const Xmm& b, const Xmm& f, u8 shift);
 	void lerp16_4(const Xmm& a, const Xmm& b, const Xmm& f);
 	void mix16(const Xmm& a, const Xmm& b, const Xmm& temp);
 	void clamp16(const Xmm& a, const Xmm& temp);
@@ -139,5 +139,5 @@ class GSDrawScanlineCodeGenerator : public GSCodeGenerator
 	void split16_2x8(const Xmm& l, const Xmm& h, const Xmm& src);
 
 public:
-	GSDrawScanlineCodeGenerator(void* param, uint64 key, void* code, size_t maxsize);
+	GSDrawScanlineCodeGenerator(void* param, u64 key, void* code, size_t maxsize);
 };
