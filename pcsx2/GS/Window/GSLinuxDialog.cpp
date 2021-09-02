@@ -15,9 +15,10 @@
 
 #include "PrecompiledHeader.h"
 #include <gtk/gtk.h>
-#include "GS.h"
+#include "GS/GS.h"
 #include "GS_res.h"
 #include "GSSetting.h"
+#include "GS/GSExtra.h"
 
 // Port of deprecated GTK2 API to recent GTK3. Those defines
 // could prove handy for testing

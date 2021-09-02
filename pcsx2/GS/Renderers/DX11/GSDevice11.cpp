@@ -16,6 +16,7 @@
 #include "PrecompiledHeader.h"
 #include "GS.h"
 #include "GSDevice11.h"
+#include "GS/GSExtra.h"
 #include "GS/GSUtil.h"
 #include "GS/resource.h"
 #include <fstream>
