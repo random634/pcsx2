@@ -15,6 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include "GSWndDX.h"
+#include "GS/GS.h"
 
 #ifdef _WIN32
 GSWndDX::GSWndDX()

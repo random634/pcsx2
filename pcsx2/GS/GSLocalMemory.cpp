@@ -16,6 +16,7 @@
 #include "PrecompiledHeader.h"
 #include "GSLocalMemory.h"
 #include "GS.h"
+#include "GSExtra.h"
 #include <unordered_set>
 
 #define ASSERT_BLOCK(r, w, h) \

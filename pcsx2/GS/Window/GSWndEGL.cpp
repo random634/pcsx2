@@ -15,6 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include "GSWndEGL.h"
+#include "GS/GS.h"
 
 #if defined(__unix__)
 

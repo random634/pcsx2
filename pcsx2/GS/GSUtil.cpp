@@ -14,6 +14,7 @@
  */
 
 #include "PrecompiledHeader.h"
+#include "GS.h"
 #include "GSUtil.h"
 #include <locale>
 #include <codecvt>

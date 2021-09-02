@@ -15,6 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include "GSWnd.h"
+#include "GS/GSGL.h"
 
 void GSWndGL::PopulateGlFunction()
 {

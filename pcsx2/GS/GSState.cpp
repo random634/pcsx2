@@ -15,7 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include "GSState.h"
-#include "GS.h"
+#include "GSGL.h"
 #include "GSUtil.h"
 
 //#define Offset_ST  // Fixes Persona3 mini map alignment which is off even in software rendering

@@ -15,6 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include "GSWndWGL.h"
+#include "GS/GS.h"
 
 #ifdef _WIN32
 

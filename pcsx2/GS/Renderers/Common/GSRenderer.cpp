@@ -16,6 +16,7 @@
 #include "PrecompiledHeader.h"
 #include "GSRenderer.h"
 #include "gui/AppConfig.h"
+#include "GS/GSGL.h"
 #if defined(__unix__)
 #include <X11/keysym.h>
 #endif

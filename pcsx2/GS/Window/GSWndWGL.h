@@ -14,6 +14,7 @@
  */
 
 #include "GSWnd.h"
+#include "GS/GSGL.h"
 
 #ifdef _WIN32
 
