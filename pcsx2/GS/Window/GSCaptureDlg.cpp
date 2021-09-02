@@ -17,6 +17,7 @@
 #include "GS.h"
 #include "GSCaptureDlg.h"
 #include "GS/GSExtra.h"
+#include <commdlg.h>
 
 #define BeginEnumSysDev(clsid, pMoniker) \
 	{ \

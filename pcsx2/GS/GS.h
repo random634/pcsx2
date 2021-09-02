@@ -18,20 +18,6 @@
 #include "Window/GSSetting.h"
 #include "SaveState.h"
 
-#ifdef _WIN32
-
-#include <windows.h>
-#include <commctrl.h>
-#include <commdlg.h>
-#include <shellapi.h>
-#include <d3dcompiler.h>
-#include <d3d11_1.h>
-#include <dxgi1_3.h>
-#include <comutil.h>
-#include <atlcomcli.h>
-
-#endif
-
 #include <map>
 
 #ifdef None

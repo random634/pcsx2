@@ -17,6 +17,8 @@
 
 #include "GS.h"
 #include "GS/Renderers/Common/GSTexture.h"
+#include <atlcomcli.h>
+#include <d3d11.h>
 
 class GSTexture11 : public GSTexture
 {

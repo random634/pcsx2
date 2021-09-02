@@ -17,6 +17,7 @@
 
 #include "GSDialog.h"
 #include "GSSetting.h"
+#include <d3dcommon.h>
 
 class GSShaderDlg : public GSDialog
 {
