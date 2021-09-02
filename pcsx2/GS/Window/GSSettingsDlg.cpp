@@ -23,6 +23,7 @@
 #include "GSSetting.h"
 #include <algorithm>
 #include <wil/com.h>
+#include <commctrl.h>
 
 GSSettingsDlg::GSSettingsDlg()
 	: GSDialog(IDD_CONFIG)
