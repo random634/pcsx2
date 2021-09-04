@@ -85,9 +85,9 @@ if(WIN32)
 	)
 	target_compile_definitions(PCSX2 PRIVATE
 		_M_SSE=0x401 # TODO: Multiple ISA
+		DIRECTINPUT_VERSION=0x0800
 		WIN32_LEAN_AND_MEAN
 		LZMA_API_STATIC
-		BUILD_DX=1
 	)
 	target_include_directories(PCSX2 PRIVATE
 		../3rdparty # GL headers
