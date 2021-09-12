@@ -16,7 +16,7 @@
 #include <wx/gdicmn.h>
 
 #include "common/IniInterface.h"
-#include "common/Console.h"
+#include "common/Log.h"
 
 const wxRect wxDefaultRect(wxDefaultCoord, wxDefaultCoord, wxDefaultCoord, wxDefaultCoord);
 
@@ -240,7 +240,7 @@ void IniLoader::_EnumEntry(const wxString& var, int& value, const wxChar* const*
 	const int cnt = _calcEnumLength(enumArray);
 	if (!IndexBoundsCheck(L"IniLoader EnumDefaultValue", defvalue, cnt))
 	{
-		Console.Error("(LoadSettings) Default enumeration index is out of bounds. Truncating.");
+		Log::Console.error("(LoadSettings) Default enumeration index is out of bounds. Truncating.\n");
 		defvalue = cnt - 1;
 	}
 
@@ -261,8 +261,8 @@ void IniLoader::_EnumEntry(const wxString& var, int& value, const wxChar* const*
 
 	if (enumArray[i] == NULL)
 	{
-		Console.Warning(L"(LoadSettings) Warning: Unrecognized value '%s' on key '%s'\n\tUsing the default setting of '%s'.",
-			WX_STR(retval), WX_STR(var), enumArray[defvalue]);
+		Log::Console.warning("(LoadSettings) Warning: Unrecognized value '{}' on key '{}'\n    Using the default setting of '{}'.\n",
+			retval, var, wxString(enumArray[defvalue]));
 		value = defvalue;
 	}
 	else
@@ -401,7 +401,7 @@ void IniSaver::_EnumEntry(const wxString& var, int& value, const wxChar* const* 
 
 	if (!IndexBoundsCheck(L"IniSaver EnumDefaultValue", defvalue, cnt))
 	{
-		Console.Error("(SaveSettings) Default enumeration index is out of bounds. Truncating.");
+		Log::Console.error("(SaveSettings) Default enumeration index is out of bounds. Truncating.\n");
 		defvalue = cnt - 1;
 	}
 
@@ -410,11 +410,11 @@ void IniSaver::_EnumEntry(const wxString& var, int& value, const wxChar* const* 
 
 	if (value >= cnt)
 	{
-		Console.Warning(L"(SaveSettings) An illegal enumerated index was detected when saving '%s'", WX_STR(var));
-		Console.Indent().Warning(
-			L"Illegal Value: %d\n"
-			L"Using Default: %d (%s)\n",
-			value, defvalue, enumArray[defvalue]);
+		Log::Console.warning("(SaveSettings) An illegal enumerated index was detected when saving '{}'\n", var);
+		Log::Console.warning(
+			"    Illegal Value: {}\n"
+			"    Using Default: {} ({})\n",
+			value, defvalue, wxString(enumArray[defvalue]));
 
 		// Cause a debug assertion, since this is a fully recoverable error.
 		pxAssert(value < cnt);

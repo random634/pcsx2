@@ -13,6 +13,7 @@
  *  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "common/Log.h"
 #include "common/Threading.h"
 #include "common/wxBaseTools.h"
 #include "common/wxGuiTools.h"
@@ -109,7 +110,7 @@ void Threading::Mutex::Detach()
 	if (Wait(def_detach_timeout))
 		pthread_mutex_destroy(&m_mutex);
 	else
-		Console.Error("(Thread Log) Mutex cleanup failed due to possible deadlock.");
+		Log::Console.error("(Thread Log) Mutex cleanup failed due to possible deadlock.\n");
 }
 
 Threading::Mutex::~Mutex()
@@ -133,7 +134,7 @@ Threading::MutexRecursive::MutexRecursive()
 	}
 
 	if (pthread_mutex_init(&m_mutex, &_attr_recursive))
-		Console.Error("(Thread Log) Failed to initialize mutex.");
+		Log::Console.error("(Thread Log) Failed to initialize mutex.\n");
 }
 
 Threading::MutexRecursive::~MutexRecursive()

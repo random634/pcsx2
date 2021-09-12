@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include "common/Log.h"
 #include "common/PageFaultSource.h"
 
 // Apple uses the MAP_ANON define instead of MAP_ANONYMOUS, but they mean
@@ -79,7 +80,7 @@ static void SysPageFaultSignalFilter(int signal, siginfo_t* siginfo, void*)
 
 void _platform_InstallSignalHandler()
 {
-	Console.WriteLn("Installing POSIX SIGSEGV handler...");
+	Log::Console.info("Installing POSIX SIGSEGV handler...");
 	struct sigaction sa;
 
 	sigemptyset(&sa.sa_mask);

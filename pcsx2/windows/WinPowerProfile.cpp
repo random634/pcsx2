@@ -15,6 +15,7 @@
 
 #include "PrecompiledHeader.h"
 #include <powrprof.h>
+#include "common/Log.h"
 
 // Checks the current active power plan
 // If the power plan isn't named 'high performance', put a little message in the console
@@ -40,7 +41,7 @@ void CheckIsUserOnHighPerfPowerPlan()
 		PowerReadDCValueIndex(NULL, pPwrGUID, &GUID_PROCESSOR_SETTINGS_SUBGROUP, &GUID_PROCESSOR_THROTTLE_MINIMUM, &dcMin))
 		goto cleanup;
 
-	Console.WriteLn("The current power profile is '%S'.\nThe current min / max processor states\nAC: %d%% / %d%%\nBattery: %d%% / %d%%\n", aBuffer,acMin,acMax,dcMin,dcMax);
+	Log::PCSX2.info("The current power profile is '{}'.\nThe current min / max processor states\nAC: {}% / {}%\nBattery: {}% / {}%\n", aBuffer,acMin,acMax,dcMin,dcMax);
 
 cleanup:
 	LocalFree(pPwrGUID);

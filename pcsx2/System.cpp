@@ -24,6 +24,7 @@
 
 #include "System/RecTypes.h"
 
+#include "common/Log.h"
 #include "common/MemsetFast.inl"
 #include "common/Perf.h"
 
@@ -190,55 +191,54 @@ void SysLogMachineCaps()
 {
 	if ( !PCSX2_isReleaseVersion )
 	{
-		Console.WriteLn(Color_StrongGreen, "\nPCSX2 %u.%u.%u-%lld %s"
+		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "\nPCSX2 {}.{}.{}-{} {}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
+			"\n"
 			, PCSX2_VersionHi, PCSX2_VersionMid, PCSX2_VersionLo,
 			SVN_REV, SVN_MODS ? "(modded)" : ""
-			);
+		);
 	}
-	else { // shorter release version string
-		Console.WriteLn(Color_StrongGreen, "PCSX2 %u.%u.%u-%lld"
+	else // shorter release version string
+	{
+		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "PCSX2 {}.{}.{}-{}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
+			"\n"
 			, PCSX2_VersionHi, PCSX2_VersionMid, PCSX2_VersionLo,
-			SVN_REV );
+			SVN_REV
+		);
 	}
 
-	Console.WriteLn( "Savestate version: 0x%x", g_SaveVersion);
-	Console.Newline();
+	Log::PCSX2.info("Savestate version: 0x{}\n\n", g_SaveVersion);
 
-	Console.WriteLn( Color_StrongBlack, "Host Machine Init:" );
-
-	Console.Indent().WriteLn(
-		L"Operating System =  %s\n"
-		L"Physical RAM     =  %u MB",
-
-		WX_STR(GetOSVersionString()),
+	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "Host Machine Init:\n");
+	Log::PCSX2.info(
+		"    Operating System =  {}\n"
+		"    Physical RAM     =  {} MB\n",
+		GetOSVersionString().utf8_string(),
 		(u32)(GetPhysicalMemory() / _1mb)
 	);
 
 	u32 speed = x86caps.CalculateMHz();
 
-	Console.Indent().WriteLn(
-		L"CPU name         =  %s\n"
-		L"Vendor/Model     =  %s (stepping %02X)\n"
-		L"CPU speed        =  %u.%03u ghz (%u logical thread%ls)\n"
-		L"x86PType         =  %s\n"
-		L"x86Flags         =  %08x %08x\n"
-		L"x86EFlags        =  %08x",
-			WX_STR(fromUTF8( x86caps.FamilyName ).Trim().Trim(false)),
-			WX_STR(fromUTF8( x86caps.VendorName )), x86caps.StepID,
-			speed / 1000, speed % 1000,
-			x86caps.LogicalCores, (x86caps.LogicalCores==1) ? L"" : L"s",
-			WX_STR(x86caps.GetTypeName()),
-			x86caps.Flags, x86caps.Flags2,
-			x86caps.EFlags
+	Log::PCSX2.info(
+		"    CPU name         =  {}\n"
+		"    Vendor/Model     =  {} (stepping {:02X})\n"
+		"    CPU speed        =  {}.{:03} ghz ({} logical thread{})\n"
+		"    x86PType         =  {}\n"
+		"    x86Flags         =  {:08x} {:08x}\n"
+		"    x86EFlags        =  {:08x}\n\n",
+		fromUTF8(x86caps.FamilyName).Trim().Trim(false).utf8_string(),
+		x86caps.VendorName, x86caps.StepID,
+		speed / 1000, speed % 1000,
+		x86caps.LogicalCores, (x86caps.LogicalCores == 1) ? "" : "s",
+		x86caps.GetTypeName().utf8_string(),
+		x86caps.Flags, x86caps.Flags2,
+		x86caps.EFlags
 	);
-
-	Console.Newline();
 
 	wxArrayString features[2];	// 2 lines, for readability!
 
@@ -259,13 +259,15 @@ void SysLogMachineCaps()
 		JoinString( features[1], L".. " )
 	};
 
-	Console.WriteLn( Color_StrongBlack,	L"x86 Features Detected:" );
-    Console.Indent().WriteLn(result[0] + (result[1].IsEmpty() ? L"" : (L"\n" + result[1])));
+	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "x86 Features Detected:\n");
+	Log::PCSX2.info("    {}\n", JoinString(features[0], L".. ").utf8_string());
+	if (!result[1].IsEmpty())
+		Log::PCSX2.info("    {}\n", JoinString(features[1], L".. ").utf8_string());
 #ifdef __M_X86_64
-    Console.Indent().WriteLn("Pcsx2 was compiled as 64-bits.");
+	Log::PCSX2.info("    Pcsx2 was compiled as 64-bits.\n");
 #endif
 
-	Console.Newline();
+	Log::PCSX2.info("\n");
 
 #ifdef _WIN32
 	CheckIsUserOnHighPerfPowerPlan();
@@ -486,8 +488,8 @@ void SysMainMemory::ReleaseAll()
 {
 	DecommitAll();
 
-	Console.WriteLn( Color_Blue, "Releasing host memory maps for virtual systems..." );
-	ConsoleIndentScope indent(1);
+	Log::Console.logStyle(LogLevel::Info, LogStyle::Header, "Releasing host memory maps for virtual systems...\n");
+	ScopedLogIndent indent(Log::Console);
 
 	vtlb_Core_Free();		// Just to be sure... (calling order could result in it getting missed during Decommit).
 

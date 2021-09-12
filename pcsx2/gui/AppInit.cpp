@@ -21,6 +21,7 @@
 #include "MTVU.h" // for thread cancellation on shutdown
 
 #include "common/IniInterface.h"
+#include "common/Log.h"
 #include "DebugTools/Debug.h"
 #include "Dialogs/ModalPopups.h"
 
@@ -387,7 +388,7 @@ protected:
 bool Pcsx2App::OnInit()
 {
 	EnableAllLogging();
-	Console.WriteLn("Interface is initializing.  Entering Pcsx2App::OnInit!");
+	Log::Console.trace("Interface is initializing.  Entering Pcsx2App::OnInit!\n");
 
 	InitCPUTicks();
 
@@ -397,7 +398,7 @@ bool Pcsx2App::OnInit()
 	g_Conf = std::make_unique<AppConfig>();
 	wxInitAllImageHandlers();
 
-	Console.WriteLn("Applying operating system default language...");
+	Log::Console.trace("Applying operating system default language...\n");
 	{
 		// The PCSX2 log system hasn't been set up yet, so error messages might
 		// pop up that could cause some alarm amongst users. Let's avoid that.
@@ -405,10 +406,10 @@ bool Pcsx2App::OnInit()
 		i18n_SetLanguage(wxLANGUAGE_DEFAULT);
 	}
 
-	Console.WriteLn("Command line parsing...");
+	Log::Console.trace("Command line parsing...\n");
 	if (!_parent::OnInit())
 		return false;
-	Console.WriteLn("Command line parsed!");
+	Log::Console.trace("Command line parsed!\n");
 
 	i18n_SetLanguagePath();
 
@@ -544,11 +545,11 @@ void Pcsx2App::OnScheduledTermination(wxTimerEvent& evt)
 	{
 		if (--m_term_threshold > 0)
 		{
-			Console.WriteLn("(App) %d saves are still pending; exit postponed...", m_PendingSaves);
+			Log::Console.warning("(App) {} saves are still pending; exit postponed...", m_PendingSaves);
 			return;
 		}
 
-		Console.Error("(App) %s pending saves have exceeded OnExit threshold and are being prematurely terminated!", m_PendingSaves);
+		Log::Console.error("(App) {} pending saves have exceeded OnExit threshold and are being prematurely terminated!", m_PendingSaves);
 	}
 
 	m_timer_Termination->Stop();

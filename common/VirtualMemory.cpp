@@ -16,6 +16,7 @@
 #ifndef __WXMSW__
 #include <wx/thread.h>
 #endif
+#include "common/Log.h"
 #include "common/PageFaultSource.h"
 #include "common/EventSource.inl"
 #include "common/MemsetFast.inl"
@@ -367,12 +368,12 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 		uint toReservePages = newPages - m_pages_reserved;
 		uint toReserveBytes = toReservePages * __pagesize;
 
-		DevCon.WriteLn(L"%-32s is being expanded by %u pages.", WX_STR(m_name), toReservePages);
+		Log::Console.debug("{:<32} is being expanded by {} pages.", m_name, toReservePages);
 
 		if (!m_allocator->AllocAtAddress(GetPtrEnd(), toReserveBytes))
 		{
-			Console.Warning("%-32s could not be passively resized due to virtual memory conflict!", WX_STR(m_name));
-			Console.Indent().Warning("(attempted to map memory @ %08p -> %08p)", m_baseptr, (uptr)m_baseptr + toReserveBytes);
+			Log::Console.warning("{:<32} could not be passively resized due to virtual memory conflict!\n", m_name);
+			Log::Console.warning("    (attempted to map memory @ {} -> {})\n", (void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes));
 			return false;
 		}
 
