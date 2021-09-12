@@ -55,11 +55,11 @@ bool GameDatabaseSchema::GameEntry::findPatch(const std::string crc, Patch& patc
 	}
 	else if (patches.count("default") == 1)
 	{
-		Console.WriteLn("[GameDB] Found and falling back to default patch");
+		Log::Console.info("[GameDB] Found and falling back to default patch\n");
 		patch = patches.at("default");
 		return true;
 	}
-	Console.WriteLn("[GameDB] No CRC-specific patch or default patch found");
+	Log::Console.info("[GameDB] No CRC-specific patch or default patch found\n");
 	return false;
 }
 

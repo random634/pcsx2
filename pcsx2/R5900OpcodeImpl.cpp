@@ -210,7 +210,7 @@ static int __Deci2Call(int call, u32 *addr)
 				d2ptr[3], d2ptr[2], d2ptr[1], d2ptr[0]);
 
 //			cpuRegs.pc = deci2handler;
-//			Console.WriteLn("deci2msg: %s",  (char*)PSM(d2ptr[4]+0xc));
+//			Log::Console.WriteLn("deci2msg: {}\n",  (char*)PSM(d2ptr[4]+0xc));
 
 			if (d2ptr[1]>0xc){
 				// this looks horribly wrong, justification please?
@@ -266,12 +266,12 @@ void COP2()
 }
 
 void Unknown() {
-	CPU_LOG("%8.8lx: Unknown opcode called", cpuRegs.pc);
+	Log::EE::R5900.debug("{:08x}: Unknown opcode called\n", cpuRegs.pc);
 }
 
-void MMI_Unknown() { Console.Warning("Unknown MMI opcode called"); }
-void COP0_Unknown() { Console.Warning("Unknown COP0 opcode called"); }
-void COP1_Unknown() { Console.Warning("Unknown FPU/COP1 opcode called"); }
+void MMI_Unknown() { Log::EE::R5900.warning("Unknown MMI opcode called\n"); }
+void COP0_Unknown() { Log::EE::R5900.warning("Unknown COP0 opcode called\n"); }
+void COP1_Unknown() { Log::EE::R5900.warning("Unknown FPU/COP1 opcode called\n"); }
 
 
 
@@ -980,7 +980,7 @@ void SYSCALL()
 			}
 			break;
 		case Syscall::SetVTLBRefillHandler:
-			DevCon.Warning("A tlb refill handler is set. New handler %x", (u32*)PSM(cpuRegs.GPR.n.a1.UL[0]));
+			Log::Dev.warning("A tlb refill handler is set. New handler {:x}\n", (void*)PSM(cpuRegs.GPR.n.a1.UL[0]));
 			break;
 		case Syscall::StartThread:
 		case Syscall::ChangeThreadPriority:
@@ -1004,7 +1004,7 @@ void SYSCALL()
 						// We (well, I) know that the thread address is always 0x8001 + the immediate of the 6th instruction from here
 						const u32 op = memRead32(0x80000000 + offset + (sizeof(u32) * 6));
 						CurrentBiosInformation.threadListAddr = 0x80010000 + static_cast<u16>(op) - 8; // Subtract 8 because the address here is offset by 8.
-						DevCon.WriteLn("BIOS: Successfully found the instruction pattern. Assuming the thread list is here: %0x", CurrentBiosInformation.threadListAddr);
+						Log::Dev.info("BIOS: Successfully found the instruction pattern. Assuming the thread list is here: {:x}\n", CurrentBiosInformation.threadListAddr);
 						break;
 					}
 					offset += 4;
@@ -1014,7 +1014,7 @@ void SYSCALL()
 					// We couldn't find the address
 					CurrentBiosInformation.threadListAddr = -1;
 					// If you're here because a user has reported this message, this means that the instruction pattern is not present on their bios, or it is aligned weirdly.
-					Console.Warning("BIOS Warning: Unable to get a thread list offset. The debugger thread and stack frame views will not be functional.");
+					Log::Console.warning("BIOS Warning: Unable to get a thread list offset. The debugger thread and stack frame views will not be functional.\n");
 				}
 			}
 		}
@@ -1037,7 +1037,7 @@ void SYSCALL()
 					addr = cpuRegs.GPR.n.a0.UL[0] + n_transfer * sizeof(t_sif_dma_transfer);
 					dmat = (t_sif_dma_transfer*)PSM(addr);
 
-					BIOS_LOG("bios_%s: n_transfer=%d, size=%x, attr=%x, dest=%x, src=%x",
+					Log::EE::Bios.debug("bios_{}: n_transfer={}, size={:x}, attr={:x}, dest={:x}, src={:x}\n",
 							R5900::bios[cpuRegs.GPR.n.v1.UC[0]], n_transfer,
 							dmat->size, dmat->attr,
 							dmat->dest, dmat->src);
@@ -1049,7 +1049,7 @@ void SYSCALL()
 		{
 			if (cpuRegs.GPR.n.a0.UL[0] == 0x10)
 			{
-				eeConLog(ShiftJIS_ConvertString((char*)PSM(memRead32(cpuRegs.GPR.n.a1.UL[0]))));
+				Log::SysCon::EE.info(ShiftJIS_ConvertString((char*)PSM(memRead32(cpuRegs.GPR.n.a1.UL[0]))).utf8_string());
 			}
 			else
 				__Deci2Call(cpuRegs.GPR.n.a0.UL[0], (u32*)PSM(cpuRegs.GPR.n.a1.UL[0]));
@@ -1095,15 +1095,9 @@ void SYSCALL()
 					}
 				}
 
-				sysConLog(fmt,
-					regs[0],
-					regs[1],
-					regs[2],
-					regs[3],
-					regs[4],
-					regs[5],
-					regs[6]
-				);
+				char buffer[1024];
+				int len = snprintf(buffer, sizeof(buffer), fmt, regs[0], regs[1], regs[2], regs[3], regs[4], regs[5], regs[6]);
+				Log::SysCon::SysOut.info(std::string_view(buffer, len));
 			}
 			break;
 		}

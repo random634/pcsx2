@@ -813,7 +813,7 @@ namespace usb_msd
 					case USB_MSDM_CBW:
 						if (p->iov.size != 31)
 						{
-							Console.Warning("usb-msd: Bad CBW size\n");
+							Log::Console.warning("usb-msd: Bad CBW size\n");
 							goto fail;
 						}
 						usb_packet_copy(p, &cbw, 31);
@@ -1001,7 +1001,7 @@ namespace usb_msd
 
 		if (!LoadSetting(TypeName(), port, api, N_CONFIG_PATH, var))
 		{
-			Console.Warning("usb-msd: Could not load settings\n");
+			Log::Console.warning("usb-msd: Could not load settings\n");
 			delete s;
 			return NULL;
 		}
@@ -1009,7 +1009,7 @@ namespace usb_msd
 		s->file = wfopen(var.c_str(), TEXT("r+b"));
 		if (!s->file)
 		{
-			Console.WriteLn("usb-msd: Could not open image file '%s'\n", var.c_str());
+			Log::Console.info("usb-msd: Could not open image file '{}'\n", var);
 			goto fail;
 		}
 

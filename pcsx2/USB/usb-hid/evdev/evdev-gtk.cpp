@@ -47,7 +47,7 @@ namespace usb_hid
 			DIR* dirp = opendir(EVDEV_DIR);
 			if (dirp == NULL)
 			{
-				Console.Warning("Error opening " EVDEV_DIR ": %s\n", strerror(errno));
+				Log::Console.warning("Error opening \n" EVDEV_DIR ": %s\n", strerror(errno));
 				return;
 			}
 

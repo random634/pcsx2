@@ -140,7 +140,7 @@ void vSyncDebugStuff( uint frame )
 		if( --g_nLeftGSFrames <= 0 ) {
 			safe_delete( g_fGSSave );
 			g_SaveGSStream = 0;
-			Console.WriteLn("Done saving GS stream");
+			Log::Console.info("Done saving GS stream\n");
 		}
 	}
 #endif

@@ -656,7 +656,7 @@ void processPgpuDma()
 	}
 	if (dmaRegs.chcr.bits.TSM == 3)
 	{
-		Console.Warning("SyncMode 3! Assuming SyncMode 1");
+		Log::Console.warning("SyncMode 3! Assuming SyncMode 1\n");
 		dmaRegs.chcr.bits.TSM = 1;
 	}
 	PGPU_DMA_LOG("Starting GPU DMA! CHCR %08X  BCR %08X  MADR %08X ", dmaRegs.chcr.get(), dmaRegs.bcr.get(), dmaRegs.madr.address);

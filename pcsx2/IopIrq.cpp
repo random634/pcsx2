@@ -50,7 +50,7 @@ void fwIrq()
 void spu2Irq()
 {
 	#ifdef SPU2IRQTEST
-		Console.Warning("spu2Irq");
+		Log::Console.warning("spu2Irq\n");
 	#endif
 	iopIntcIrq(9);
 }

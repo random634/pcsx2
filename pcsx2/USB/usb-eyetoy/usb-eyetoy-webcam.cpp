@@ -342,29 +342,29 @@ namespace usb_eyetoy
 					case OV519_RA0_FORMAT:
 						if (data[0] == OV519_RA0_FORMAT_MPEG)
 						{
-							Console.WriteLn("EyeToy : configured for MPEG format");
+							Log::Console.info("EyeToy : configured for MPEG format\n");
 						}
 						else if (data[0] == OV519_RA0_FORMAT_JPEG)
 						{
-							Console.WriteLn("EyeToy : configured for JPEG format");
+							Log::Console.info("EyeToy : configured for JPEG format\n");
 						}
 						else
 						{
-							Console.WriteLn("EyeToy : configured for unknown format");
+							Log::Console.info("EyeToy : configured for unknown format\n");
 						}
 
 						if (s->hw_camera_running && s->regs[OV519_RA0_FORMAT] != data[0])
 						{
-							Console.WriteLn("EyeToy : reinitialize the camera");
+							Log::Console.info("EyeToy : reinitialize the camera\n");
 							s->dev.klass.close(dev);
 							s->dev.klass.open(dev);
 						}
 						break;
 					case OV519_R10_H_SIZE:
-						Console.WriteLn("EyeToy : Image width : %d", data[0] << 4);
+						Log::Console.info("EyeToy : Image width : {}\n", data[0] << 4);
 						break;
 					case OV519_R11_V_SIZE:
-						Console.WriteLn("EyeToy : Image height : %d", data[0] << 3);
+						Log::Console.info("EyeToy : Image height : {}\n", data[0] << 3);
 						break;
 					case OV519_GPIO_DATA_OUT0:
 						{
@@ -372,7 +372,7 @@ namespace usb_eyetoy
 							if (led_state != data[0])
 							{
 								led_state = data[0];
-								Console.WriteLn("EyeToy : LED : %d", !!led_state);
+								Log::Console.info("EyeToy : LED : {}\n", !!led_state);
 							}
 						}
 						break;
@@ -395,7 +395,7 @@ namespace usb_eyetoy
 							{
 								const bool mirroring_enabled = val & OV7610_REG_COM_A_MASK_MIRROR;
 								s->videodev->SetMirroring(mirroring_enabled);
-								Console.WriteLn("EyeToy : mirroring %s", mirroring_enabled ? "ON" : "OFF");
+								Log::Console.info("EyeToy : mirroring {}\n", mirroring_enabled ? "ON" : "OFF");
 							}
 						}
 						else if (s->regs[R518_I2C_CTL] == 0x03 && data[0] == 0x05)
@@ -434,7 +434,7 @@ namespace usb_eyetoy
 
 		if (!s->hw_camera_running)
 		{
-			Console.WriteLn("EyeToy : initialization done; start the camera");
+			Log::Console.info("EyeToy : initialization done; start the camera\n");
 			s->hw_camera_running = 1;
 			s->dev.klass.open(dev);
 		}
@@ -526,7 +526,7 @@ namespace usb_eyetoy
 	void eyetoy_close(USBDevice* dev)
 	{
 		EYETOYState* s = (EYETOYState*)dev;
-		Console.Error("EyeToy : eyetoy_close(); hw=%d", s->hw_camera_running);
+		Log::Console.error("EyeToy : eyetoy_close(); hw={}\n", s->hw_camera_running);
 		if (s->hw_camera_running)
 		{
 			s->hw_camera_running = 0;

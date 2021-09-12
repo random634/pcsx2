@@ -42,7 +42,7 @@ static void intEventTest();
 static void debugI()
 {
 	if( !IsDevBuild ) return;
-	if( cpuRegs.GPR.n.r0.UD[0] || cpuRegs.GPR.n.r0.UD[1] ) Console.Error("R0 is not zero!!!!");
+	if( cpuRegs.GPR.n.r0.UD[0] || cpuRegs.GPR.n.r0.UD[1] ) Log::Console.error("R0 is not zero!!!!\n");
 }
 
 
@@ -162,7 +162,7 @@ static void execI()
 	runs++;
 	if (runs > 1599999999){ //leave some time to startup the testgame
 		if (opcode.Name[0] == 'L') { //find all opcodes beginning with "L"
-			Console.WriteLn ("Load %s", opcode.Name);
+			Log::Console.info("Load {}\n", opcode.Name);
 		}
 	}
 #endif
@@ -214,7 +214,7 @@ static void __fastcall doBranch( u32 target )
 
 void __fastcall intDoBranch(u32 target)
 {
-	//Console.WriteLn("Interpreter Branch ");
+	//Log::Console.info("Interpreter Branch \n");
 	_doBranch_shared( target );
 
 	if( Cpu == &intCpu )
@@ -547,7 +547,7 @@ static void intExecute()
 							else if (typeAexecjump >> 26 == 3) // JAL to 0x82170
 								g_eeloadExec = EELOAD_START + 0x170;
 							else
-								Console.WriteLn("intExecute: Could not enable launch arguments for fast boot mode; unidentified BIOS version! Please report this to the PCSX2 developers.");
+								Log::Console.info("intExecute: Could not enable launch arguments for fast boot mode; unidentified BIOS version! Please report this to the PCSX2 developers.\n");
 						}
 					}
 					else if (cpuRegs.pc == g_eeloadExec)

@@ -285,7 +285,7 @@ void Panels::SpeedHacksPanel::EnableStuff( AppConfig* configToUse )
 
 void Panels::SpeedHacksPanel::AppStatusEvent_OnSettingsApplied()
 {
-	//Console.WriteLn("SpeedHacksPanel::AppStatusEvent_OnSettingsApplied()");
+	//Log::Console.info("SpeedHacksPanel::AppStatusEvent_OnSettingsApplied()\n");
 	ApplyConfigToGui( *g_Conf );
 }
 

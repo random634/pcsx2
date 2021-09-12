@@ -196,7 +196,7 @@ void mfifoVIF1transfer()
 
 		if (dmacRegs.ctrl.STD == STD_VIF1 && (ptag->ID == TAG_REFS))
 		{
-			Console.WriteLn("VIF MFIFO DMA Stall not implemented - Report which game to PCSX2 Team");
+			Log::Console.info("VIF MFIFO DMA Stall not implemented - Report which game to PCSX2 Team\n");
 		}
 
 		if (vif1ch.chcr.TTE)

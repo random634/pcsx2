@@ -50,7 +50,7 @@ void SPU2configure()
 	{
 		try
 		{
-			Console.Warning("SPU2: Sound output module reset");
+			Log::Console.warning("SPU2: Sound output module reset\n");
 			SndBuffer::Init();
 		}
 		catch (std::exception& ex)

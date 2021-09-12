@@ -269,7 +269,7 @@ void emac3_write(u32 addr)
 			//DevCon.WriteLn("DEV9: SMAP_R_EMAC3_TxMODE1_L 32bit write %x", value);
 			if (value == 0x380f0000)
 			{
-				Console.WriteLn("DEV9: Adapter Detection Hack - Resetting RX/TX");
+				Log::Console.info("DEV9: Adapter Detection Hack - Resetting RX/TX\n");
 				_DEV9irq(SMAP_INTR_RXEND | SMAP_INTR_TXEND | SMAP_INTR_TXDNV, 5);
 			}
 			break;

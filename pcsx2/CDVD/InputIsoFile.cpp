@@ -274,8 +274,8 @@ bool InputIsoFile::Open(const wxString& srcfile, bool testOnly)
 
 	ConsoleIndentScope indent;
 
-	Console.WriteLn("Image type  = %s", nameFromType(m_type));
-	//Console.WriteLn("Fileparts   = %u", m_numparts); // Pointless print, it's 1 unless it says otherwise above
+	Log::Console.info("Image type  = {}\n", nameFromType(m_type));
+	//Log::Console.info("Fileparts   = {}\n", m_numparts); // Pointless print, it's 1 unless it says otherwise above
 	DevCon.WriteLn("blocks      = %u", m_blocks);
 	DevCon.WriteLn("offset      = %d", m_offset);
 	DevCon.WriteLn("blocksize   = %u", m_blocksize);

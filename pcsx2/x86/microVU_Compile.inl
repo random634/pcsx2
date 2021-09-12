@@ -897,7 +897,7 @@ void* mVUcompile(microVU& mVU, u32 startPC, uptr pState)
 	}
 	if ((x == endCount) && (x != 1))
 	{
-		Console.Error("microVU%d: Possible infinite compiling loop!", mVU.index);
+		Log::Console.error("microVU{}: Possible infinite compiling loop!\n", mVU.index);
 	}
 
 	// E-bit End

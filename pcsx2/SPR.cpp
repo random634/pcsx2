@@ -121,7 +121,7 @@ int  _SPR0chain()
 			partialqwc = std::min(spr0ch.qwc, 0x400 - ((spr0ch.sadr & 0x3fff) >> 4));
 
 			if ((spr0ch.madr & ~dmacRegs.rbsr.RMSK) != dmacRegs.rbor.ADDR)
-				Console.WriteLn("SPR MFIFO Write outside MFIFO area");
+				Log::Console.info("SPR MFIFO Write outside MFIFO area\n");
 			else
 				mfifotransferred += partialqwc;
 
@@ -178,7 +178,7 @@ void _SPR0interleave()
 	tDMA_TAG *pMem;
 
 	if (tqwc == 0) tqwc = qwc;
-	//Console.WriteLn("dmaSPR0 interleave");
+	//Log::Console.info("dmaSPR0 interleave\n");
 	SPR_LOG("SPR0 interleave size=%d, tqwc=%d, sqwc=%d, addr=%lx sadr=%lx",
 	        spr0ch.qwc, tqwc, sqwc, spr0ch.madr, spr0ch.sadr);
 
@@ -279,7 +279,7 @@ static __fi void _dmaSPR0()
 
 			if (spr0ch.chcr.TIE && ptag->IRQ) // Check TIE bit of CHCR and IRQ bit of tag
 			{
-				//Console.WriteLn("SPR0 TIE");
+				//Log::Console.info("SPR0 TIE\n");
 				done = true;
 			}
 
@@ -314,7 +314,7 @@ void SPRFROMinterrupt()
 				case MFD_VIF1: // Most common case.
 				case MFD_GIF:
 				{
-					if ((spr0ch.madr & ~dmacRegs.rbsr.RMSK) != dmacRegs.rbor.ADDR) Console.WriteLn("GIF MFIFO Write outside MFIFO area");
+					if ((spr0ch.madr & ~dmacRegs.rbsr.RMSK) != dmacRegs.rbor.ADDR) Log::Console.info("GIF MFIFO Write outside MFIFO area\n");
 					spr0ch.madr = dmacRegs.rbor.ADDR + (spr0ch.madr & dmacRegs.rbsr.RMSK);
 					//Console.WriteLn("mfifoGIFtransfer %x madr %x, tadr %x", gif->chcr._u32, gif->madr, gif->tadr);
 					hwMFIFOResume(mfifotransferred);
@@ -478,7 +478,7 @@ void _dmaSPR1()   // toSPR work function
 			{
 				SPR_LOG("dmaIrq Set");
 
-				//Console.WriteLn("SPR1 TIE");
+				//Log::Console.info("SPR1 TIE\n");
 				done = true;
 			}
 

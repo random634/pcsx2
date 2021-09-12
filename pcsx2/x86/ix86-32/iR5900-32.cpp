@@ -284,7 +284,7 @@ u32* recGetImm64(u32 hi, u32 lo)
 
 	if (recConstBufPtr >= recConstBuf + RECCONSTBUF_SIZE)
 	{
-		Console.WriteLn("EErec const buffer filled; Resetting...");
+		Log::Console.info("EErec const buffer filled; Resetting...\n");
 		throw Exception::ExitCpuExecute();
 
 		/*for (u32 *p = recConstBuf; p < recConstBuf + RECCONSTBUF_SIZE; p += 2)
@@ -626,7 +626,7 @@ static void recResetRaw()
 		return;
 	eeRecNeedsReset = false;
 
-	Console.WriteLn(Color_StrongBlack, "EE/iR5900-32 Recompiler Reset");
+	Log::Console.info("EE/iR5900-32 Recompiler Reset\n");
 
 	recMem->Reset();
 	ClearRecLUT((BASEBLOCK*)recLutReserve_RAM, recLutSize);
@@ -873,7 +873,7 @@ void recClear(u32 addr, u32 size)
 		 || pexblock->startpc < addr && blockend > addr)
 		{
 			if (!IsDevBuild)
-				Console.Error("[EE] Impossible block clearing failure");
+				Log::Console.error("[EE] Impossible block clearing failure\n");
 			else
 				pxFailDev("[EE] Impossible block clearing failure");
 		}
@@ -1776,7 +1776,7 @@ bool skipMPEG_By_Pattern(u32 sPC)
 		iBranchTest();
 		g_branch = 1;
 		pc = s_nEndBlock;
-		Console.WriteLn(Color_StrongGreen, "sceMpegIsEnd pattern found! Recompiling skip video fix...");
+		Log::Console.logStyle(LogLevel::Info, LogStyle::Special, "sceMpegIsEnd pattern found! Recompiling skip video fix...\n");
 		return 1;
 	}
 	return 0;
@@ -1811,7 +1811,7 @@ static void __fastcall recRecompile(const u32 startpc)
 	}
 	else if ((recConstBufPtr - recConstBuf) >= RECCONSTBUF_SIZE - 64)
 	{
-		Console.WriteLn("EE recompiler stack reset");
+		Log::Console.info("EE recompiler stack reset\n");
 		eeRecNeedsReset = true;
 	}
 
@@ -1822,7 +1822,7 @@ static void __fastcall recRecompile(const u32 startpc)
 	recPtr = xGetAlignedCallTarget();
 
 	if (0x8000d618 == startpc)
-		DbgCon.WriteLn("Compiling block @ 0x%08x", startpc);
+		Log::Console.debug("Compiling block @ 0x{:08x}\n", startpc);
 
 	s_pCurBlock = PC_GETBLOCK(startpc);
 
@@ -1860,7 +1860,7 @@ static void __fastcall recRecompile(const u32 startpc)
 			else if (typeAexecjump >> 26 == 3) // JAL to 0x82170
 				g_eeloadExec = EELOAD_START + 0x170;
 			else // There might be other types of EELOAD, because these models' BIOSs have not been examined: 18000, 3500x, 3700x, 5500x, and 7900x. However, all BIOS versions have been examined except for v1.01 and v1.10.
-				Console.WriteLn("recRecompile: Could not enable launch arguments for fast boot mode; unidentified BIOS version! Please report this to the PCSX2 developers.");
+				Log::Console.info("recRecompile: Could not enable launch arguments for fast boot mode; unidentified BIOS version! Please report this to the PCSX2 developers.\n");
 		}
 
 		// On fast/full boot this will have a crc of 0x0. But when the game/elf itself is
@@ -1878,7 +1878,7 @@ static void __fastcall recRecompile(const u32 startpc)
 	// this is the only way patches get applied, doesn't depend on a hack
 	if (g_GameLoading && HWADDR(startpc) == ElfEntry)
 	{
-		Console.WriteLn(L"Elf entry point @ 0x%08x about to get recompiled. Load patches first.", startpc);
+		Log::Console.info("Elf entry point @ 0x{:08x} about to get recompiled. Load patches first.\n", startpc);
 		xFastCall((void*)eeGameStarting);
 
 		// Apply patch as soon as possible. Normally it is done in
@@ -1955,7 +1955,7 @@ static void __fastcall recRecompile(const u32 startpc)
 				willbranch3 = 1;
 				s_nEndBlock = i;
 
-				eeRecPerfLog.Write("Pagesplit @ %08X : size=%d insts", startpc, (i - startpc) / 4);
+				Log::EERecPerf.debug("Pagesplit @ {:08X} : size={} insts\n", startpc, (i - startpc) / 4);
 				break;
 			}
 

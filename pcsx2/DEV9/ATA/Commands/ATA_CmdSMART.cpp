@@ -87,7 +87,7 @@ void ATA::SMART_SetAutoSaveAttribute()
 			smartAutosave = true;
 			break;
 		default:
-			Console.Error("DEV9: ATA: Unknown SMART_ATTR_AUTOSAVE command %s", regSector);
+			Log::Console.error("DEV9: ATA: Unknown SMART_ATTR_AUTOSAVE command {}\n", regSector);
 			CmdNoDataAbort();
 			return;
 	}

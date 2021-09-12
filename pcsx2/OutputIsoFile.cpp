@@ -67,7 +67,7 @@ void OutputIsoFile::Create(const wxString& filename, int flags)
 	m_outstream = new wxFileOutputStream( m_filename );
 	pxStream_OpenCheck( *m_outstream, m_filename, L"writing" );
 
-	Console.WriteLn("isoFile create ok: %s ", m_filename.c_str());
+	Log::Console.info("isoFile create ok: {}\n", m_filename);
 }
 
 // Generates format header information for blockdumps.
@@ -77,9 +77,9 @@ void OutputIsoFile::WriteFormat(int _blockofs, uint _blocksize, uint _blocks)
 	m_blocks	= _blocks;
 	m_blockofs	= _blockofs;
 
-	Console.WriteLn("blockoffset = %d", m_blockofs);
-	Console.WriteLn("blocksize   = %u", m_blocksize);
-	Console.WriteLn("blocks	     = %u", m_blocks);
+	Log::Console.info("blockoffset = {}\n", m_blockofs);
+	Log::Console.info("blocksize   = {}\n", m_blocksize);
+	Log::Console.info("blocks      = {}\n", m_blocks);
 
 	if (m_flags & ISOFLAGS_BLOCKDUMP_V2)
 	{

@@ -46,7 +46,7 @@ namespace usb_hid
 			DIR* dirp = opendir("/dev/input/");
 			if (dirp == NULL)
 			{
-				Console.Warning("Error opening /dev/input/");
+				Log::Console.warning("Error opening /dev/input/\n");
 				return false;
 			}
 
@@ -71,7 +71,7 @@ namespace usb_hid
 
 					/*			res = ioctl(fd, HIDIOCGRAWPHYS(256), buf);
 			if (res < 0)
-				Console.Warning("HIDIOCGRAWPHYS");
+				Log::Console.warning("HIDIOCGRAWPHYS\n");
 			else
 			*/
 					close(fd);

@@ -436,8 +436,7 @@ namespace usb_mic
 		//cs 1 cn 0xFF, ep 0x81 attrib 1
 		Console.Warning("singstar: ep control cs %x, cn %X, %X %X data:", cs, cn, attrib, ep);
 		/*for(int i=0; i<length; i++)
-		Console.Warning("%02X ", data[i]);
-	Console.Warning("\n");*/
+		Log::Console.warning("{:02X}\n", data[i]);*/
 
 		switch (aid)
 		{
@@ -516,7 +515,7 @@ namespace usb_mic
 				if (ret < 0)
 				{
 					//if (s->debug) {
-					Console.Warning("singstar: fail: get control\n");
+					Log::Console.warning("singstar: fail: get control\n");
 					//}
 					goto fail;
 				}
@@ -532,7 +531,7 @@ namespace usb_mic
 				if (ret < 0)
 				{
 					//if (s->debug) {
-					Console.Warning("singstar: fail: set control\n data:");
+					Log::Console.warning("singstar: fail: set control\n data:\n");
 					//}
 					goto fail;
 				}
@@ -788,7 +787,7 @@ namespace usb_mic
 		s->audsrcproxy = RegisterAudioDevice::instance().Proxy(api);
 		if (!s->audsrcproxy)
 		{
-			Console.WriteLn("singstar: Invalid audio API: '%s'\n", api.c_str());
+			Log::Console.info("singstar: Invalid audio API: '{}'\n", api);
 			delete s;
 			return NULL;
 		}

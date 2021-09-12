@@ -287,7 +287,7 @@ void GzippedFileReader::AsyncPrefetchCancel()
 
 	if (!CancelIo(hOverlappedFile))
 	{
-		Console.Warning("canceling gz prefetch failed. following prefetching will not work.");
+		Log::Console.warning("canceling gz prefetch failed. following prefetching will not work.\n");
 		return;
 	}
 

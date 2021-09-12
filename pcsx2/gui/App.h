@@ -680,7 +680,7 @@ wxDECLARE_APP(Pcsx2App);
 //
 // Usage Examples:
 //   sMainFrame.ApplySettings();
-//   sMainFrame.ApplySettings(); else Console.WriteLn( "Judge Wapner" );	// 'else' clause for handling NULL scenarios.
+//   sMainFrame.ApplySettings(); else Log::Console.info("Judge Wapner\n");	// 'else' clause for handling NULL scenarios.
 //
 // Note!  These macros are not "syntax complete", which means they could generate unexpected
 // syntax errors in some situations, and more importantly, they cannot be used for invoking

@@ -575,7 +575,7 @@ namespace usb_pad
 		PadProxyBase* proxy = RegisterPad::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("USB: PAD: Invalid input API.\n");
+			Log::Console.info("USB: PAD: Invalid input API.\n");
 			return nullptr;
 		}
 
@@ -687,7 +687,7 @@ namespace usb_pad
 		PadProxyBase* proxy = RegisterPad::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("RBDK: Invalid input API.\n");
+			Log::Console.info("RBDK: Invalid input API.\n");
 			return nullptr;
 		}
 
@@ -744,7 +744,7 @@ namespace usb_pad
 		PadProxyBase* proxy = RegisterPad::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("Buzz: Invalid input API.\n");
+			Log::Console.info("Buzz: Invalid input API.\n");
 			return NULL;
 		}
 
@@ -801,7 +801,7 @@ namespace usb_pad
 		PadProxyBase* proxy = RegisterPad::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("usb-pad: %s: Invalid input API.", TypeName());
+			Log::Console.info("usb-pad: {}: Invalid input API.\n", TypeName());
 			return nullptr;
 		}
 

@@ -105,7 +105,7 @@ static void cdvdGetMechaVer(u8* ver)
 
 	if (Path::GetFileSize(fname) < 4)
 	{
-		Console.Warning("MEC File Not Found, creating substitute...");
+		Log::Console.warning("MEC File Not Found, creating substitute...\n");
 
 		wxFFile fp(fname, L"wb");
 		if (!fp.IsOpened())
@@ -178,7 +178,7 @@ static void cdvdNVM(u8* buffer, int offset, size_t bytes, bool read)
 
 	if (Path::GetFileSize(fname) < 1024)
 	{
-		Console.Warning("NVM File Not Found, creating substitute...");
+		Log::Console.warning("NVM File Not Found, creating substitute...\n");
 
 		cdvdCreateNewNVM(fname);
 	}
@@ -199,7 +199,7 @@ static void cdvdNVM(u8* buffer, int offset, size_t bytes, bool read)
 
 		if (memcmp(LanguageParams, zero, sizeof(LanguageParams)) == 0)
 		{
-			Console.Warning("Language Parameters missing, filling in defaults");
+			Log::Console.warning("Language Parameters missing, filling in defaults\n");
 
 			cdvdCreateNewNVM(fname);
 		}
@@ -1408,12 +1408,12 @@ static void cdvdWrite04(u8 rt)
 		break;
 
 		case N_CD_CHG_SPDL_CTRL: // CdChgSpdlCtrl
-			Console.WriteLn("sceCdChgSpdlCtrl(%d)", cdvd.Param[0]);
+			Log::Console.info("sceCdChgSpdlCtrl({})\n", cdvd.Param[0]);
 			cdvdSetIrq();
 			break;
 
 		default:
-			Console.Warning("NCMD Unknown %x", rt);
+			Log::Console.warning("NCMD Unknown {:x}\n", rt);
 			cdvdSetIrq();
 			break;
 	}
@@ -1485,9 +1485,9 @@ static __fi void cdvdWrite14(u8 rt)
 	// Rama Or WISI guessed that "2" literally meant 2x but we can get 0x02 or 0xfe for "Standard" or "Fast" it appears. It is unsure what those values are meant to be
 	// Tests with ref suggest this register is write only? - Weirdbeard
 	if (rt == 0xFE)
-		Console.Warning("*PCSX2*: Unimplemented PS1 mode DISC SPEED = FAST");
+		Log::Console.warning("*PCSX2*: Unimplemented PS1 mode DISC SPEED = FAST\n");
 	else
-		Console.Warning("*PCSX2*: Unimplemented PS1 mode DISC SPEED = STANDARD");
+		Log::Console.warning("*PCSX2*: Unimplemented PS1 mode DISC SPEED = STANDARD\n");
 }
 
 static __fi void fail_pol_cal()
@@ -1708,7 +1708,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				break;
 
 			case 0x15: // sceCdForbidDVDP (0:1)
-				//Console.WriteLn("sceCdForbidDVDP");
+				//Log::Console.info("sceCdForbidDVDP\n");
 				SetResultSize(1);
 				cdvd.Result[0] = 5;
 				break;
@@ -2079,7 +2079,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 
 				cdvd.mg_maxsize = 0;                       // don't allow any write
 				cdvd.mg_size = 8 + 16 * cdvd.mg_buffer[4]; //new offset, i just moved the data
-				Console.WriteLn("[MG] BIT count=%d", cdvd.mg_buffer[4]);
+				Log::Console.info("[MG] BIT count={}\n", cdvd.mg_buffer[4]);
 
 				cdvd.Result[0] = (cdvd.mg_datatype == 1) ? 0 : 0x80; // 0 complete ; 1 busy ; 0x80 error
 				cdvd.Result[1] = (cdvd.mg_size >> 0) & 0xFF;
@@ -2144,11 +2144,11 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				// fake a 'correct' command
 				SetResultSize(1);   //in:0
 				cdvd.Result[0] = 0; // 0 complete ; 1 busy ; 0x80 error
-				Console.WriteLn("SCMD Unknown %x", rt);
+				Log::Console.info("SCMD Unknown {:x}\n", rt);
 				break;
 		} // end switch
 
-		//Console.WriteLn("SCMD - 0x%x\n", rt);
+		//Log::Console.info("SCMD - 0x{:x}\n", rt);
 		cdvd.ParamP = 0;
 		cdvd.ParamC = 0;
 	}
@@ -2174,7 +2174,7 @@ static __fi void cdvdWrite17(u8 rt)
 static __fi void cdvdWrite18(u8 rt)
 { // SDATAOUT
 	CDVD_LOG("cdvdWrite18(SDataOut) %x", rt);
-	Console.WriteLn("*PCSX2* SDATAOUT");
+	Log::Console.info("*PCSX2* SDATAOUT\n");
 }
 
 static __fi void cdvdWrite3A(u8 rt)

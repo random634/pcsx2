@@ -398,7 +398,7 @@ namespace usb_pad
 		PadProxyBase* proxy = RegisterPad::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("USB: PAD: Invalid input API.\n");
+			Log::Console.info("USB: PAD: Invalid input API.\n");
 			return NULL;
 		}
 

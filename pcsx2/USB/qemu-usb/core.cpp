@@ -744,7 +744,7 @@ void usb_ep_dump(USBDevice* dev)
 	};
 	int ifnum, ep, first;
 
-	Console.Warning("Device \"%s\", config %d\n",
+	Log::Console.warning("Device \\n"%s\", config %d\n",
 			dev->product_desc, dev->configuration);
 	for (ifnum = 0; ifnum < 16; ifnum++)
 	{
@@ -779,7 +779,7 @@ void usb_ep_dump(USBDevice* dev)
 			}
 		}
 	}
-	Console.Warning("--\n");
+	Log::Console.warning("--\n");
 }
 
 struct USBEndpoint* usb_ep_get(USBDevice* dev, int pid, int ep)

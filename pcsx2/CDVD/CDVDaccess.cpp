@@ -187,11 +187,11 @@ static int FindDiskType(int mType)
 			break;
 
 		case CDVD_TYPE_DETCTDVDS:
-			Console.WriteLn(" * CDVD Disk Open: DVD, Single layer or unknown:");
+			Log::Console.info(" * CDVD Disk Open: DVD, Single layer or unknown:\n");
 			break;
 
 		case CDVD_TYPE_DETCTDVDD:
-			Console.WriteLn(" * CDVD Disk Open: DVD, Double layer:");
+			Log::Console.info(" * CDVD Disk Open: DVD, Double layer:\n");
 			break;
 	}
 

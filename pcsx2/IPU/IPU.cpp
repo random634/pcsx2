@@ -86,17 +86,16 @@ void ipuReset()
 
 void ReportIPU()
 {
-	//Console.WriteLn(g_nDMATransfer.desc());
-	Console.WriteLn(ipu_fifo.in.desc());
-	Console.WriteLn(ipu_fifo.out.desc());
-	Console.WriteLn(g_BP.desc());
-	Console.WriteLn("vqclut = 0x%x.", vqclut);
-	Console.WriteLn("s_thresh = 0x%x.", s_thresh);
-	Console.WriteLn("coded_block_pattern = 0x%x.", coded_block_pattern);
-	Console.WriteLn("g_decoder = 0x%x.", &decoder);
-	Console.WriteLn("mpeg2_scan = 0x%x.", &mpeg2_scan);
-	Console.WriteLn(ipu_cmd.desc());
-	Console.Newline();
+	//Log::Console.info(g_nDMATransfer.desc().utf8_string());
+	Log::Console.info("{}\n", ipu_fifo.in.desc());
+	Log::Console.info("{}\n", ipu_fifo.out.desc());
+	Log::Console.info("{}\n", g_BP.desc());
+	Log::Console.info("vqclut = 0x{}.\n", (void*)vqclut);
+	Log::Console.info("s_thresh = 0x{}.\n", (void*)s_thresh);
+	Log::Console.info("coded_block_pattern = 0x{:x}.\n", coded_block_pattern);
+	Log::Console.info("g_decoder = 0x{}.\n", (void*)&decoder);
+	Log::Console.info("mpeg2_scan = 0x{}.\n", (void*)&mpeg2_scan);
+	Log::Console.info("{}\n\n", ipu_cmd.desc());
 }
 
 void SaveStateBase::ipuFreeze()
@@ -323,7 +322,7 @@ __fi bool ipuWrite32(u32 mem, u32 value)
 			ipuRegs.ctrl.write(value);
 			if (ipuRegs.ctrl.IDP == 3)
 			{
-				Console.WriteLn("IPU Invalid Intra DC Precision, switching to 9 bits");
+				Log::Console.info("IPU Invalid Intra DC Precision, switching to 9 bits\n");
 				ipuRegs.ctrl.IDP = 1;
 			}
 
@@ -863,7 +862,7 @@ u8 getBits8(u8 *address, bool advance)
 __fi void IPUCMD_WRITE(u32 val)
 {
 	// don't process anything if currently busy
-	//if (ipuRegs.ctrl.BUSY) Console.WriteLn("IPU BUSY!"); // wait for thread
+	//if (ipuRegs.ctrl.BUSY) Log::Console.info("IPU BUSY!\n"); // wait for thread
 
 	ipuRegs.ctrl.ECD = 0;
 	ipuRegs.ctrl.SCD = 0;

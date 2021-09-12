@@ -78,7 +78,7 @@ bool EnumerateMemoryCard(McdSlotItem& dest, const wxFileName& filename, const wx
 
 		if (length < (1024 * 528) && length != 0x20000)
 		{
-			Console.Warning("... Memory card appears to be truncated. Ignoring.");
+			Log::Console.warning("... Memory card appears to be truncated. Ignoring.\n");
 			return false;
 		}
 
@@ -659,7 +659,7 @@ void Panels::MemoryCardListPanel_Simple::UiCreateNewCard(McdSlotItem& card)
 	// made to it will be reverted on refresh, and we'll just have a new card at the folder.
 	if (card.IsPresent)
 	{
-		Console.WriteLn("Error: Aborted: create memory card invoked, but a file is already associated.");
+		Log::Console.info("Error: Aborted: create memory card invoked, but a file is already associated.\n");
 		return;
 	}
 
@@ -693,7 +693,7 @@ void Panels::MemoryCardListPanel_Simple::UiConvertCard(McdSlotItem& card)
 {
 	if (!card.IsPresent)
 	{
-		Console.WriteLn("Error: Aborted: Convert memory card invoked, but a file is not associated.");
+		Log::Console.info("Error: Aborted: Convert memory card invoked, but a file is not associated.\n");
 		return;
 	}
 
@@ -715,7 +715,7 @@ void Panels::MemoryCardListPanel_Simple::UiDeleteCard(McdSlotItem& card)
 {
 	if (!card.IsPresent)
 	{
-		Console.WriteLn("Error: Aborted: delete memory card invoked, but a file is not associated.");
+		Log::Console.info("Error: Aborted: delete memory card invoked, but a file is not associated.\n");
 		return;
 	}
 
@@ -830,7 +830,7 @@ void Panels::MemoryCardListPanel_Simple::UiRenameCard(McdSlotItem& card)
 {
 	if (!card.IsPresent)
 	{
-		Console.WriteLn("Error: Aborted: Rename memory card invoked, but no file is associated.");
+		Log::Console.info("Error: Aborted: Rename memory card invoked, but no file is associated.\n");
 		return;
 	}
 

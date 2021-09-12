@@ -173,7 +173,7 @@ __fi void vif0Interrupt()
 
 	vif0Regs.stat.FQC = std::min(vif0ch.qwc, (u32)8);
 
-	if (!(vif0ch.chcr.STR)) Console.WriteLn("vif0 running when CHCR == %x", vif0ch.chcr._u32);
+	if (!(vif0ch.chcr.STR)) Log::Console.info("vif0 running when CHCR == {:x}\n", vif0ch.chcr._u32);
 
 	if(vif0.waitforvu)
 	{
@@ -235,7 +235,7 @@ __fi void vif0Interrupt()
 
 		if (!(dmacRegs.ctrl.DMAE) || vif0Regs.stat.VSS) //Stopped or DMA Disabled
 		{
-			//Console.WriteLn("vif0 dma masked");
+			//Log::Console.info("vif0 dma masked\n");
 			return;
 		}
 
@@ -252,8 +252,8 @@ __fi void vif0Interrupt()
 		return; //Dont want to end if vif is stalled.
 	}
 #ifdef PCSX2_DEVBUILD
-	if (vif0ch.qwc > 0) Console.WriteLn("vif0 Ending with %x QWC left", vif0ch.qwc);
-	if (vif0.cmd != 0) Console.WriteLn("vif0.cmd still set %x tag size %x", vif0.cmd, vif0.tag.size);
+	if (vif0ch.qwc > 0) Log::Console.info("vif0 Ending with {:x} QWC left\n", vif0ch.qwc);
+	if (vif0.cmd != 0) Log::Console.info("vif0.cmd still set {:x} tag size {:x}\n", vif0.cmd, vif0.tag.size);
 #endif
 
 	vif0ch.chcr.STR = false;
@@ -269,10 +269,10 @@ __fi void vif0Interrupt()
 
 void dmaVIF0()
 {
-	VIF_LOG("dmaVIF0 chcr = %lx, madr = %lx, qwc  = %lx\n"
-	        "        tadr = %lx, asr0 = %lx, asr1 = %lx",
-	        vif0ch.chcr._u32, vif0ch.madr, vif0ch.qwc,
-	        vif0ch.tadr, vif0ch.asr0, vif0ch.asr1);
+	Log::EE::VIF.debug("dmaVIF0 chcr = {:x}, madr = {:x}, qwc  = {:x}\n"
+	                   "        tadr = {:x}, asr0 = {:x}, asr1 = {:x}\n",
+	                   vif0ch.chcr._u32, vif0ch.madr, vif0ch.qwc,
+	                   vif0ch.tadr, vif0ch.asr0, vif0ch.asr1);
 
 	g_vif0Cycles = 0;
 		
@@ -295,7 +295,7 @@ void dmaVIF0()
 		{
 			vif0.dmamode = VIF_NORMAL_FROM_MEM_MODE;
 
-			if (vif0.irqoffset.enabled && !vif0.done) DevCon.Warning("Warning! VIF0 starting a Normal transfer with vif offset set (Possible force stop?)");
+			if (vif0.irqoffset.enabled && !vif0.done) Log::Dev.warning("Warning! VIF0 starting a Normal transfer with vif offset set (Possible force stop?)\n");
 			vif0.done = true;
 		}
 

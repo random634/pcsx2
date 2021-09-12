@@ -148,7 +148,7 @@ int BlockdumpFileReader::ReadSync(void* pBuffer, uint lsn, uint count)
 
 		if (!ok)
 		{
-			Console.WriteLn("Block %u not found in dump", lsn);
+			Log::Console.info("Block {} not found in dump\n", lsn);
 			return -1;
 		}
 

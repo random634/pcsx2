@@ -62,13 +62,13 @@ void States_FreezeCurrentSlot()
 	// complete thread to manage queuing savestate tasks, and zipping states to disk.  --air
 	if (!SysHasValidState())
 	{
-		Console.WriteLn("Save state: Aborting (VM is not active).");
+		Log::Console.info("Save state: Aborting (VM is not active).\n");
 		return;
 	}
 
 	if (wxGetApp().HasPendingSaves() || IsSavingOrLoading.exchange(true))
 	{
-		Console.WriteLn("Load or save action is already pending.");
+		Log::Console.info("Load or save action is already pending.\n");
 		return;
 	}
 
@@ -87,13 +87,13 @@ void _States_DefrostCurrentSlot(bool isFromBackup)
 {
 	if (!SysHasValidState())
 	{
-		Console.WriteLn("Load state: Aborting (VM is not active).");
+		Log::Console.info("Load state: Aborting (VM is not active).\n");
 		return;
 	}
 
 	if (IsSavingOrLoading.exchange(true))
 	{
-		Console.WriteLn("Load or save action is already pending.");
+		Log::Console.info("Load or save action is already pending.\n");
 		return;
 	}
 

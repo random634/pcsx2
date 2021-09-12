@@ -67,8 +67,8 @@ static void _SaveLoadStuff(bool enabled)
 		{
 			#ifdef SAVESLOT_LOGS
 			Console.WriteLn("Updating slot %i.", slot.slot_num);
-			if (slot.menu_update) Console.WriteLn("Menu update needed.");
-			if (slot.invalid_cache) Console.WriteLn("Invalid cache. (CRC different or just initialized.)");
+			if (slot.menu_update) Log::Console.info("Menu update needed.\n");
+			if (slot.invalid_cache) Log::Console.info("Invalid cache. (CRC different or just initialized.)\n");
 			#endif
 
 			if (slot.invalid_cache)
@@ -103,7 +103,7 @@ static void _SaveLoadStuff(bool enabled)
 void UI_UpdateSysControls()
 {
 	#ifdef SAVESLOT_LOGS
-	Console.WriteLn("In the routine for updating the UI.");
+	Log::Console.info("In the routine for updating the UI.\n");
 	#endif
 
 	if (wxGetApp().Rpc_TryInvokeAsync(&UI_UpdateSysControls))

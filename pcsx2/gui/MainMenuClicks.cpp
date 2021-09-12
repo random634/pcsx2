@@ -598,7 +598,7 @@ void MainEmuFrame::Menu_Debug_CreateBlockdump_Click(wxCommandEvent& event)
 {
 	g_Conf->EmuOptions.CdvdDumpBlocks = event.IsChecked();
 	if (g_Conf->EmuOptions.CdvdDumpBlocks && SysHasValidState())
-		Console.Warning("VM must be rebooted to create a useful block dump.");
+		Log::Console.warning("VM must be rebooted to create a useful block dump.\n");
 
 	AppSaveSettings();
 }

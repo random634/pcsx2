@@ -327,7 +327,7 @@ __fi void fpuFloat3(int regd) // +NaN -> +fMax, -NaN -> -fMax, +Inf -> +fMax, -I
 	}
 	else
 	{
-		Console.Error("fpuFloat2() allocation error");
+		Log::Console.error("fpuFloat2() allocation error\n");
 		t1reg = (regd == 0) ? 1 : 0; // get a temp reg thats not regd
 		xMOVAPS(ptr[&FPU_FLOAT_TEMP[0]], xRegisterSSE(t1reg)); // backup data in t1reg to a temp address
 		xMOVSS(xRegisterSSE(t1reg), xRegisterSSE(regd));
@@ -621,7 +621,7 @@ int recCommutativeOp(int info, int regd, int op)
 			}
 			break;
 		default:
-			Console.WriteLn(Color_Magenta, "FPU: recCommutativeOp case 4");
+			Log::Console.info("FPU: recCommutativeOp case 4\n");
 			xMOVSSZX(xRegisterSSE(regd), ptr[&fpuRegs.fpr[_Fs_]]);
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			if (CHECK_FPU_EXTRA_OVERFLOW || (op >= 2))
@@ -717,7 +717,7 @@ void recC_EQ_xmm(int info)
 	int tempReg;
 	int t0reg;
 
-	//Console.WriteLn("recC_EQ_xmm()");
+	//Log::Console.info("recC_EQ_xmm()\n");
 
 	switch (info & (PROCESS_EE_S | PROCESS_EE_T))
 	{
@@ -753,7 +753,7 @@ void recC_EQ_xmm(int info)
 			xUCOMI.SS(xRegisterSSE(EEREC_S), xRegisterSSE(EEREC_T));
 			break;
 		default:
-			Console.WriteLn(Color_Magenta, "recC_EQ_xmm: Default");
+			Log::Console.info("recC_EQ_xmm: Default\n");
 			tempReg = _allocX86reg(xEmptyReg, X86TYPE_TEMP, 0, 0);
 			xMOV(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Fs_]]);
 			xCMP(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Ft_]]);
@@ -794,7 +794,7 @@ void recC_LE_xmm(int info)
 	int tempReg; //tempX86reg
 	int t0reg; //tempXMMreg
 
-	//Console.WriteLn("recC_LE_xmm()");
+	//Log::Console.info("recC_LE_xmm()\n");
 
 	switch (info & (PROCESS_EE_S | PROCESS_EE_T))
 	{
@@ -840,7 +840,7 @@ void recC_LE_xmm(int info)
 			xUCOMI.SS(xRegisterSSE(EEREC_S), xRegisterSSE(EEREC_T));
 			break;
 		default: // Untested and incorrect, but this case is never reached AFAIK (cottonvibes)
-			Console.WriteLn(Color_Magenta, "recC_LE_xmm: Default");
+			Log::Console.info("recC_LE_xmm: Default\n");
 			tempReg = _allocX86reg(xEmptyReg, X86TYPE_TEMP, 0, 0);
 			xMOV(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Fs_]]);
 			xCMP(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Ft_]]);
@@ -874,7 +874,7 @@ void recC_LT_xmm(int info)
 	int tempReg;
 	int t0reg;
 
-	//Console.WriteLn("recC_LT_xmm()");
+	//Log::Console.info("recC_LT_xmm()\n");
 
 	switch (info & (PROCESS_EE_S | PROCESS_EE_T))
 	{
@@ -922,7 +922,7 @@ void recC_LT_xmm(int info)
 			xUCOMI.SS(xRegisterSSE(EEREC_S), xRegisterSSE(EEREC_T));
 			break;
 		default:
-			Console.WriteLn(Color_Magenta, "recC_LT_xmm: Default");
+			Log::Console.info("recC_LT_xmm: Default\n");
 			tempReg = _allocX86reg(xEmptyReg, X86TYPE_TEMP, 0, 0);
 			xMOV(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Fs_]]);
 			xCMP(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Ft_]]);
@@ -1077,14 +1077,14 @@ void recDIV_S_xmm(int info)
 	EE::Profiler.EmitOp(eeOpcode::DIV_F);
 	bool roundmodeFlag = false;
 	int t0reg = _allocTempXMMreg(XMMT_FPS, -1);
-	//Console.WriteLn("DIV");
+	//Log::Console.info("DIV\n");
 
 	if (CHECK_FPUNEGDIVHACK)
 	{
 		if (g_sseMXCSR.GetRoundMode() != SSEround_NegInf)
 		{
 			// Set roundmode to nearest since it isn't already
-			//Console.WriteLn("div to negative inf");
+			//Log::Console.info("div to negative inf\n");
 
 			roundmode_neg = g_sseMXCSR;
 			roundmode_neg.SetRoundMode(SSEround_NegInf);
@@ -1097,7 +1097,7 @@ void recDIV_S_xmm(int info)
 		if (g_sseMXCSR.GetRoundMode() != SSEround_Nearest)
 		{
 			// Set roundmode to nearest since it isn't already
-			//Console.WriteLn("div to nearest");
+			//Log::Console.info("div to nearest\n");
 
 			roundmode_nearest = g_sseMXCSR;
 			roundmode_nearest.SetRoundMode(SSEround_Nearest);
@@ -1109,7 +1109,7 @@ void recDIV_S_xmm(int info)
 	switch (info & (PROCESS_EE_S | PROCESS_EE_T))
 	{
 		case PROCESS_EE_S:
-			//Console.WriteLn("FPU: DIV case 1");
+			//Log::Console.info("FPU: DIV case 1\n");
 			xMOVSS(xRegisterSSE(EEREC_D), xRegisterSSE(EEREC_S));
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			if (CHECK_FPU_EXTRA_FLAGS)
@@ -1118,7 +1118,7 @@ void recDIV_S_xmm(int info)
 				recDIVhelper2(EEREC_D, t0reg);
 			break;
 		case PROCESS_EE_T:
-			//Console.WriteLn("FPU: DIV case 2");
+			//Log::Console.info("FPU: DIV case 2\n");
 			if (EEREC_D == EEREC_T)
 			{
 				xMOVSS(xRegisterSSE(t0reg), xRegisterSSE(EEREC_T));
@@ -1138,7 +1138,7 @@ void recDIV_S_xmm(int info)
 			}
 			break;
 		case (PROCESS_EE_S | PROCESS_EE_T):
-			//Console.WriteLn("FPU: DIV case 3");
+			//Log::Console.info("FPU: DIV case 3\n");
 			if (EEREC_D == EEREC_T)
 			{
 				xMOVSS(xRegisterSSE(t0reg), xRegisterSSE(EEREC_T));
@@ -1158,7 +1158,7 @@ void recDIV_S_xmm(int info)
 			}
 			break;
 		default:
-			//Console.WriteLn("FPU: DIV case 4");
+			//Log::Console.info("FPU: DIV case 4\n");
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			xMOVSSZX(xRegisterSSE(EEREC_D), ptr[&fpuRegs.fpr[_Fs_]]);
 			if (CHECK_FPU_EXTRA_FLAGS)
@@ -1673,14 +1673,14 @@ void recSUBop(int info, int regd)
 	switch (info & (PROCESS_EE_S | PROCESS_EE_T))
 	{
 		case PROCESS_EE_S:
-			//Console.WriteLn("FPU: SUB case 1");
+			//Log::Console.info("FPU: SUB case 1\n");
 			if (regd != EEREC_S)
 				xMOVSS(xRegisterSSE(regd), xRegisterSSE(EEREC_S));
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			recSUBhelper(regd, t0reg);
 			break;
 		case PROCESS_EE_T:
-			//Console.WriteLn("FPU: SUB case 2");
+			//Log::Console.info("FPU: SUB case 2\n");
 			if (regd == EEREC_T)
 			{
 				xMOVSS(xRegisterSSE(t0reg), xRegisterSSE(EEREC_T));
@@ -1694,7 +1694,7 @@ void recSUBop(int info, int regd)
 			}
 			break;
 		case (PROCESS_EE_S | PROCESS_EE_T):
-			//Console.WriteLn("FPU: SUB case 3");
+			//Log::Console.info("FPU: SUB case 3\n");
 			if (regd == EEREC_T)
 			{
 				xMOVSS(xRegisterSSE(t0reg), xRegisterSSE(EEREC_T));
@@ -1708,7 +1708,7 @@ void recSUBop(int info, int regd)
 			}
 			break;
 		default:
-			Console.Warning("FPU: SUB case 4");
+			Log::Console.warning("FPU: SUB case 4\n");
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			xMOVSSZX(xRegisterSSE(regd), ptr[&fpuRegs.fpr[_Fs_]]);
 			recSUBhelper(regd, t0reg);
@@ -1746,12 +1746,12 @@ void recSQRT_S_xmm(int info)
 	EE::Profiler.EmitOp(eeOpcode::SQRT_F);
 	u8* pjmp;
 	bool roundmodeFlag = false;
-	//Console.WriteLn("FPU: SQRT");
+	//Log::Console.info("FPU: SQRT\n");
 
 	if (g_sseMXCSR.GetRoundMode() != SSEround_Nearest)
 	{
 		// Set roundmode to nearest if it isn't already
-		//Console.WriteLn("sqrt to nearest");
+		//Log::Console.info("sqrt to nearest\n");
 		roundmode_nearest = g_sseMXCSR;
 		roundmode_nearest.SetRoundMode(SSEround_Nearest);
 		xLDMXCSR(roundmode_nearest);
@@ -1877,12 +1877,12 @@ void recRSQRT_S_xmm(int info)
 	// Should this do the same, or should Full mode leave roundmode alone? --air
 
 	int t0reg = _allocTempXMMreg(XMMT_FPS, -1);
-	//Console.WriteLn("FPU: RSQRT");
+	//Log::Console.info("FPU: RSQRT\n");
 
 	switch (info & (PROCESS_EE_S | PROCESS_EE_T))
 	{
 		case PROCESS_EE_S:
-			//Console.WriteLn("FPU: RSQRT case 1");
+			//Log::Console.info("FPU: RSQRT case 1\n");
 			xMOVSS(xRegisterSSE(EEREC_D), xRegisterSSE(EEREC_S));
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			if (CHECK_FPU_EXTRA_FLAGS)
@@ -1891,7 +1891,7 @@ void recRSQRT_S_xmm(int info)
 				recRSQRThelper2(EEREC_D, t0reg);
 			break;
 		case PROCESS_EE_T:
-			//Console.WriteLn("FPU: RSQRT case 2");
+			//Log::Console.info("FPU: RSQRT case 2\n");
 			xMOVSS(xRegisterSSE(t0reg), xRegisterSSE(EEREC_T));
 			xMOVSSZX(xRegisterSSE(EEREC_D), ptr[&fpuRegs.fpr[_Fs_]]);
 			if (CHECK_FPU_EXTRA_FLAGS)
@@ -1900,7 +1900,7 @@ void recRSQRT_S_xmm(int info)
 				recRSQRThelper2(EEREC_D, t0reg);
 			break;
 		case (PROCESS_EE_S | PROCESS_EE_T):
-			//Console.WriteLn("FPU: RSQRT case 3");
+			//Log::Console.info("FPU: RSQRT case 3\n");
 			xMOVSS(xRegisterSSE(t0reg), xRegisterSSE(EEREC_T));
 			xMOVSS(xRegisterSSE(EEREC_D), xRegisterSSE(EEREC_S));
 			if (CHECK_FPU_EXTRA_FLAGS)
@@ -1909,7 +1909,7 @@ void recRSQRT_S_xmm(int info)
 				recRSQRThelper2(EEREC_D, t0reg);
 			break;
 		default:
-			//Console.WriteLn("FPU: RSQRT case 4");
+			//Log::Console.info("FPU: RSQRT case 4\n");
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			xMOVSSZX(xRegisterSSE(EEREC_D), ptr[&fpuRegs.fpr[_Fs_]]);
 			if (CHECK_FPU_EXTRA_FLAGS)

@@ -180,7 +180,7 @@ static bool __fastcall _rcntFireInterrupt(int i, bool isOverflow)
 		ret = false;
 		if (!(psxCounters[i].mode & 0x40)) //One shot
 		{
-			Console.WriteLn("Counter %x repeat intr not set on zero ret, ignoring target", i);
+			Log::Console.info("Counter {:x} repeat intr not set on zero ret, ignoring target\n", i);
 			return ret;
 		}
 	}
@@ -759,7 +759,7 @@ __fi void psxRcntWmode32(int index, u32 value)
 		// Need to set a rate and target
 		if ((counter.mode & 0x7) == 0x7 || (counter.mode & 0x7) == 0x1)
 		{
-			Console.WriteLn("Gate set on IOP Counter %d, disabling", index);
+			Log::Console.info("Gate set on IOP Counter {}, disabling\n", index);
 			counter.mode |= IOPCNT_STOPPED;
 		}
 	}

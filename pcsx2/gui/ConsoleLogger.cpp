@@ -721,7 +721,7 @@ void ConsoleLogFrame::OnMoveAround( wxMoveEvent& evt )
 		wxRect snapzone( topright - wxSize( 8,8 ), wxSize( 16,16 ) );
 
 		m_conf.AutoDock = snapzone.Contains( GetPosition() );
-		//Console.WriteLn( "DockCheck: %d", g_Conf->ConLogBox.AutoDock );
+		//Log::Console.info("DockCheck: {}\n", g_Conf->ConLogBox.AutoDock);
 		if( m_conf.AutoDock )
 		{
 			SetPosition( topright + wxSize( 1,0 ) );

@@ -212,7 +212,7 @@ void SysLogMachineCaps()
 		);
 	}
 
-	Log::PCSX2.info("Savestate version: 0x{}\n\n", g_SaveVersion);
+	Log::PCSX2.info("Savestate version: 0x{}\n", g_SaveVersion);
 
 	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "Host Machine Init:\n");
 	Log::PCSX2.info(

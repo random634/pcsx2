@@ -153,9 +153,9 @@ void TermNet()
 	{
 		RxRunning = false;
 		nif->close();
-		Console.WriteLn("DEV9: Waiting for RX-net thread to terminate..");
+		Log::Console.info("DEV9: Waiting for RX-net thread to terminate..\n");
 		rx_thread.join();
-		Console.WriteLn("DEV9: Done");
+		Log::Console.info("DEV9: Done\n");
 
 		delete nif;
 		nif = nullptr;

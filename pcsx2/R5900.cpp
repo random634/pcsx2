@@ -154,12 +154,12 @@ __ri void cpuException(u32 code, u32 bd)
 		errLevel2 = TRUE;
 		checkStatus = (cpuRegs.CP0.n.Status.b.DEV == 0); // for perf/debug exceptions
 
-		Console.Error("*PCSX2* FIX ME: Level 2 cpuException");
+		Log::Console.error("*PCSX2* FIX ME: Level 2 cpuException\n");
 		if ((code & 0x38000) <= 0x8000 )
 		{
 			//Reset / NMI
 			cpuRegs.pc = 0xBFC00000;
-			Console.Warning("Reset request");
+			Log::Console.warning("Reset request\n");
 			cpuUpdateOperationMode();
 			return;
 		}
@@ -168,7 +168,7 @@ __ri void cpuException(u32 code, u32 bd)
 		else if((code & 0x38000) == 0x18000)
 			offset = 0x100; //Debug
 		else
-			Console.Error("Unknown Level 2 Exception!! Cause %x", code);
+			Log::Console.error("Unknown Level 2 Exception!! Cause {:x}\n", code);
 	}
 
 	if (cpuRegs.CP0.n.Status.b.EXL == 0)
@@ -176,7 +176,7 @@ __ri void cpuException(u32 code, u32 bd)
 		cpuRegs.CP0.n.Status.b.EXL = 1;
 		if (bd)
 		{
-			Console.Warning("branch delay!!");
+			Log::Console.warning("branch delay!!\n");
 			cpuRegs.CP0.n.EPC = cpuRegs.pc - 4;
 			cpuRegs.CP0.n.Cause |= 0x80000000;
 		}
@@ -189,7 +189,7 @@ __ri void cpuException(u32 code, u32 bd)
 	else
 	{
 		offset = 0x180; //Override the cause
-		if (errLevel2) Console.Warning("cpuException: Status.EXL = 1 cause %x", code);
+		if (errLevel2) Log::Console.warning("cpuException: Status.EXL = 1 cause {:x}\n", code);
 	}
 
 	if (checkStatus)
@@ -204,7 +204,7 @@ void cpuTlbMiss(u32 addr, u32 bd, u32 excode)
 {
 	// Avoid too much spamming on the interpreter
 	if (Cpu != &intCpu || IsDebugBuild) {
-		Console.Error("cpuTlbMiss pc:%x, cycl:%x, addr: %x, status=%x, code=%x",
+		Log::Console.error("cpuTlbMiss pc:{:x}, cycl:{:x}, addr: {:x}, status={:x}, code={:x}\n",
 				cpuRegs.pc, cpuRegs.cycle, addr, cpuRegs.CP0.n.Status.val, excode);
 	}
 
@@ -332,7 +332,7 @@ static __fi void _cpuTestTIMR()
 	if ( (cpuRegs.CP0.n.Status.val & 0x8000) &&
 		cpuRegs.CP0.n.Count >= cpuRegs.CP0.n.Compare && cpuRegs.CP0.n.Count < cpuRegs.CP0.n.Compare+1000 )
 	{
-		Console.WriteLn( Color_Magenta, "timr intr: %x, %x", cpuRegs.CP0.n.Count, cpuRegs.CP0.n.Compare);
+		Log::Console.info("timr intr: {:x}, {:x}\n", cpuRegs.CP0.n.Count, cpuRegs.CP0.n.Compare);
 		cpuException(0x808000, cpuRegs.branch);
 	}
 }
@@ -430,7 +430,7 @@ __fi void _cpuEventTest_Shared()
 	if( iopEventAction )
 	{
 		//if( EEsCycle < -450 )
-		//	Console.WriteLn( " IOP ahead by: %d cycles", -EEsCycle );
+		//	Log::Console.info(" IOP ahead by: {} cycles\n", -EEsCycle);
 
 		EEsCycle = psxCpu->ExecuteBlock( EEsCycle );
 
@@ -552,7 +552,7 @@ void __fastcall eeGameStarting()
 	}
 	else
 	{
-		Console.WriteLn( Color_Green, "(R5900) Re-executed ELF Entry point (ignored) [addr=0x%08X]", ElfEntry );
+		Log::Console.info("(R5900) Re-executed ELF Entry point (ignored) [addr=0x{:08X}]\n", ElfEntry);
 	}
 }
 
@@ -584,7 +584,7 @@ int ParseArgumentString(u32 arg_block)
 			}
 			else
 			{
-				Console.WriteLn("ParseArgumentString: Discarded additional arguments beyond the maximum of %d.", kMaxArgs);
+				Log::Console.info("ParseArgumentString: Discarded additional arguments beyond the maximum of {}.\n", kMaxArgs);
 				break;
 			}
 		}
@@ -592,7 +592,7 @@ int ParseArgumentString(u32 arg_block)
 	}
 #if DEBUG_LAUNCHARG
 	// Check our args block
-	Console.WriteLn("ParseArgumentString: Saving these strings:");
+	Log::Console.info("ParseArgumentString: Saving these strings:\n");
 	for (int a = 0; a < argc; a++)
 		Console.WriteLn("%p -> '%s'.", g_argPtrs[a], (char *)PSM(g_argPtrs[a]));
 #endif
@@ -617,10 +617,10 @@ void __fastcall eeloadHook()
 	if (argc) // calls to EELOAD *after* the first one during the startup process will come here
 	{
 #if DEBUG_LAUNCHARG
-		Console.WriteLn("eeloadHook: EELOAD was called with %d arguments according to $a0 and %d according to vargs block:",
+		Log::Console.info("eeloadHook: EELOAD was called with {} arguments according to $a0 and {} according to vargs block:\n",
 			argc, memRead32(cpuRegs.GPR.n.a1.UD[0] - 4));
 		for (int a = 0; a < argc; a++)
-			Console.WriteLn("argv[%d]: %p -> %p -> '%s'", a, cpuRegs.GPR.n.a1.UL[0] + (a * 4),
+			Log::Console.info("argv[{}]: {:x} -> {:x} -> '{}'\n", a, cpuRegs.GPR.n.a1.UL[0] + (a * 4),
 				memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4)), (char *)PSM(memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4))));
 #endif
 		if (argc > 1)
@@ -634,7 +634,7 @@ void __fastcall eeloadHook()
 		if (!g_Conf->CurrentGameArgs.empty() && !strcmp(elfname.c_str(), "rom0:PS2LOGO"))
 		{
 			const char *argString = g_Conf->CurrentGameArgs.c_str();
-			Console.WriteLn("eeloadHook: Supplying launch argument(s) '%s' to module '%s'...", argString, elfname.c_str());
+			Log::Console.info("eeloadHook: Supplying launch argument(s) '{}' to module '{}'...\n", argString, elfname);
 
 			// Join all arguments by space characters so they can be processed as one string by ParseArgumentString(), then add the
 			// user's launch arguments onto the end
@@ -649,7 +649,7 @@ void __fastcall eeloadHook()
 			strcpy((char *)PSM(arg_ptr + arg_len + 1), g_Conf->CurrentGameArgs.c_str());
 			u32 first_arg_ptr = memRead32(cpuRegs.GPR.n.a1.UD[0]);
 #if DEBUG_LAUNCHARG
-			Console.WriteLn("eeloadHook: arg block is '%s'.", (char *)PSM(first_arg_ptr));
+			Log::Console.info("eeloadHook: arg block is '{}'.\n", (char *)PSM(first_arg_ptr));
 #endif
 			argc = ParseArgumentString(first_arg_ptr);
 
@@ -659,9 +659,9 @@ void __fastcall eeloadHook()
 			cpuRegs.GPR.n.a0.SD[0] = argc;
 #if DEBUG_LAUNCHARG
 			// Check our work
-			Console.WriteLn("eeloadHook: New arguments are:");
+			Log::Console.info("eeloadHook: New arguments are:\n");
 			for (int a = 0; a < argc; a++)
-				Console.WriteLn("argv[%d]: %p -> '%s'", a, memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4)),
+				Log::Console.info("argv[{}]: {:x} -> '{}'\n", a, memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4)),
 				(char *)PSM(memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4))));
 #endif
 		}
@@ -673,7 +673,7 @@ void __fastcall eeloadHook()
 	// it calls rom0:OSDSYS by default, which displays the Sony Computer Entertainment screen. OSDSYS then calls "EELOAD
 	// rom0:PS2LOGO" and we end up above.
 	else
-		Console.WriteLn("eeloadHook: EELOAD was called with no arguments.");
+		Log::Console.info("eeloadHook: EELOAD was called with no arguments.\n");
 #endif
 
 	// If "fast boot" was chosen, then on EELOAD's first call we won't yet know what the game's ELF is. Find the name and write it
@@ -723,12 +723,12 @@ void __fastcall eeloadHook2()
 
 	if (!g_osdsys_str)
 	{
-		Console.WriteLn("eeloadHook2: Called before \"rom0:OSDSYS\" was found by eeloadHook()!");
+		Log::Console.info("eeloadHook2: Called before \"rom0:OSDSYS\" was found by eeloadHook()!\n");
 		return;
 	}
 
 	const char *argString = g_Conf->CurrentGameArgs.c_str();
-	Console.WriteLn("eeloadHook2: Supplying launch argument(s) '%s' to ELF '%s'.", argString, (char *)PSM(g_osdsys_str));
+	Log::Console.info("eeloadHook2: Supplying launch argument(s) '{}' to ELF '{}'.\n", argString, (char *)PSM(g_osdsys_str));
 
 	// Add args string after game's ELF name that was written over "rom0:OSDSYS" by eeloadHook(). In between the ELF name and args
 	// string we insert a space character so that ParseArgumentString() has one continuous string to process.
@@ -736,7 +736,7 @@ void __fastcall eeloadHook2()
 	memset(PSM(g_osdsys_str + game_len), 0x20, 1);
 	strcpy((char *)PSM(g_osdsys_str + game_len + 1), g_Conf->CurrentGameArgs.c_str());
 #if DEBUG_LAUNCHARG
-	Console.WriteLn("eeloadHook2: arg block is '%s'.", (char *)PSM(g_osdsys_str));
+	Log::Console.info("eeloadHook2: arg block is '{}'.\n", (char *)PSM(g_osdsys_str));
 #endif
 	int argc = ParseArgumentString(g_osdsys_str);
 	
@@ -745,14 +745,14 @@ void __fastcall eeloadHook2()
 	for (int a = 0; a < argc; a++)
 	{
 #if DEBUG_LAUNCHARG
-		Console.WriteLn("eeloadHook2: Writing address %p to location %p.", g_argPtrs[a], block_start + (a * 4));
+		Log::Console.info("eeloadHook2: Writing address {:x} to location {:x}.\n", g_argPtrs[a], block_start + (a * 4));
 #endif
 		memWrite32(block_start + (a * 4), g_argPtrs[a]);
 	}
 
 	// Save argc and argv as incoming arguments for EELOAD function which calls ExecPS2()
 #if DEBUG_LAUNCHARG
-	Console.WriteLn("eeloadHook2: Saving %d and %p in $a0 and $a1.", argc, block_start);
+	Log::Console.info("eeloadHook2: Saving {} and {:x} in $a0 and $a1.\n", argc, block_start);
 #endif
 	cpuRegs.GPR.n.a0.SD[0] = argc;
 	cpuRegs.GPR.n.a1.UD[0] = block_start;

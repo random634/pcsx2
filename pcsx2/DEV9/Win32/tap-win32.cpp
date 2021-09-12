@@ -365,7 +365,7 @@ bool TAPGetWin32Adapter(const char* name, PIP_ADAPTER_ADDRESSES adapter, std::un
 	}
 
 	//We must be bridged
-	Console.WriteLn("DEV9: Current adapter is probably bridged");
+	Log::Console.info("DEV9: Current adapter is probably bridged\n");
 	Console.WriteLn(L"DEV9: Adapter Display name: %s", pAdapterInfo->FriendlyName);
 
 	//We will need to find the bridge adapter that out adapter is

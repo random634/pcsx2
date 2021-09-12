@@ -372,7 +372,7 @@ namespace usb_eyetoy
 
 			if (!buffers)
 			{
-				Console.Warning("Camera: Out of memory");
+				Log::Console.warning("Camera: Out of memory\n");
 				return -1;
 			}
 
@@ -451,7 +451,7 @@ namespace usb_eyetoy
 
 					if (ret == 0)
 					{
-						Console.Warning("Camera: select timeout");
+						Log::Console.warning("Camera: select timeout\n");
 						break;
 					}
 
@@ -460,7 +460,7 @@ namespace usb_eyetoy
 				}
 			}
 			eyetoy_running = 0;
-			Console.Warning("Camera: V4L2 thread quit");
+			Log::Console.warning("Camera: V4L2 thread quit\n");
 			return NULL;
 		}
 

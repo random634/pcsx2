@@ -427,7 +427,7 @@ void GSPanel::OnFocus( wxFocusEvent& evt )
 	keyEvent event = {0, 9}; // X equivalent of FocusIn;
 	PADWriteEvent(event);
 #endif
-	//Console.Warning("GS frame > focus set");
+	//Log::Console.warning("GS frame > focus set\n");
 
 	UpdateScreensaver();
 }
@@ -443,7 +443,7 @@ void GSPanel::OnFocusLost( wxFocusEvent& evt )
 	keyEvent event = {0, 10}; // X equivalent of FocusOut
 	PADWriteEvent(event);
 #endif
-	//Console.Warning("GS frame > focus lost");
+	//Log::Console.warning("GS frame > focus lost\n");
 
 	UpdateScreensaver();
 }
@@ -471,7 +471,7 @@ void GSPanel::OnLeftDclick(wxMouseEvent& evt)
 	if( !g_Conf->GSWindow.IsToggleFullscreenOnDoubleClick )
 		return;
 
-	//Console.WriteLn("GSPanel::OnDoubleClick: Invoking Fullscreen-Toggle accelerator.");
+	//Log::Console.info("GSPanel::OnDoubleClick: Invoking Fullscreen-Toggle accelerator.\n");
 	DirectKeyCommand(FULLSCREEN_TOGGLE_ACCELERATOR_GSPANEL);
 }
 

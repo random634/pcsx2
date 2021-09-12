@@ -101,9 +101,9 @@ public:
 		Console.WriteLn("Slot %i information:", slot_num);
 		Console.WriteLn("Internal CRC = %i; Current CRC = %i.", crc, ElfCRC);
 		if (empty)
-			Console.WriteLn("Slot cache says it is empty.");
+			Log::Console.info("Slot cache says it is empty.\n");
 		else
-			Console.WriteLn("Slot cache says it is used.");
+			Log::Console.info("Slot cache says it is used.\n");
 
 		if (updated != wxInvalidDateTime)
 			Console.WriteLn(wxsFormat(_("Write time is %s %s."), updated.FormatDate(), updated.FormatTime()));

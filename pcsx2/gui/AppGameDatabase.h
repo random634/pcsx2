@@ -27,7 +27,7 @@ public:
 	{
 		try
 		{
-			Console.WriteLn("(GameDB) Unloading...");
+			Log::Console.info("(GameDB) Unloading...\n");
 		}
 		DESTRUCTOR_CATCHALL
 	}

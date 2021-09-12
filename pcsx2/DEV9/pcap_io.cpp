@@ -167,7 +167,7 @@ int GetMACAddress(char* adapter, mac_address* addr)
 	}
 	else
 	{
-		Console.Error("Could not get MAC address for adapter: %s", adapter);
+		Log::Console.error("Could not get MAC address for adapter: {}\n", adapter);
 	}
 	close(fd);
 #else
@@ -182,7 +182,7 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 	char filter[1024] = "ether broadcast or ether dst ";
 	int dlt;
 	char* dlt_name;
-	Console.WriteLn("DEV9: Opening adapter '%s'...", adapter);
+	Log::Console.info("DEV9: Opening adapter '{}'...\n", adapter);
 
 	pcap_io_switched = switched;
 
@@ -195,8 +195,8 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 			 errbuf // error buffer
 			 )) == NULL)
 	{
-		Console.Error("DEV9: %s", errbuf);
-		Console.Error("DEV9: Unable to open the adapter. %s is not supported by pcap", adapter);
+		Log::Console.error("DEV9: {}\n", errbuf);
+		Log::Console.error("DEV9: Unable to open the adapter. {} is not supported by pcap\n", adapter);
 		return -1;
 	}
 	if (switched)
@@ -208,13 +208,13 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 
 		if (pcap_compile(adhandle, &fp, filter, 1, PCAP_NETMASK_UNKNOWN) == -1)
 		{
-			Console.Error("DEV9: Error calling pcap_compile: %s", pcap_geterr(adhandle));
+			Log::Console.error("DEV9: Error calling pcap_compile: {}\n", pcap_geterr(adhandle));
 			return -1;
 		}
 
 		if (pcap_setfilter(adhandle, &fp) == -1)
 		{
-			Console.Error("DEV9: Error setting filter: %s", pcap_geterr(adhandle));
+			Log::Console.error("DEV9: Error setting filter: {}\n", pcap_geterr(adhandle));
 			return -1;
 		}
 	}
@@ -241,7 +241,7 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 #endif
 
 	pcap_io_running = 1;
-	Console.WriteLn("DEV9: Adapter Ok.");
+	Log::Console.info("DEV9: Adapter Ok.\n");
 	return 0;
 }
 
@@ -391,7 +391,7 @@ PCAPAdapter::PCAPAdapter()
 
 	if (pcap_io_init(config.Eth, config.EthApi == NetApi::PCAP_Switched, newMAC) == -1)
 	{
-		Console.Error("Can't open Device '%s'\n", config.Eth);
+		Log::Console.error("Can't open Device '{}'\n", config.Eth);
 	}
 }
 bool PCAPAdapter::blocks()

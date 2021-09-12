@@ -84,7 +84,7 @@ void BaseCompressThread::ExecuteTaskInThread()
 		.SetDiagMsg(L"Failed to move or copy the temporary archive to the destination filename.")
 		.SetUserMsg(_("The savestate was not properly saved. The temporary file was created successfully but could not be moved to its final resting place."));
 
-	Console.WriteLn( "(gzipThread) Data saved to disk without error." );
+	Log::Console.info("(gzipThread) Data saved to disk without error.\n");
 }
 
 void BaseCompressThread::OnCleanupInThread()

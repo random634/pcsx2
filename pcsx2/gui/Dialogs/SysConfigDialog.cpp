@@ -120,7 +120,7 @@ void Dialogs::SysConfigDialog::AddPresetsControl()
 		presetTooltip
 	);
 	m_check_presets->SetValue(!!g_Conf->EnablePresets);
-	//Console.WriteLn("--> SysConfigDialog::AddPresetsControl: EnablePresets: %s", g_Conf->EnablePresets?"true":"false");
+	//Log::Console.info("--> SysConfigDialog::AddPresetsControl: EnablePresets: {}\n", g_Conf->EnablePresets?"true":"false");
 
 	wxString l; wxColor c(wxColour( L"Red" ));
 	AppConfig::isOkGetPresetTextAndColor(g_Conf->PresetIndex, l, c);

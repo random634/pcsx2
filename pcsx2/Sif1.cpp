@@ -84,30 +84,31 @@ static __fi bool ProcessEETag()
 {
 	// Chain mode
 	tDMA_TAG *ptag;
-	SIF_LOG("Sif1: ProcessEETag");
+	Log::SIF.debug("Sif1: ProcessEETag\n");
 
 	// Process DMA tag at sif1ch.tadr
 	ptag = sif1ch.DMAtransfer(sif1ch.tadr, DMAC_SIF1);
 	if (ptag == NULL)
 	{
-		Console.WriteLn("Sif1 ProcessEETag: ptag = NULL");
+		Log::Console.info("Sif1 ProcessEETag: ptag = NULL\n");
 		return false;
 	}
 
 	if (sif1ch.chcr.TTE)
 	{
-		Console.WriteLn("SIF1 TTE");
+		Log::Console.info("SIF1 TTE\n");
 		sif1.fifo.write((u32*)ptag + 2, 2);
 	}
 
-	SIF_LOG(wxString(ptag->tag_to_str()).To8BitData());
+	if (Log::SIF.shouldLog(LogLevel::Debug))
+		Log::SIF.debug("{}\n", ptag->tag_to_str());
 	sif1ch.madr = ptag[1]._u32;
 
 	sif1.ee.end = hwDmacSrcChain(sif1ch, ptag->ID);
 
 	if (sif1ch.chcr.TIE && ptag->IRQ)
 	{
-		//Console.WriteLn("SIF1 TIE");
+		//Log::Console.info("SIF1 TIE\n");
 		sif1.ee.end = true;
 	}
 
@@ -120,14 +121,14 @@ static __fi bool SIFIOPReadTag()
 	// Read a tag.
 	sif1.fifo.read((u32*)&sif1.iop.data, 4);
 	//sif1words = (sif1words + 3) & 0xfffffffc; // Round up to nearest 4.
-	SIF_LOG("SIF 1 IOP: dest chain tag madr:%08X wc:%04X id:%X irq:%d",
+	Log::SIF.debug("SIF 1 IOP: dest chain tag madr:{:08X} wc:{:04X} id:{:X} irq:{}\n",
 		sif1data & 0xffffff, sif1words, sif1tag.ID, sif1tag.IRQ);
 
 	// Only use the first 24 bits.
 	hw_dma10.madr = sif1data & 0xffffff;
 
 	
-	if (sif1words > 0xFFFFC) DevCon.Warning("SIF1 Overrun %x", sif1words);
+	if (sif1words > 0xFFFFC) Log::Dev.warning("SIF1 Overrun {:x}", sif1words);
 	//Maximum transfer amount 1mb-16 also masking out top part which is a "Mode" cache stuff, we don't care :)
 	sif1.iop.counter = sif1words & 0xFFFFC;
 
@@ -141,14 +142,14 @@ static __fi void EndEE()
 {
 	sif1.ee.end = false;
 	sif1.ee.busy = false;
-	SIF_LOG("Sif 1: End EE");
+	Log::SIF.debug("Sif 1: End EE\n");
 
 	// Voodoocycles : Okami wants around 100 cycles when booting up
 	// Other games reach like 50k cycles here, but the EE will long have given up by then and just retry.
 	// (Cause of double interrupts on the EE)
 	if (sif1.ee.cycles == 0)
 	{
-		SIF_LOG("SIF1 EE: cycles = 0");
+		Log::SIF.debug("SIF1 EE: cycles = 0\n");
 		sif1.ee.cycles = 1;
 	}
 
@@ -162,7 +163,7 @@ static __fi void EndIOP()
 	sif1data = 0;
 	sif1.iop.end = false;
 	sif1.iop.busy = false;
-	SIF_LOG("Sif 1: End IOP");
+	Log::SIF.debug("Sif 1: End IOP\n");
 
 	//Fixme ( voodoocycles ):
 	//The *24 are needed for ecco the dolphin (CDVD hangs) and silver surfer (Pad not detected)
@@ -170,7 +171,7 @@ static __fi void EndIOP()
 	//Total cycles over 1024 makes SIF too slow to keep up the sound stream in so3...
 	if (sif1.iop.cycles == 0)
 	{
-		DevCon.Warning("SIF1 IOP: cycles = 0");
+		Log::Dev.warning("SIF1 IOP: cycles = 0\n");
 		sif1.iop.cycles = 1;
 	}
 	// iop is 1/8th the clock rate of the EE and psxcycles is in words (not quadwords)
@@ -267,7 +268,7 @@ static __fi void Sif1End()
 	psHu32(SBUS_F240) &= ~0x40;
 	psHu32(SBUS_F240) &= ~0x4000;
 
-	DMA_LOG("SIF1 DMA End");
+	Log::EE::DMAHW.debug("SIF1 DMA End\n");
 }
 
 // Transfer EE to IOP, putting data in the fifo as an intermediate step.
@@ -329,11 +330,12 @@ __fi void  EEsif1Interrupt()
 // Main difference is this checks for iop, where psxDma10 checks for ee.
 __fi void dmaSIF1()
 {
-	SIF_LOG(wxString(L"dmaSIF1" + sif1ch.cmqt_to_str()).To8BitData());
+	if (Log::SIF.shouldLog(LogLevel::Debug))
+		Log::SIF.debug("dmaSIF1{}\n", sif1ch.cmqt_to_str());
 
 	if (sif1.fifo.readPos != sif1.fifo.writePos)
 	{
-		SIF_LOG("warning, sif1.fifoReadPos != sif1.fifoWritePos");
+		Log::SIF.debug("warning, sif1.fifoReadPos != sif1.fifoWritePos\n");
 	}
 
 	psHu32(SBUS_F240) |= 0x4000;

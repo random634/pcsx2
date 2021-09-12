@@ -209,7 +209,7 @@ void recPMFHL()
 			}
 			break;
 		default:
-			Console.Error("PMFHL??  *pcsx2 head esplode!*");
+			Log::Console.error("PMFHL??  *pcsx2 head esplode!*\n");
 			pxFail("PMFHL??  *pcsx2 head esplode!*");
 	}
 
@@ -1567,7 +1567,7 @@ void recQFSRV()
 {
 	if (!_Rd_)
 		return;
-	//Console.WriteLn("recQFSRV()");
+	//Log::Console.info("recQFSRV()\n");
 
 	EE::Profiler.EmitOp(eeOpcode::QFSRV);
 

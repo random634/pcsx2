@@ -964,11 +964,11 @@ bool AppConfig::IsOkApplyPreset(int n, bool ignoreMTVU)
 {
 	if (n < 0 || n > GetMaxPresetIndex() )
 	{
-		Console.WriteLn("DEV Warning: ApplyPreset(%d): index out of range, Aborting.", n);
+		Log::Console.info("DEV Warning: ApplyPreset({}): index out of range, Aborting.\n", n);
 		return false;
 	}
 
-	//Console.WriteLn("Applying Preset %d ...", n);
+	//Log::Console.info("Applying Preset {} ...\n", n);
 
 	//Have some original and default values at hand to be used later.
 	Pcsx2Config::GSOptions        original_GS = EmuOptions.GS;
@@ -1052,7 +1052,7 @@ bool AppConfig::IsOkApplyPreset(int n, bool ignoreMTVU)
 			break;
 
 		default:
-			Console.WriteLn("Developer Warning: Preset #%d is not implemented. (--> Using application default).", n);
+			Log::Console.info("Developer Warning: Preset #{} is not implemented. (--> Using application default).\n", n);
 	}
 
 
@@ -1295,7 +1295,7 @@ void AppSaveSettings()
 		return;
 	}
 
-	//Console.WriteLn("Saving ini files...");
+	//Log::Console.info("Saving ini files...\n");
 
 	SaveUiSettings();
 	SaveVmSettings();

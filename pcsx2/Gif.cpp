@@ -228,7 +228,7 @@ __fi void gifInterrupt()
 
 	if (dmacRegs.ctrl.MFD == MFD_GIF)
 	{ // GIF MFIFO
-		//Console.WriteLn("GIF MFIFO");
+		//Log::Console.info("GIF MFIFO\n");
 		gifMFIFOInterrupt();
 		return;
 	}
@@ -274,7 +274,7 @@ __fi void gifInterrupt()
 	{
 		if (!dmacRegs.ctrl.DMAE)
 		{
-			Console.Warning("gs dma masked, re-scheduling...");
+			Log::Console.warning("gs dma masked, re-scheduling...\n");
 			// Re-raise the int shortly in the future
 			GifDMAInt(64);
 			return;
@@ -292,7 +292,7 @@ __fi void gifInterrupt()
 
 	if (gif_fifo.fifoSize)
 		GifDMAInt(8 * BIAS);
-	GIF_LOG("GIF DMA End QWC in fifo %x APATH = %x OPH = %x state = %x", gifRegs.stat.FQC, gifRegs.stat.APATH, gifRegs.stat.OPH, gifUnit.gifPath[GIF_PATH_3].state);
+	Log::EE::GIF.debug("GIF DMA End QWC in fifo {:x} APATH = {:x} OPH = {:x} state = {:x}\n", gifRegs.stat.FQC, gifRegs.stat.APATH, gifRegs.stat.OPH, gifUnit.gifPath[GIF_PATH_3].state);
 }
 
 static u32 WRITERING_DMA(u32* pMem, u32 qwc)
@@ -339,7 +339,7 @@ static __fi void GIFchain()
 		// Must increment madr and clear qwc, else it loops
 		gifch.madr += gifch.qwc * 16;
 		gifch.qwc = 0;
-		Console.Warning("Hackfix - NULL GIFchain");
+		Log::Console.warning("Hackfix - NULL GIFchain\n");
 		return;
 	}
 
@@ -395,7 +395,7 @@ void GIFdma()
 
 		if (gifRegs.ctrl.PSE)
 		{ // Temporarily stop
-			Console.WriteLn("Gif dma temp paused? (non MFIFO GIF)");
+			Log::Console.info("Gif dma temp paused? (non MFIFO GIF)\n");
 			GifDMAInt(16);
 			return;
 		}
@@ -445,7 +445,7 @@ void GIFdma()
 		}
 		else if (dmacRegs.ctrl.STD == STD_GIF && gifch.chcr.MOD == NORMAL_MODE)
 		{
-			Console.WriteLn("GIF DMA Stall in Normal mode not implemented - Report which game to PCSX2 Team");
+			Log::Console.info("GIF DMA Stall in Normal mode not implemented - Report which game to PCSX2 Team\n");
 		}
 
 		// Transfer Dn_QWC from Dn_MADR to GIF
@@ -638,7 +638,7 @@ void mfifoGIFtransfer()
 
 	if (gifRegs.ctrl.PSE)
 	{ // Temporarily stop
-		Console.WriteLn("Gif dma temp paused?");
+		Log::Console.info("Gif dma temp paused?\n");
 		CPU_INT(DMAC_MFIFO_GIF, 16);
 		return;
 	}
@@ -649,7 +649,7 @@ void mfifoGIFtransfer()
 
 		if (QWCinGIFMFIFO(gifch.tadr) == 0)
 		{
-			SPR_LOG("GIF FIFO EMPTY before tag read");
+			Log::EE::SPR.debug("GIF FIFO EMPTY before tag read\n");
 			gif.gifstate = GIF_STATE_EMPTY;
 			GifDMAInt(4);
 			return;
@@ -664,14 +664,14 @@ void mfifoGIFtransfer()
 
 		gif.mfifocycles += 2;
 
-		GIF_LOG("dmaChain %8.8x_%8.8x size=%d, id=%d, madr=%lx, tadr=%lx mfifo qwc = %x spr0 madr = %x",
+		Log::EE::GIF.debug("dmaChain {:08x}_{:08x} size={}, id={}, madr={:x}, tadr={:x} mfifo qwc = {:x} spr0 madr = {:x}\n",
 			ptag[1]._u32, ptag[0]._u32, gifch.qwc, ptag->ID, gifch.madr, gifch.tadr, gif.gifqwc, spr0ch.madr);
 
 		gif.gspath3done = hwDmacSrcChainWithStack(gifch, ptag->ID);
 
 		if (dmacRegs.ctrl.STD == STD_GIF && (ptag->ID == TAG_REFS))
 		{
-			Console.WriteLn("GIF MFIFO DMA Stall not implemented - Report which game to PCSX2 Team");
+			Log::Console.info("GIF MFIFO DMA Stall not implemented - Report which game to PCSX2 Team\n");
 		}
 		mfifoGifMaskMem(ptag->ID);
 
@@ -679,7 +679,7 @@ void mfifoGIFtransfer()
 
 		if ((gifch.chcr.TIE) && (ptag->IRQ))
 		{
-			SPR_LOG("dmaIrq Set");
+			Log::EE::SPR.debug("dmaIrq Set\n");
 			gif.gspath3done = true;
 		}
 	}
@@ -688,7 +688,7 @@ void mfifoGIFtransfer()
 
 	GifDMAInt(std::max(gif.mfifocycles, (u32)4));
 
-	SPR_LOG("mfifoGIFtransfer end %x madr %x, tadr %x", gifch.chcr._u32, gifch.madr, gifch.tadr);
+	Log::EE::SPR.debug("mfifoGIFtransfer end {:x} madr {:x}, tadr {:x}\n", gifch.chcr._u32, gifch.madr, gifch.tadr);
 }
 
 void gifMFIFOInterrupt()
@@ -698,7 +698,7 @@ void gifMFIFOInterrupt()
 
 	if (dmacRegs.ctrl.MFD != MFD_GIF)
 	{ // GIF not in MFIFO anymore, come out.
-		DevCon.WriteLn("GIF Leaving MFIFO - Report if any errors");
+		Log::Console.debug("GIF Leaving MFIFO - Report if any errors\n");
 		gifInterrupt();
 		return;
 	}
@@ -806,7 +806,7 @@ void gifMFIFOInterrupt()
 
 	if (gif_fifo.fifoSize)
 		GifDMAInt(8 * BIAS);
-	DMA_LOG("GIF MFIFO DMA End");
+	Log::EE::DMAHW.debug("GIF MFIFO DMA End\n");
 }
 
 void SaveStateBase::gifDmaFreeze()

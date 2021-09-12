@@ -582,7 +582,7 @@ void Update(unsigned int port, unsigned int slot)
 	if (!currentDeviceActiveAndBound && activeWindow)
 	{
 		if (anyDeviceActiveAndBound)
-			Console.Warning("PAD: Warning! No controls are bound to a currently attached device!\nPlease attach a controller that has been setup for use with PAD or go to GamePad Settings and setup new controls.\n");
+			Log::Console.warning("PAD: Warning! No controls are bound to a currently attached device!\nPlease attach a controller that has been setup for use with PAD or go to GamePad Settings and setup new controls.\n");
 		anyDeviceActiveAndBound = false;
 	}
 	dm->PostRead();
@@ -1543,7 +1543,7 @@ s32 PADfreeze(FreezeAction mode, freezeData* data)
 {
 	if (!data)
 	{
-		Console.Warning("PAD savestate null pointer!\n");
+		Log::Console.warning("PAD savestate null pointer!\n");
 		return -1;
 	}
 

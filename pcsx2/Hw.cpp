@@ -270,7 +270,7 @@ __ri bool hwDmacSrcChainWithStack(DMACh& dma, int id) {
                     break;
 
                 default:
-                    Console.Warning("Call Stack Overflow (report if it fixes/breaks anything)");
+                    Log::Console.warning("Call Stack Overflow (report if it fixes/breaks anything)\n");
                     return true;
 			}
 

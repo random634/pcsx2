@@ -179,7 +179,7 @@ SaveStateBase& SaveStateBase::FreezeInternals()
 {
 	vu1Thread.WaitVU(); // Finish VU1 just in-case...
 	// Print this until the MTVU problem in gifPathFreeze is taken care of (rama)
-	if (THREAD_VU1) Console.Warning("MTVU speedhack is enabled, saved states may not be stable");
+	if (THREAD_VU1) Log::Console.warning("MTVU speedhack is enabled, saved states may not be stable\n");
 	
 	if (IsLoading()) PreLoadPrep();
 

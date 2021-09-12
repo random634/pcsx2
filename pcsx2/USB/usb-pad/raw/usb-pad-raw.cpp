@@ -448,7 +448,7 @@ namespace usb_pad
 				bool isKeyboardmania = (attr.VendorID == 0x0507) && (attr.ProductID == 0x0010);
 				if (!isClassicLogitech && !isKeyboardmania)
 				{
-					Console.Warning("USB: Vendor is not Logitech or wheel is G920. Not sending force feedback commands for safety reasons.\n");
+					Log::Console.warning("USB: Vendor is not Logitech or wheel is G920. Not sending force feedback commands for safety reasons.\n");
 					mDoPassthrough = 0;
 					Close();
 				}

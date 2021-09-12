@@ -666,8 +666,7 @@ namespace usb_mic
 
 		//cs 1 cn 0xFF, ep 0x81 attrib 1
 		/*for(int i=0; i<length; i++)
-        Console.Warning("%02X ", data[i]);
-    Console.Warning("\n");*/
+        Log::Console.warning("{:02X}\n", data[i]);*/
 
 		switch (aid)
 		{
@@ -728,7 +727,7 @@ namespace usb_mic
 				if (ret < 0)
 				{
 					//if (s->debug) {
-					Console.Warning("headset: fail: get control\n");
+					Log::Console.warning("headset: fail: get control\n");
 					//}
 					goto fail;
 				}
@@ -744,7 +743,7 @@ namespace usb_mic
 				if (ret < 0)
 				{
 					//if (s->debug) {
-					Console.Warning("headset: fail: set control\n data:");
+					Log::Console.warning("headset: fail: set control\n data:\n");
 					//}
 					goto fail;
 				}
@@ -992,7 +991,7 @@ namespace usb_mic
 		s->audsrcproxy = RegisterAudioDevice::instance().Proxy(api);
 		if (!s->audsrcproxy)
 		{
-			Console.WriteLn("headset: Invalid audio API: '%s'\n", api.c_str());
+			Log::Console.info("headset: Invalid audio API: '{}'\n", api);
 			delete s;
 			return NULL;
 		}

@@ -56,7 +56,7 @@ namespace usb_pad
 			DIR* dirp = opendir("/dev/");
 			if (!dirp)
 			{
-				Console.Warning("Error opening /dev/");
+				Log::Console.warning("Error opening /dev/\n");
 				return false;
 			}
 
@@ -82,14 +82,14 @@ namespace usb_pad
 
 					res = ioctl(fd, HIDIOCGRAWPHYS(sizeof(buf)), buf);
 					if (res < 0)
-						Console.Warning("HIDIOCGRAWPHYS");
+						Log::Console.warning("HIDIOCGRAWPHYS\n");
 
 					struct hidraw_devinfo info;
 					memset(&info, 0x0, sizeof(info));
 
 					if (ioctl(fd, HIDIOCGRAWINFO, &info) < 0)
 					{
-						Console.Warning("HIDIOCGRAWINFO");
+						Log::Console.warning("HIDIOCGRAWINFO\n");
 					}
 					else
 					{
@@ -128,7 +128,7 @@ namespace usb_pad
 			DIR* dirp = opendir(EVDEV_DIR);
 			if (!dirp)
 			{
-				Console.Warning("Error opening " EVDEV_DIR);
+				Log::Console.warning("Error opening " EVDEV_DIR "\n");
 				return;
 			}
 
@@ -169,7 +169,7 @@ namespace usb_pad
 
 					res = ioctl(fd, EVIOCGNAME(sizeof(buf)), buf);
 					if (res < 0)
-						Console.Warning("EVIOCGNAME");
+						Log::Console.warning("EVIOCGNAME\n");
 					else
 					{
 						evdev_device dev{buf, dp->d_name, path, {}};
@@ -497,7 +497,7 @@ namespace usb_pad
 				}
 				else
 				{
-					Console.Warning("EVIOCGPHYS failed");
+					Log::Console.warning("EVIOCGPHYS failed\n");
 				}
 				close(fd);
 			}
@@ -659,7 +659,7 @@ namespace usb_pad
 					res = write(mHidHandle, buf.data(), buf.size());
 					if (res < 0)
 					{
-						Console.Warning("write");
+						Log::Console.warning("write\n");
 					}
 				}
 				else

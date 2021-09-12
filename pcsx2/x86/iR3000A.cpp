@@ -1045,7 +1045,7 @@ static void checkcodefn()
 #else
     __asm__ __volatile__("movl %%eax, %[pctemp]" : [pctemp]"m="(pctemp) );
 #endif
-	Console.WriteLn("iop code changed! %x", pctemp);
+	Log::Console.info("iop code changed! {:x}\n", pctemp);
 }
 #endif
 #endif

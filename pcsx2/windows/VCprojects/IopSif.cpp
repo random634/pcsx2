@@ -57,7 +57,7 @@ s32 PrepareEERead()
 
 	if (sif0ch.chcr.TIE && ptag.IRQ)
 	{
-		//Console.WriteLn("SIF0 TIE");
+		//Log::Console.info("SIF0 TIE\n");
 		sif0.ee.end = true;
 	}
 

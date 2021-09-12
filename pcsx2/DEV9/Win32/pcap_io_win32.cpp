@@ -115,7 +115,7 @@ bool load_pcap()
 	if (fp_##name == nullptr)                                \
 	{                                                        \
 		FreeLibrary(hpcap);                                  \
-		Console.Error("DEV9: %s not found", #name);          \
+		Log::Console.error("DEV9: {} not found\n", #name);   \
 		hpcap = nullptr;                                     \
 		return false;                                        \
 	}

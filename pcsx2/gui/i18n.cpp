@@ -314,7 +314,7 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 	
 	if (wxLangId == wxLANGUAGE_UNKNOWN)
 	{
-		Console.WriteLn("System-default language is unknown?  Defaulting back to English/US.");
+		Log::Console.info("System-default language is unknown?  Defaulting back to English/US.\n");
 		wxLangId = wxLANGUAGE_ENGLISH_US;
 	}
 
@@ -348,7 +348,7 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 
 	if (!foundone)	
 	{
-		Console.Warning("SetLanguage: Requested translation is not implemented yet.");
+		Log::Console.warning("SetLanguage: Requested translation is not implemented yet.\n");
 		return false;
 	}
 

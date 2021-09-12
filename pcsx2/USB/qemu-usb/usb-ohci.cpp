@@ -80,7 +80,7 @@ static void ohci_die(OHCIState* ohci)
 {
 	//OHCIPCIState *dev = container_of(ohci, OHCIPCIState, state);
 
-	Console.Warning("ohci_die: DMA error\n");
+	Log::Console.warning("ohci_die: DMA error\n");
 
 	ohci_set_interrupt(ohci, OHCI_INTR_UE);
 	ohci_bus_stop(ohci);
@@ -1604,7 +1604,7 @@ void ohci_mem_write(OHCIState* ptr, uint32_t addr, uint32_t val)
 	/* Only aligned reads are allowed on OHCI */
 	if (addr & 3)
 	{
-		Console.Warning("usb-ohci: Mis-aligned write\n");
+		Log::Console.warning("usb-ohci: Mis-aligned write\n");
 		return;
 	}
 

@@ -125,7 +125,7 @@ void BIOSLoadErrorEvent::InvokeEvent()
 
 	if (!HandleBIOSError(*deleteMe))
 	{
-		Console.Warning("User canceled BIOS configuration.");
+		Log::Console.warning("User canceled BIOS configuration.\n");
 		Msgbox::Alert(_("Warning! Valid BIOS has not been selected. PCSX2 may be inoperable."));
 	}
 }
@@ -658,7 +658,7 @@ void Pcsx2App::ClearPendingSave()
 
 	if( (m_PendingSaves == 0) && m_ScheduledTermination )
 	{
-		Console.WriteLn( "App: All pending saves completed; exiting!" );
+		Log::Console.info("App: All pending saves completed; exiting!\n");
 		Exit();
 	}
 }

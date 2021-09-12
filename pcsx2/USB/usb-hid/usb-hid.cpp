@@ -739,7 +739,7 @@ namespace usb_hid
 		UsbHIDProxyBase* proxy = RegisterUsbHID::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("Invalid HID API: %s \n", varApi.c_str());
+			Log::Console.info("Invalid HID API: {} \n", varApi);
 			return nullptr;
 		}
 
@@ -838,7 +838,7 @@ namespace usb_hid
 		UsbHIDProxyBase* proxy = RegisterUsbHID::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("Invalid HID API: %s\n", varApi.c_str());
+			Log::Console.info("Invalid HID API: {}\n", varApi);
 			return nullptr;
 		}
 
@@ -940,7 +940,7 @@ namespace usb_hid
 		UsbHIDProxyBase* proxy = RegisterUsbHID::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Console.WriteLn("Invalid HID API: %s\n", varApi.c_str());
+			Log::Console.info("Invalid HID API: {}\n", varApi);
 			return nullptr;
 		}
 

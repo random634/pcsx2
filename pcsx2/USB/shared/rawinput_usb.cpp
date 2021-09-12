@@ -66,7 +66,7 @@ namespace shared
 
 		static void CursorCapture(HWND hWnd)
 		{
-			Console.WriteLn("Capture cursor\n");
+			Log::Console.info("Capture cursor\n");
 			SetCapture(hWnd);
 			ShowCursor(0);
 
@@ -83,7 +83,7 @@ namespace shared
 
 		static void CursorRelease()
 		{
-			Console.WriteLn("Release cursor\n");
+			Log::Console.info("Release cursor\n");
 			if (cursorCaptured)
 			{
 				ClipCursor(0);
@@ -136,7 +136,7 @@ namespace shared
 			if (RegisterRawInputDevices(Rid, countof(Rid), sizeof(Rid[0])) == FALSE)
 			{
 				//registration failed. Call GetLastError for the cause of the error.
-				Console.Warning("Could not (de)register raw input devices.\n");
+				Log::Console.warning("Could not (de)register raw input devices.\n");
 				return 0;
 			}
 			return 1;

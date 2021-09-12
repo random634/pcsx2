@@ -229,7 +229,7 @@ namespace usb_mic
 				if (wfext->SubFormat != KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
 				{
 					if (!mDeviceLost)
-						Console.WriteLn("MMAudioDevice::Reinitialize(): Unsupported wave format\n");
+						Log::Console.info("MMAudioDevice::Reinitialize(): Unsupported wave format\n");
 					CoTaskMemFree(pwfx);
 					return false;
 				}
@@ -237,7 +237,7 @@ namespace usb_mic
 			else if (pwfx->wFormatTag != WAVE_FORMAT_IEEE_FLOAT)
 			{
 				if (!mDeviceLost)
-					Console.WriteLn("MMAudioDevice::Reinitialize(): Unsupported wave format\n");
+					Log::Console.info("MMAudioDevice::Reinitialize(): Unsupported wave format\n");
 				CoTaskMemFree(pwfx);
 				return false;
 			}
@@ -772,7 +772,7 @@ namespace usb_mic
 			err = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&mmEnumerator);
 			if (FAILED(err))
 			{
-				Console.WriteLn("AudioDevices: Could not create IMMDeviceEnumerator\n");
+				Log::Console.info("AudioDevices: Could not create IMMDeviceEnumerator\n");
 				return;
 			}
 
@@ -785,7 +785,7 @@ namespace usb_mic
 			err = mmEnumerator->EnumAudioEndpoints(audioDeviceType, flags, &collection);
 			if (FAILED(err))
 			{
-				Console.WriteLn("AudioDevices: Could not enumerate audio endpoints\n");
+				Log::Console.info("AudioDevices: Could not enumerate audio endpoints\n");
 				SafeRelease(mmEnumerator);
 				return;
 			}

@@ -98,10 +98,10 @@ void psxDmaInterrupt2(int n)
 	{
 		/*
 		if (HW_DMA_ICR2 & (1 << (24 + n))) {
-			Console.WriteLn("*PCSX2*: HW_DMA_ICR2 n=%d already set", n);
+			Log::Console.info("*PCSX2*: HW_DMA_ICR2 n={} already set\n", n);
 		}
 		if (psxHu32(0x1070) & 8) {
-			Console.WriteLn("*PCSX2*: psxHu32(0x1070) 8 already set (n=%d)", n);
+			Log::Console.info("*PCSX2*: psxHu32(0x1070) 8 already set (n={})\n", n);
 		}*/
 		fire_interrupt = true;
 	}

@@ -424,7 +424,7 @@ EERECOMPILE_CODE0(BNEL, XMMINFO_READS | XMMINFO_READT);
 ////////////////////////////////////////////////////
 //void recBLTZAL()
 //{
-//	Console.WriteLn("BLTZAL");
+//	Log::Console.info("BLTZAL\n");
 //	_eeFlushAllUnused();
 //	xMOV(ptr32[(u32*)((int)&cpuRegs.code)], cpuRegs.code );
 //	xMOV(ptr32[(u32*)((int)&cpuRegs.pc)], pc );

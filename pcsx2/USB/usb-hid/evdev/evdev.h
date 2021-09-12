@@ -75,7 +75,7 @@ namespace usb_hid
 			{
 				if (ioctl(fd, EVIOCGNAME(_Size), name) < -1)
 				{
-					Console.Warning("Cannot get controller's name\n");
+					Log::Console.warning("Cannot get controller's name\n");
 					close(fd);
 					return false;
 				}
