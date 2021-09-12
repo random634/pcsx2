@@ -626,7 +626,7 @@ static void recResetRaw()
 		return;
 	eeRecNeedsReset = false;
 
-	Log::Console.info("EE/iR5900-32 Recompiler Reset\n");
+	Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityStrongBlack, "EE/iR5900-32 Recompiler Reset\n");
 
 	recMem->Reset();
 	ClearRecLUT((BASEBLOCK*)recLutReserve_RAM, recLutSize);

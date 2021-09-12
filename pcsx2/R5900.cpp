@@ -332,7 +332,7 @@ static __fi void _cpuTestTIMR()
 	if ( (cpuRegs.CP0.n.Status.val & 0x8000) &&
 		cpuRegs.CP0.n.Count >= cpuRegs.CP0.n.Compare && cpuRegs.CP0.n.Count < cpuRegs.CP0.n.Compare+1000 )
 	{
-		Log::Console.info("timr intr: {:x}, {:x}\n", cpuRegs.CP0.n.Count, cpuRegs.CP0.n.Compare);
+		Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityMagenta, "timr intr: {:x}, {:x}\n", cpuRegs.CP0.n.Count, cpuRegs.CP0.n.Compare);
 		cpuException(0x808000, cpuRegs.branch);
 	}
 }
@@ -552,7 +552,7 @@ void __fastcall eeGameStarting()
 	}
 	else
 	{
-		Log::Console.info("(R5900) Re-executed ELF Entry point (ignored) [addr=0x{:08X}]\n", ElfEntry);
+		Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityGreen, "(R5900) Re-executed ELF Entry point (ignored) [addr=0x{:08X}]\n", ElfEntry);
 	}
 }
 
