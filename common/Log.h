@@ -327,3 +327,79 @@ public:
 		m_source.decreaseIndent(m_amt);
 	}
 };
+
+namespace Log
+{
+	extern LogSource PCSX2;   ///< Top level log source, used for general information
+	extern LogSource Console; ///< Random uncategorized printouts
+	// TODO: Sif has special logging needs...?
+	extern LogSource SIF;
+	extern LogSource EERecPerf;
+
+	extern LogSource Recording;
+	extern LogSource RecControl;
+
+	namespace EE
+	{
+		extern LogSource Base; ///< Top level log source for EE stuff
+		extern LogSource Bios;
+		extern LogSource Memory;
+		extern LogSource GIFtag;
+		extern LogSource VIFcode;
+		extern LogSource MSKPATH3;
+
+		extern LogSource R5900;
+		extern LogSource COP0;
+		extern LogSource COP1;
+		extern LogSource COP2;
+		extern LogSource Cache;
+
+		extern LogSource KnownHW;
+		extern LogSource UnknownHW;
+		extern LogSource DMAHW;
+		extern LogSource IPU;
+
+		extern LogSource DMAC;
+		extern LogSource Counters;
+		extern LogSource SPR;
+
+		extern LogSource VIF;
+		extern LogSource GIF;
+	}
+
+	namespace IOP
+	{
+		extern LogSource Base; ///< Top level log source for IOP stuff
+		extern LogSource Bios;
+		extern LogSource Memcards;
+		extern LogSource PAD;
+
+		extern LogSource R3000A;
+		extern LogSource COP2;
+		extern LogSource Memory;
+
+		extern LogSource KnownHW;
+		extern LogSource UnknownHW;
+		extern LogSource DMAHW;
+
+		extern LogSource SPU2;
+		extern LogSource USB;
+		extern LogSource FW;
+
+		extern LogSource DMAC;
+		extern LogSource Counters;
+		extern LogSource CDVD;
+		extern LogSource MDEC;
+	}
+
+	namespace SysCon
+	{
+		extern LogSource Base; ///< Top level log source for SysCon stuff
+		extern LogSource ELF;
+		extern LogSource EE;
+		extern LogSource DECI2;
+		extern LogSource IOP;
+		extern LogSource SysOut;
+		extern LogSource PGIF;
+	}
+}

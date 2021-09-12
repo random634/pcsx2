@@ -108,3 +108,57 @@ LogStyle LogSource::getStyle(LogLevel level) const
 	else
 		return m_style;
 }
+
+LogSource Log::PCSX2     ("PCSX2",       LogStyle::General,  nullptr);
+LogSource Log::Console   ("Console",     LogStyle::General,  &PCSX2);
+LogSource Log::SIF       ("SIF",         LogStyle::Emulator, &PCSX2);
+LogSource Log::Recording ("Recording",   LogStyle::General,  &PCSX2);
+LogSource Log::RecControl("Rec.Control", LogStyle::General,  &PCSX2);
+LogSource Log::EERecPerf ("EERecPerf",   LogStyle::Emulator, &PCSX2);
+
+LogSource Log::EE::Base     ("EE",          LogStyle::Emulator, &PCSX2);
+LogSource Log::EE::Bios     ("EE.BIOS",     LogStyle::Emulator, &Base);
+LogSource Log::EE::Memory   ("EE.Mem",      LogStyle::Emulator, &Base);
+LogSource Log::EE::GIFtag   ("EE.GIFtag",   LogStyle::Emulator, &Base);
+LogSource Log::EE::VIFcode  ("EE.VIFcode",  LogStyle::Emulator, &Base);
+LogSource Log::EE::MSKPATH3 ("EE.MSKPath3", LogStyle::Emulator, &Base);
+LogSource Log::EE::R5900    ("EE.R5900",    LogStyle::Emulator, &Base);
+LogSource Log::EE::COP0     ("EE.COP0",     LogStyle::Emulator, &Base);
+LogSource Log::EE::COP1     ("EE.COP1",     LogStyle::Emulator, &Base);
+LogSource Log::EE::COP2     ("EE.COP2",     LogStyle::Emulator, &Base);
+LogSource Log::EE::Cache    ("EE.Cache",    LogStyle::Emulator, &Base);
+LogSource Log::EE::KnownHW  ("EE.KnownHW",  LogStyle::Emulator, &Base);
+LogSource Log::EE::UnknownHW("EE.UnkHW",    LogStyle::Emulator, &Base);
+LogSource Log::EE::DMAHW    ("EE.DMA",      LogStyle::Emulator, &Base);
+LogSource Log::EE::IPU      ("EE.IPU",      LogStyle::Emulator, &Base);
+LogSource Log::EE::DMAC     ("EE.DMAC",     LogStyle::Emulator, &Base);
+LogSource Log::EE::Counters ("EE.Counters", LogStyle::Emulator, &Base);
+LogSource Log::EE::SPR      ("EE.SPR",      LogStyle::Emulator, &Base);
+LogSource Log::EE::VIF      ("EE.VIF",      LogStyle::Emulator, &Base);
+LogSource Log::EE::GIF      ("EE.GIF",      LogStyle::Emulator, &Base);
+
+LogSource Log::IOP::Base     ("IOP",          LogStyle::Emulator, &PCSX2);
+LogSource Log::IOP::Bios     ("IOP.BIOS",     LogStyle::Emulator, &Base);
+LogSource Log::IOP::Memcards ("IOP.Memcards", LogStyle::Emulator, &Base);
+LogSource Log::IOP::PAD      ("IOP.PAD",      LogStyle::Emulator, &Base);
+LogSource Log::IOP::R3000A   ("IOP.R3000A",   LogStyle::Emulator, &Base);
+LogSource Log::IOP::COP2     ("IOP.COP2",     LogStyle::Emulator, &Base);
+LogSource Log::IOP::Memory   ("IOP.Memory",   LogStyle::Emulator, &Base);
+LogSource Log::IOP::KnownHW  ("IOP.KnownHW",  LogStyle::Emulator, &Base);
+LogSource Log::IOP::UnknownHW("IOP.UnkHW",    LogStyle::Emulator, &Base);
+LogSource Log::IOP::DMAHW    ("IOP.DMA",      LogStyle::Emulator, &Base);
+LogSource Log::IOP::SPU2     ("IOP.SPU2",     LogStyle::Emulator, &Base);
+LogSource Log::IOP::USB      ("IOP.USB",      LogStyle::Emulator, &Base);
+LogSource Log::IOP::FW       ("IOP.FW",       LogStyle::Emulator, &Base);
+LogSource Log::IOP::DMAC     ("IOP.DMAC",     LogStyle::Emulator, &Base);
+LogSource Log::IOP::Counters ("IOP.Counters", LogStyle::Emulator, &Base);
+LogSource Log::IOP::CDVD     ("IOP.CDVD",     LogStyle::Emulator, &Base);
+LogSource Log::IOP::MDEC     ("IOP.MDEC",     LogStyle::Emulator, &Base);
+
+LogSource Log::SysCon::Base  ("Sys",       LogStyle::GameLog,  &PCSX2);
+LogSource Log::SysCon::ELF   ("Sys.ELF",   LogStyle::GameLog,  &Base);
+LogSource Log::SysCon::EE    ("Sys.EE",    LogStyle::GameLog,  &Base);
+LogSource Log::SysCon::DECI2 ("Sys.DECI2", LogStyle::GameLog,  &Base);
+LogSource Log::SysCon::IOP   ("Sys.IOP",   LogStyle::GameLog,  &Base);
+LogSource Log::SysCon::SysOut("Sys.Out",   LogStyle::GameLog,  &Base);
+LogSource Log::SysCon::PGIF  ("Sys.PGIF",  LogStyle::GameLog,  &Base);
