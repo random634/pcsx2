@@ -36,7 +36,7 @@ public:
 	virtual void outputText(LogStyle style, std::string_view msg) = 0;
 };
 
-class FileLogSink : public TextLogSink
+class FileLogSink final : public TextLogSink
 {
 	/// File to output to
 	FILE* m_file;
@@ -52,7 +52,7 @@ public:
 #ifdef __POSIX__
 extern FileLogSink defaultLogSink;
 #else
-class OutputDebugStringLogSink : public TextLogSink
+class OutputDebugStringLogSink final : public TextLogSink
 {
 	/// Lock
 	std::mutex m_mtx;
@@ -66,7 +66,7 @@ public:
 extern OutputDebugStringLogSink defaultLogSink;
 #endif
 
-class MultiOutputLogSink : public LogSink
+class MultiOutputLogSink final : public LogSink
 {
 	std::vector<LogSink*> m_outputs;
 public:
