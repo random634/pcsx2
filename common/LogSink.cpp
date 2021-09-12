@@ -33,7 +33,7 @@ static std::string_view stringify(LogLevel level)
 	}
 }
 
-void TextLogSink::logOnThread(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg)
+void TextLogSink::logOnThread(LogLevel level, LogStyle style, u8 indent, const LogSource& source, std::string_view msg)
 {
 	if (msg.empty())
 		return;
@@ -43,6 +43,8 @@ void TextLogSink::logOnThread(LogLevel level, LogStyle style, const LogSource& s
 		title = fmt::format("[{:^8}] ", source.name());
 	else
 		title = fmt::format("[{:^8}][{:<5}] ", source.name(), stringify(level));
+	if (indent > 0)
+		title.resize(title.size() + indent * 4, ' ');
 
 	if (!m_currentLineSource)
 	{
@@ -101,7 +103,7 @@ FileLogSink::FileLogSink(FILE* file)
 void FileLogSink::log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg)
 {
 	std::lock_guard<std::mutex> l(m_mtx);
-	logOnThread(level, style, source, msg);
+	logOnThread(level, style, source.currentIndent(), source, msg);
 	fflush(m_file);
 }
 
@@ -170,7 +172,7 @@ void log(LogLevel level, LogStyle style, const LogSource& source, std::string_vi
 	if (!IsDebuggerPresent())
 		return;
 	std::lock_guard<std::mutex> l(m_mtx);
-	logOnThread(level, style, source, msg);
+	logOnThread(level, style, source.currentIndent(), source, msg);
 }
 #endif
 

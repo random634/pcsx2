@@ -26,7 +26,7 @@ public:
 	bool m_supportsColor;
 	TextLogSink(bool supportsColor): m_supportsColor(supportsColor) {}
 	/// Like LogSink::log but *not thread safe*.  Use some sort of locking mechanism to ensure thread safety before calling this.
-	void logOnThread(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg);
+	void logOnThread(LogLevel level, LogStyle style, u8 indent, const LogSource& source, std::string_view msg);
 	virtual void outputNewline() = 0;
 	virtual void outputText(LogStyle style, std::string_view msg) = 0;
 };

@@ -76,6 +76,7 @@ class LogSource
 	LogLevel m_cachedLevel; ///< The log level to be used for deciding whether to log
 	LogLevel m_localLevel;  ///< The log level assigned to this source (Unset means inherit)
 	LogStyle m_style;       ///< The style to display normal priority logs from this source
+	u8       m_indent;      ///< Current indent level
 	LogSink* m_cachedSink;  ///< The sink to be used for logging
 	LogSink* m_localSink;   ///< The sink assigned to this source (null means inherit)
 	const char* m_name;     ///< This source's name
@@ -211,6 +212,24 @@ public:
 		return m_name;
 	}
 
+	/// The source's current indent level
+	u8 currentIndent() const
+	{
+		return m_indent;
+	}
+
+	/// Increase the source's indent level
+	void increaseIndent(u8 amt)
+	{
+		m_indent += amt;
+	}
+
+	/// Decrease the source's indent level
+	void decreaseIndent(u8 amt)
+	{
+		m_indent -= amt;
+	}
+
 	/// Get the default style for the given log level
 	LogStyle getStyle(LogLevel level) const;
 
@@ -221,4 +240,23 @@ public:
 	/// Change the output of this source
 	/// Supply a nullptr to make the source inherit its parent's output
 	void setSink(LogSink* sink);
+};
+
+/// Increase a source's indent level until the end of the current scope
+class ScopedLogIndent
+{
+	LogSource& m_source;
+	u8 m_amt;
+public:
+	ScopedLogIndent(LogSource& source, u8 amt = 1)
+		: m_source(source)
+		, m_amt(amt)
+	{
+		m_source.increaseIndent(m_amt);
+	}
+
+	~ScopedLogIndent()
+	{
+		m_source.decreaseIndent(m_amt);
+	}
 };

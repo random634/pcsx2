@@ -20,6 +20,7 @@ LogSource::LogSource(const char* name, LogStyle style, LogSource* parent, LogLev
 	: m_cachedLevel(LogLevel::Unset)
 	, m_localLevel(baseLevel)
 	, m_style(style)
+	, m_indent(0)
 	, m_cachedSink(nullptr)
 	, m_localSink(nullptr)
 	, m_name(name)
