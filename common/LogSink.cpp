@@ -42,9 +42,9 @@ void TextLogSink::logOnThread(LogLevel level, LogStyle style, u8 indent, const L
 	if (!m_headersEnabled)
 		title.clear();
 	else if (m_supportsColor)
-		title = fmt::format("[{:^8}] ", source.name());
+		title = fmt::format("[{:^12}] ", source.name());
 	else
-		title = fmt::format("[{:^8}][{:<5}] ", source.name(), stringify(level));
+		title = fmt::format("[{:^12}][{:<5}] ", source.name(), stringify(level));
 	if (indent > 0)
 		title.resize(title.size() + indent * 4, ' ');
 
