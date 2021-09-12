@@ -111,6 +111,7 @@ LogStyle LogSource::getStyle(LogLevel level) const
 
 LogSource Log::PCSX2     ("PCSX2",       LogStyle::General,  nullptr);
 LogSource Log::Console   ("Console",     LogStyle::General,  &PCSX2);
+LogSource Log::Dev       ("DevCon",      LogStyle::General,  &PCSX2);
 LogSource Log::SIF       ("SIF",         LogStyle::Emulator, &PCSX2);
 LogSource Log::Recording ("Recording",   LogStyle::General,  &PCSX2);
 LogSource Log::RecControl("Rec.Control", LogStyle::General,  &PCSX2);

@@ -333,6 +333,7 @@ namespace Log
 {
 	extern LogSource PCSX2;   ///< Top level log source, used for general information
 	extern LogSource Console; ///< Random uncategorized printouts
+	extern LogSource Dev;     ///< For compatibility with old DevCon logging
 	// TODO: Sif has special logging needs...?
 	extern LogSource SIF;
 	extern LogSource EERecPerf;
