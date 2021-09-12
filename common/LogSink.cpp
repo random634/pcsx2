@@ -39,7 +39,9 @@ void TextLogSink::logOnThread(LogLevel level, LogStyle style, u8 indent, const L
 		return;
 
 	std::string title;
-	if (m_supportsColor)
+	if (!m_headersEnabled)
+		title.clear();
+	else if (m_supportsColor)
 		title = fmt::format("[{:^8}] ", source.name());
 	else
 		title = fmt::format("[{:^8}][{:<5}] ", source.name(), stringify(level));
@@ -121,7 +123,8 @@ static const char* styleToTerminalFormat(LogStyle style)
 	switch (style)
 	{
 		case LogStyle::General:  return nullptr;
-		case LogStyle::Header:   return "\033[1m";         // Bold
+		case LogStyle::Special:  return "\033[1m\033[32m"; // Bold Green
+		case LogStyle::Header:   return "\033[1m\033[34m"; // Bold Blue
 		case LogStyle::GameLog:  return "\033[2m";         // Light
 		case LogStyle::Emulator: return "\033[34m";        // Blue
 		case LogStyle::Trace:    return "\033[2m\033[34m"; // Light Blue

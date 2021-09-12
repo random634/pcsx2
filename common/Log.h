@@ -53,7 +53,8 @@ static bool operator>=(LogLevel a, LogLevel b)
 enum class LogStyle : u8
 {
 	General,  ///< General information
-	Header,   ///< Header for larger general information
+	Special,  ///< Infrequent state information... or something like that
+	Header,   ///< Header for a block of information
 	GameLog,  ///< Logs that come from the game itself
 	Emulator, ///< Logs from emulation of emulator components
 	Trace,    ///< Trace level logs

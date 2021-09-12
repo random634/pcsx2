@@ -24,7 +24,12 @@ class TextLogSink : public LogSink
 	LogLevel m_currentLineLevel = LogLevel::Unset;
 public:
 	bool m_supportsColor;
-	TextLogSink(bool supportsColor): m_supportsColor(supportsColor) {}
+	bool m_headersEnabled;
+	TextLogSink(bool supportsColor, bool headersEnabled = true)
+		: m_supportsColor(supportsColor)
+		, m_headersEnabled(headersEnabled)
+	{
+	}
 	/// Like LogSink::log but *not thread safe*.  Use some sort of locking mechanism to ensure thread safety before calling this.
 	void logOnThread(LogLevel level, LogStyle style, u8 indent, const LogSource& source, std::string_view msg);
 	virtual void outputNewline() = 0;
