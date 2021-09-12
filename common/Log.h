@@ -295,7 +295,7 @@ public:
 		m_log.push_back('\n');
 	}
 
-	void submit()
+	void flush()
 	{
 		if (m_log.empty())
 			return;
@@ -305,7 +305,7 @@ public:
 
 	~MultiPieceLog()
 	{
-		submit();
+		flush();
 	}
 };
 
