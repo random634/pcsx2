@@ -151,7 +151,7 @@ void FileLogSink::outputText(LogStyle style, std::string_view msg)
 }
 
 #ifdef __POSIX__
-FileLogSink defaultLogSink(stderr);
+FileLogSink defaultLogSink(stdout);
 #else
 OutputDebugStringLogSink::OutputDebugStringLogSink()
 	: FileLogSink(false)
