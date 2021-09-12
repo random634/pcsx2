@@ -16,6 +16,7 @@
 #pragma once
 
 #include "Pcsx2Defs.h"
+#include "FmtWX.h"
 #include <fmt/core.h>
 #include <vector>
 

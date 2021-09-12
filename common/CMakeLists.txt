@@ -71,6 +71,7 @@ target_sources(common PRIVATE
 	Dependencies.h
 	EventSource.h
 	Exceptions.h
+	FmtWX.h
 	General.h
 	Log.h
 	LogSink.h
