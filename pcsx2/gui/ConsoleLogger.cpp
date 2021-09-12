@@ -21,11 +21,13 @@
 
 #include "common/Console.h"
 #include "common/IniInterface.h"
+#include "common/LogSink.h"
 #include "common/SafeArray.inl"
 #include "Dialogs/LogOptionsDialog.h"
 #include "DebugTools/Debug.h"
 
 #include <wx/textfile.h>
+#include <atomic>
 
 wxDECLARE_EVENT(pxEvt_SetTitleText, wxCommandEvent);
 wxDECLARE_EVENT(pxEvt_FlushQueue, wxCommandEvent);
@@ -362,6 +364,8 @@ void ConLog_LoadSaveSettings( IniInterface& ini )
 			ini.Entry( log->GetCategory() + L"." + log->GetShortName(), log->Enabled, ConLogDefaults[i] );
 		}
 	}
+
+	wxGetApp().EnableAllLogging();
 
 	ConLogInitialized = true;
 }
@@ -1209,30 +1213,98 @@ static const IConsoleWriter	ConsoleWriter_WindowAndFile =
 	0
 };
 
+static ConsoleColors logStyleToConsoleColor(LogStyle style)
+{
+	switch (style)
+	{
+		case LogStyle::General:  return Color_Black;
+		case LogStyle::Special:  return Color_StrongGreen;
+		case LogStyle::Header:   return Color_StrongBlue;
+		case LogStyle::GameLog:  return Color_Yellow;
+		case LogStyle::Emulator: return Color_Blue;
+		case LogStyle::Trace:    return Color_White;
+		case LogStyle::Warning:  return Color_StrongOrange;
+		case LogStyle::Error:    return Color_StrongRed;
+	}
+}
+
+class ConsoleLogSink final : public LogSink
+{
+public:
+	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override
+	{
+		wxString str = wxString::FromUTF8(msg.data(), msg.size());
+		ScopedLogLock locker;
+		bool needsSleep = locker.WindowPtr && locker.WindowPtr->Write(logStyleToConsoleColor(style), str);
+		locker.Release();
+		if (needsSleep)
+			wxGetApp().Ping();
+	}
+};
+
+template <size_t Len>
+class MultiOutputLogSink final : public LogSink
+{
+public:
+	std::array<std::atomic<LogSink*>, Len> m_outputs = {};
+	MultiOutputLogSink() {}
+	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override
+	{
+		for (std::atomic<LogSink*>& output : m_outputs)
+		{
+			LogSink* local = output.load(std::memory_order_acquire);
+			if (local)
+				local->log(level, style, source, msg);
+		}
+	}
+};
+
+enum LogSinks
+{
+	LogSinkConsole = 0,
+	LogSinkEmulog  = 1,
+	LogSinkDefault = 2,
+};
+
+static ConsoleLogSink consoleLogSink;
+static FileLogSink emulogLogSink(nullptr);
+static MultiOutputLogSink<3> logSinks;
+
 void Pcsx2App::EnableAllLogging()
 {
 	AffinityAssert_AllowFrom_MainUI();
+
+	Log::PCSX2.setSink(&logSinks);
 
 	const bool logBoxOpen = (m_ptr_ProgramLog != NULL);
 	const IConsoleWriter* newHandler = NULL;
 
 	if( emuLog )
 	{
-		if( !m_StdoutRedirHandle ) m_StdoutRedirHandle = std::unique_ptr<PipeRedirectionBase>(NewPipeRedir(stdout));
+		emulogLogSink.m_file = emuLog;
+		logSinks.m_outputs[LogSinkEmulog] = &emulogLogSink;
 		if( !m_StderrRedirHandle ) m_StderrRedirHandle = std::unique_ptr<PipeRedirectionBase>(NewPipeRedir(stderr));
 		newHandler = logBoxOpen ? (IConsoleWriter*)&ConsoleWriter_WindowAndFile : (IConsoleWriter*)&ConsoleWriter_File;
 	}
 	else
 	{
+		emulogLogSink.m_file = nullptr;
+		logSinks.m_outputs[LogSinkEmulog] = nullptr;
 		if( logBoxOpen )
 		{
-			if (!m_StdoutRedirHandle) m_StdoutRedirHandle = std::unique_ptr<PipeRedirectionBase>(NewPipeRedir(stdout));
 			if (!m_StderrRedirHandle) m_StderrRedirHandle = std::unique_ptr<PipeRedirectionBase>(NewPipeRedir(stderr));
 			newHandler = &ConsoleWriter_Window;
 		}
 		else
+		{
 			newHandler = &ConsoleWriter_Stdout;
+		}
 	}
+	logSinks.m_outputs[LogSinkConsole] = logBoxOpen ? &consoleLogSink : nullptr;
+	if (!logBoxOpen || (g_Conf && g_Conf->EmuOptions.ConsoleToStdio))
+		logSinks.m_outputs[LogSinkDefault] = &defaultLogSink;
+	else
+		logSinks.m_outputs[LogSinkDefault] = nullptr;
 	Console_SetActiveHandler( *newHandler );
 }
 
@@ -1242,6 +1314,7 @@ void Pcsx2App::DisableDiskLogging() const
 {
 	AffinityAssert_AllowFrom_MainUI();
 
+	logSinks.m_outputs[LogSinkEmulog] = nullptr;
 	const bool logBoxOpen = (GetProgramLog() != NULL);
 	Console_SetActiveHandler( logBoxOpen ? (IConsoleWriter&)ConsoleWriter_Window : (IConsoleWriter&)ConsoleWriter_Stdout );
 
@@ -1262,6 +1335,7 @@ void Pcsx2App::DisableWindowLogging() const
 {
 	AffinityAssert_AllowFrom_MainUI();
 	Console_SetActiveHandler( (emuLog!=NULL) ? (IConsoleWriter&)ConsoleWriter_File : (IConsoleWriter&)ConsoleWriter_Stdout );
+	logSinks.m_outputs[LogSinkConsole] = nullptr;
 }
 
 void OSDlog(ConsoleColors color, bool console, const std::string& str)
