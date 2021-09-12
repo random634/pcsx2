@@ -377,8 +377,8 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 			return false;
 		}
 
-		DevCon.WriteLn(Color_Gray, L"%-32s @ %08p -> %08p [%umb]", WX_STR(m_name),
-			m_baseptr, (uptr)m_baseptr + toReserveBytes, toReserveBytes / _1mb);
+		Log::Console.trace("{:<32} @ {} -> {} [{}mb]\n", m_name,
+			(void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes), toReserveBytes / _1mb);
 	}
 	else if (newPages < m_pages_reserved)
 	{
@@ -388,12 +388,12 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 		uint toRemovePages = m_pages_reserved - newPages;
 		uint toRemoveBytes = toRemovePages * __pagesize;
 
-		DevCon.WriteLn(L"%-32s is being shrunk by %u pages.", WX_STR(m_name), toRemovePages);
+		Log::Console.debug("{:<32} is being shrunk by {} pages.\n", m_name, toRemovePages);
 
 		m_allocator->Free(GetPtrEnd() - toRemoveBytes, toRemoveBytes);
 
-		DevCon.WriteLn(Color_Gray, L"%-32s @ %08p -> %08p [%umb]", WX_STR(m_name),
-			m_baseptr, GetPtrEnd(), GetReserveSizeInBytes() / _1mb);
+		Log::Console.trace("{:<32} @ {} -> {} [{}mb]\n", m_name,
+			(void*)m_baseptr, (void*)GetPtrEnd(), GetReserveSizeInBytes() / _1mb);
 	}
 
 	m_pages_reserved = newPages;

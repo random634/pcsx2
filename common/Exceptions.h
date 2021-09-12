@@ -19,6 +19,7 @@
 #include <wx/string.h>
 #include "common/Assertions.h"
 #include "common/Dependencies.h"
+#include "common/Log.h"
 
 // Because wxTrap isn't available on Linux builds of wxWidgets (non-Debug, typically)
 void pxTrap();
@@ -37,8 +38,7 @@ void pxTrap();
 	{ \
 		try \
 		{ \
-			Console.Error("Unhandled BaseException in %s (ignored!):", funcname); \
-			Console.Error(ex.FormatDiagnosticMessage()); \
+			Log::Console.error("Unhandled BaseException in {} (ignored!): {}\n", funcname, ex.FormatDiagnosticMessage()); \
 		} \
 		catch (...) \
 		{ \
@@ -49,8 +49,7 @@ void pxTrap();
 	{ \
 		try \
 		{ \
-			Console.Error("Unhandled std::exception in %s (ignored!):", funcname); \
-			Console.Error(ex.what()); \
+			Log::Console.error("Unhandled std::exception in {} (ignored!): {}\n", funcname, ex.what()); \
 		} \
 		catch (...) \
 		{ \

@@ -218,7 +218,7 @@ void SysLogMachineCaps()
 	Log::PCSX2.info(
 		"    Operating System =  {}\n"
 		"    Physical RAM     =  {} MB\n",
-		GetOSVersionString().utf8_string(),
+		GetOSVersionString(),
 		(u32)(GetPhysicalMemory() / _1mb)
 	);
 
@@ -231,11 +231,11 @@ void SysLogMachineCaps()
 		"    x86PType         =  {}\n"
 		"    x86Flags         =  {:08x} {:08x}\n"
 		"    x86EFlags        =  {:08x}\n\n",
-		fromUTF8(x86caps.FamilyName).Trim().Trim(false).utf8_string(),
+		fromUTF8(x86caps.FamilyName).Trim().Trim(false),
 		x86caps.VendorName, x86caps.StepID,
 		speed / 1000, speed % 1000,
 		x86caps.LogicalCores, (x86caps.LogicalCores == 1) ? "" : "s",
-		x86caps.GetTypeName().utf8_string(),
+		x86caps.GetTypeName(),
 		x86caps.Flags, x86caps.Flags2,
 		x86caps.EFlags
 	);
@@ -260,9 +260,9 @@ void SysLogMachineCaps()
 	};
 
 	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "x86 Features Detected:\n");
-	Log::PCSX2.info("    {}\n", JoinString(features[0], L".. ").utf8_string());
+	Log::PCSX2.info("    {}\n", JoinString(features[0], L".. "));
 	if (!result[1].IsEmpty())
-		Log::PCSX2.info("    {}\n", JoinString(features[1], L".. ").utf8_string());
+		Log::PCSX2.info("    {}\n", JoinString(features[1], L".. "));
 #ifdef __M_X86_64
 	Log::PCSX2.info("    Pcsx2 was compiled as 64-bits.\n");
 #endif

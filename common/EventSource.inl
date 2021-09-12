@@ -16,6 +16,7 @@
 #pragma once
 
 #include "common/Threading.h"
+#include "common/Log.h"
 
 using Threading::ScopedLock;
 
@@ -80,7 +81,7 @@ __fi void EventSource<ListenerType>::_DispatchRaw(ListenerIterator iter, const L
 			}
 			else
 			{
-				Console.Error(L"Ignoring runtime error thrown from event listener: " + ex.FormatDiagnosticMessage());
+				Log::Console.error("Ignoring runtime error thrown from event listener: {}\n", ex.FormatDiagnosticMessage());
 			}
 		}
 		catch (BaseException& ex)
@@ -90,7 +91,7 @@ __fi void EventSource<ListenerType>::_DispatchRaw(ListenerIterator iter, const L
 				ex.DiagMsg() = L"Non-runtime BaseException thrown from event listener .. " + ex.DiagMsg();
 				throw;
 			}
-			Console.Error(L"Ignoring non-runtime BaseException thrown from event listener: " + ex.FormatDiagnosticMessage());
+			Log::Console.error("Ignoring non-runtime BaseException thrown from event listener: {}\n", ex.FormatDiagnosticMessage());
 		}
 		++iter;
 	}

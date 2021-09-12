@@ -47,6 +47,7 @@ BIOS
 #include "ps2/BiosTools.h"
 #include "SPU2/spu2.h"
 
+#include "common/Log.h"
 #include "common/PageFaultSource.h"
 
 #ifdef ENABLECACHE
@@ -69,7 +70,7 @@ void memSetUserMode() {
 
 u16 ba0R16(u32 mem)
 {
-	//MEM_LOG("ba00000 Memory read16 address %x", mem);
+	//Log::EE::Memory.info("ba00000 Memory read16 address {:x}\n", mem);
 
 	if (mem == 0x1a000006) {
 		static int ba6;
@@ -85,7 +86,7 @@ u16 ba0R16(u32 mem)
 void MyMemCheck(u32 mem)
 {
     if( mem == 0x1c02f2a0 )
-        Console.WriteLn("yo; (mem == 0x1c02f2a0) in MyMemCheck...");
+        Log::Console.info("yo; (mem == 0x1c02f2a0) in MyMemCheck...\n");
 }
 
 /////////////////////////////
@@ -209,44 +210,44 @@ void memMapUserMem()
 }
 
 static mem8_t __fastcall nullRead8(u32 mem) {
-	MEM_LOG("Read uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Read uninstalled memory at address {:08x}n", mem);
 	return 0;
 }
 static mem16_t __fastcall nullRead16(u32 mem) {
-	MEM_LOG("Read uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Read uninstalled memory at address {:08x}n", mem);
 	return 0;
 }
 static mem32_t __fastcall nullRead32(u32 mem) {
-	MEM_LOG("Read uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Read uninstalled memory at address {:08x}n", mem);
 	return 0;
 }
 static void __fastcall nullRead64(u32 mem, mem64_t *out) {
-	MEM_LOG("Read uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Read uninstalled memory at address {:08x}n", mem);
 	*out = 0;
 }
 static void __fastcall nullRead128(u32 mem, mem128_t *out) {
-	MEM_LOG("Read uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Read uninstalled memory at address {:08x}n", mem);
 	ZeroQWC(out);
 }
 static void __fastcall nullWrite8(u32 mem, mem8_t value)
 {
-	MEM_LOG("Write uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Write uninstalled memory at address {:08x}n", mem);
 }
 static void __fastcall nullWrite16(u32 mem, mem16_t value)
 {
-	MEM_LOG("Write uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Write uninstalled memory at address {:08x}n", mem);
 }
 static void __fastcall nullWrite32(u32 mem, mem32_t value)
 {
-	MEM_LOG("Write uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Write uninstalled memory at address {:08x}n", mem);
 }
 static void __fastcall nullWrite64(u32 mem, const mem64_t *value)
 {
-	MEM_LOG("Write uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Write uninstalled memory at address {:08x}n", mem);
 }
 static void __fastcall nullWrite128(u32 mem, const mem128_t *value)
 {
-	MEM_LOG("Write uninstalled memory at address %08x", mem);
+	Log::EE::Memory.info("Write uninstalled memory at address {:08x}n", mem);
 }
 
 template<int p>
@@ -261,13 +262,13 @@ static mem8_t __fastcall _ext_memRead8 (u32 mem)
 		case 7: // dev9
 		{
 			mem8_t retval = DEV9read8(mem & ~0xa4000000);
-			Console.WriteLn("DEV9 read8 %8.8lx: %2.2lx", mem & ~0xa4000000, retval);
+			Log::Console.info("DEV9 read8 {:08x}: {:02x}\n", mem & ~0xa4000000, retval);
 			return retval;
 		}
 		default: break;
 	}
 
-	MEM_LOG("Unknown Memory Read8   from address %8.8x", mem);
+	Log::EE::Memory.info("Unknown Memory Read8   from address {:08x}\n", mem);
 	cpuTlbMissR(mem, cpuRegs.branch);
 	return 0;
 }
@@ -278,7 +279,7 @@ static mem16_t __fastcall _ext_memRead16(u32 mem)
 	switch (p)
 	{
 		case 4: // b80
-			MEM_LOG("b800000 Memory read16 address %x", mem);
+			Log::EE::Memory.info("b800000 Memory read16 address {:x}\n", mem);
 			return 0;
 		case 5: // ba0
 			return ba0R16(mem);
@@ -288,7 +289,7 @@ static mem16_t __fastcall _ext_memRead16(u32 mem)
 		case 7: // dev9
 		{
 			mem16_t retval = DEV9read16(mem & ~0xa4000000);
-			Console.WriteLn("DEV9 read16 %8.8lx: %4.4lx", mem & ~0xa4000000, retval);
+			Log::Console.info("DEV9 read16 {:08x}: {:04x}\n", mem & ~0xa4000000, retval);
 			return retval;
 		}
 
@@ -297,7 +298,7 @@ static mem16_t __fastcall _ext_memRead16(u32 mem)
 
 		default: break;
 	}
-	MEM_LOG("Unknown Memory read16  from address %8.8x", mem);
+	Log::EE::Memory.info("Unknown Memory read16  from address {:08x}\n", mem);
 	cpuTlbMissR(mem, cpuRegs.branch);
 	return 0;
 }
@@ -312,13 +313,13 @@ static mem32_t __fastcall _ext_memRead32(u32 mem)
 		case 7: // dev9
 		{
 			mem32_t retval = DEV9read32(mem & ~0xa4000000);
-			Console.WriteLn("DEV9 read32 %8.8lx: %8.8lx", mem & ~0xa4000000, retval);
+			Log::Console.info("DEV9 read32 {:08x}: {:08x}\n", mem & ~0xa4000000, retval);
 			return retval;
 		}
 		default: break;
 	}
 
-	MEM_LOG("Unknown Memory read32  from address %8.8x (Status=%8.8x)", mem, cpuRegs.CP0.n.Status.val);
+	Log::EE::Memory.info("Unknown Memory read32  from address {:08x} (Status={:08x})\n", mem, cpuRegs.CP0.n.Status.val);
 	cpuTlbMissR(mem, cpuRegs.branch);
 	return 0;
 }
@@ -333,7 +334,7 @@ static void __fastcall _ext_memRead64(u32 mem, mem64_t *out)
 		default: break;
 	}
 
-	MEM_LOG("Unknown Memory read64  from address %8.8x", mem);
+	Log::EE::Memory.info("Unknown Memory read64  from address {:08x}\n", mem);
 	cpuTlbMissR(mem, cpuRegs.branch);
 }
 
@@ -350,7 +351,7 @@ static void __fastcall _ext_memRead128(u32 mem, mem128_t *out)
 		default: break;
 	}
 
-	MEM_LOG("Unknown Memory read128 from address %8.8x", mem);
+	Log::EE::Memory.info("Unknown Memory read128 from address {:08x}\n", mem);
 	cpuTlbMissR(mem, cpuRegs.branch);
 }
 
@@ -364,12 +365,12 @@ static void __fastcall _ext_memWrite8 (u32 mem, mem8_t  value)
 			gsWrite8(mem, value); return;
 		case 7: // dev9
 			DEV9write8(mem & ~0xa4000000, value);
-			Console.WriteLn("DEV9 write8 %8.8lx: %2.2lx", mem & ~0xa4000000, value);
+			Log::Console.info("DEV9 write8 {:08x}: {:02x}\n", mem & ~0xa4000000, value);
 			return;
 		default: break;
 	}
 
-	MEM_LOG("Unknown Memory write8   to  address %x with data %2.2x", mem, value);
+	Log::EE::Memory.info("Unknown Memory write8   to  address {:x} with data {:02x}\n", mem, value);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 
@@ -378,19 +379,19 @@ static void __fastcall _ext_memWrite16(u32 mem, mem16_t value)
 {
 	switch (p) {
 		case 5: // ba0
-			MEM_LOG("ba00000 Memory write16 to  address %x with data %x", mem, value);
+			Log::EE::Memory.info("ba00000 Memory write16 to  address {:x} with data {:x}\n", mem, value);
 			return;
 		case 6: // gsm
 			gsWrite16(mem, value); return;
 		case 7: // dev9
 			DEV9write16(mem & ~0xa4000000, value);
-			Console.WriteLn("DEV9 write16 %8.8lx: %4.4lx", mem & ~0xa4000000, value);
+			Log::Console.info("DEV9 write16 {:08x}: {:04x}\n", mem & ~0xa4000000, value);
 			return;
 		case 8: // spu2
 			SPU2write(mem, value); return;
 		default: break;
 	}
-	MEM_LOG("Unknown Memory write16  to  address %x with data %4.4x", mem, value);
+	Log::EE::Memory.info("Unknown Memory write16  to  address {:x} with data {:04x}\n", mem, value);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 
@@ -402,11 +403,11 @@ static void __fastcall _ext_memWrite32(u32 mem, mem32_t value)
 			gsWrite32(mem, value); return;
 		case 7: // dev9
 			DEV9write32(mem & ~0xa4000000, value);
-			Console.WriteLn("DEV9 write32 %8.8lx: %8.8lx", mem & ~0xa4000000, value);
+			Log::Console.info("DEV9 write32 {:08x}: {:08x}\n", mem & ~0xa4000000, value);
 			return;
 		default: break;
 	}
-	MEM_LOG("Unknown Memory write32  to  address %x with data %8.8x", mem, value);
+	Log::EE::Memory.info("Unknown Memory write32  to  address {} with data {:08x}\n", mem, value);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 
@@ -422,7 +423,7 @@ static void __fastcall _ext_memWrite64(u32 mem, const mem64_t* value)
 		//	gsWrite64(mem & ~0xa0000000, *value); return;
 	}*/
 
-	MEM_LOG("Unknown Memory write64  to  address %x with data %8.8x_%8.8x", mem, (u32)(*value>>32), (u32)*value);
+	Log::EE::Memory.info("Unknown Memory write64  to  address {:x} with data {:08x}_{:08x}\n", mem, (u32)(*value>>32), (u32)*value);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 
@@ -439,7 +440,7 @@ static void __fastcall _ext_memWrite128(u32 mem, const mem128_t *value)
 		//	gsWrite64(mem+8, value[1]); return;
 	}*/
 
-	MEM_LOG("Unknown Memory write128 to  address %x with data %8.8x_%8.8x_%8.8x_%8.8x", mem, ((u32*)value)[3], ((u32*)value)[2], ((u32*)value)[1], ((u32*)value)[0]);
+	Log::EE::Memory.info("Unknown Memory write128 to  address {} with data {:08x}_{:08x}_{:08x}_{:08x}\n", mem, ((u32*)value)[3], ((u32*)value)[2], ((u32*)value)[1], ((u32*)value)[0]);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 
@@ -641,7 +642,7 @@ template<int vunum> static void __fc vuDataWrite128(u32 addr, const mem128_t* da
 
 void memSetPageAddr(u32 vaddr, u32 paddr)
 {
-	//Console.WriteLn("memSetPageAddr: %8.8x -> %8.8x", vaddr, paddr);
+	//Log::Console.info("memSetPageAddr: {:08x} -> {:08x}\n", vaddr, paddr);
 
 	vtlb_VMap(vaddr,paddr,0x1000);
 
@@ -649,7 +650,7 @@ void memSetPageAddr(u32 vaddr, u32 paddr)
 
 void memClearPageAddr(u32 vaddr)
 {
-	//Console.WriteLn("memClearPageAddr: %8.8x", vaddr);
+	//Log::Console.info("memClearPageAddr: {:08x}\n", vaddr);
 
 	vtlb_VMapUnmap(vaddr,0x1000); // -> whut ?
 
@@ -945,8 +946,8 @@ void mmap_MarkCountedRamPage( u32 paddr )
 	if( m_PageProtectInfo[rampage].Mode == ProtMode_Write )
 		return;		// skip town if we're already protected.
 
-	eeRecPerfLog.Write( (m_PageProtectInfo[rampage].Mode == ProtMode_Manual) ?
-		"Re-protecting page @ 0x%05x" : "Protected page @ 0x%05x",
+	Log::EERecPerf.info( (m_PageProtectInfo[rampage].Mode == ProtMode_Manual) ?
+		"Re-protecting page @ 0x{:05x}\n" : "Protected page @ 0x{:05x}\n",
 		paddr>>12
 	);
 
@@ -991,7 +992,7 @@ void mmap_PageFaultHandler::OnPageFaultEvent( const PageFaultInfo& info, bool& h
 //  (this function is called by default from the eerecReset).
 void mmap_ResetBlockTracking()
 {
-	//DbgCon.WriteLn( "vtlb/mmap: Block Tracking reset..." );
+	//Log::Console.debug("vtlb/mmap: Block Tracking reset...");
 	memzero( m_PageProtectInfo );
 	if (eeMem) HostSys::MemProtect( eeMem->Main, Ps2MemSize::MainRam, PageAccess_ReadWrite() );
 }

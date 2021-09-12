@@ -26,6 +26,7 @@
 //------------------------------------------------------------------
 
 #include "common/emitter/legacy_internal.h"
+#include "common/Log.h"
 
 emitterT void ModRM(uint mod, uint reg, uint rm)
 {
@@ -98,7 +99,7 @@ void x86SetJ8(u8* j8)
 
 	if (jump > 0x7f)
 	{
-		Console.Error("j8 greater than 0x7f!!");
+		Log::Console.error("j8 greater than 0x7f!!\n");
 		assert(0);
 	}
 	*j8 = (u8)jump;
@@ -110,7 +111,7 @@ void x86SetJ8A(u8* j8)
 
 	if (jump > 0x7f)
 	{
-		Console.Error("j8 greater than 0x7f!!");
+		Log::Console.error("j8 greater than 0x7f!!\n");
 		assert(0);
 	}
 

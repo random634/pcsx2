@@ -17,6 +17,7 @@
 #include "PrecompiledHeader.h"
 #include "Common.h"
 #include "COP0.h"
+#include "common/Log.h"
 
 u32 s_iLastCOP0Cycle = 0;
 u32 s_iLastPERFCycle[2] = { 0, 0 };
@@ -115,10 +116,10 @@ static __fi bool PERF_ShouldCountEvent( uint evt )
 void COP0_DiagnosticPCCR()
 {
 	if( cpuRegs.PERF.n.pccr.b.Event0 >= 7 && cpuRegs.PERF.n.pccr.b.Event0 <= 10 )
-		Console.Warning( "PERF/PCR0 Unsupported Update Event Mode = 0x%x", cpuRegs.PERF.n.pccr.b.Event0 );
+		Log::EE::COP0.warning("PERF/PCR0 Unsupported Update Event Mode = 0x{:x}\n", cpuRegs.PERF.n.pccr.b.Event0);
 
 	if( cpuRegs.PERF.n.pccr.b.Event1 >= 7 && cpuRegs.PERF.n.pccr.b.Event1 <= 10 )
-		Console.Warning( "PERF/PCR1 Unsupported Update Event Mode = 0x%x", cpuRegs.PERF.n.pccr.b.Event1 );
+		Log::EE::COP0.warning("PERF/PCR1 Unsupported Update Event Mode = 0x{:x}\n", cpuRegs.PERF.n.pccr.b.Event1);
 }
 extern int branch;
 __fi void COP0_UpdatePCCR()
@@ -282,7 +283,7 @@ void MapTLB(int i)
 
 void UnmapTLB(int i)
 {
-	//Console.WriteLn("Clear TLB %d: %08x-> [%08x %08x] S=%d G=%d ASID=%d Mask= %03X", i,tlb[i].VPN2,tlb[i].PFN0,tlb[i].PFN1,tlb[i].S,tlb[i].G,tlb[i].ASID,tlb[i].Mask);
+	Log::EE::COP0.trace("Clear TLB {}: {:08x}-> [{:08x} {:08x}] S={} G={} ASID={} Mask={:03X}\n", i,tlb[i].VPN2,tlb[i].PFN0,tlb[i].PFN1,tlb[i].S,tlb[i].G,tlb[i].ASID,tlb[i].Mask);
 	u32 mask, addr;
 	u32 saddr, eaddr;
 
@@ -297,7 +298,7 @@ void UnmapTLB(int i)
 		mask  = ((~tlb[i].Mask) << 1) & 0xfffff;
 		saddr = tlb[i].VPN2 >> 12;
 		eaddr = saddr + tlb[i].Mask + 1;
-	//	Console.WriteLn("Clear TLB: %08x ~ %08x",saddr,eaddr-1);
+		Log::EE::COP0.trace("Clear TLB: {:08x} ~ {:08x}\n", saddr, eaddr-1);
 		for (addr=saddr; addr<eaddr; addr++) {
 			if ((addr & mask) == ((tlb[i].VPN2 >> 12) & mask)) { //match
 				memClearPageAddr(addr << 12);
@@ -310,7 +311,7 @@ void UnmapTLB(int i)
 		mask  = ((~tlb[i].Mask) << 1) & 0xfffff;
 		saddr = (tlb[i].VPN2 >> 12) + tlb[i].Mask + 1;
 		eaddr = saddr + tlb[i].Mask + 1;
-	//	Console.WriteLn("Clear TLB: %08x ~ %08x",saddr,eaddr-1);
+		Log::EE::COP0.trace("Clear TLB: {:08x} ~ {:08x}\n", saddr, eaddr-1);
 		for (addr=saddr; addr<eaddr; addr++) {
 			if ((addr & mask) == ((tlb[i].VPN2 >> 12) & mask)) { //match
 				memClearPageAddr(addr << 12);
@@ -345,7 +346,7 @@ namespace OpcodeImpl {
 namespace COP0 {
 
 void TLBR() {
-	COP0_LOG("COP0_TLBR %d:%x,%x,%x,%x",
+	Log::EE::COP0.info("COP0_TLBR {}:{:x},{:x},{:x},{:x}\n",
 			cpuRegs.CP0.n.Index,   cpuRegs.CP0.n.PageMask, cpuRegs.CP0.n.EntryHi,
 			cpuRegs.CP0.n.EntryLo0, cpuRegs.CP0.n.EntryLo1);
 
@@ -362,7 +363,7 @@ void TLBWI() {
 
 	//if (j > 48) return;
 
-	COP0_LOG("COP0_TLBWI %d:%x,%x,%x,%x",
+	Log::EE::COP0.info("COP0_TLBWI {}:{:x},{:x},{:x},{:x}\n",
 			cpuRegs.CP0.n.Index,    cpuRegs.CP0.n.PageMask, cpuRegs.CP0.n.EntryHi,
 			cpuRegs.CP0.n.EntryLo0, cpuRegs.CP0.n.EntryLo1);
 
@@ -379,7 +380,7 @@ void TLBWR() {
 
 	//if (j > 48) return;
 
-DevCon.Warning("COP0_TLBWR %d:%x,%x,%x,%x\n",
+	Log::EE::COP0.warning("COP0_TLBWR {}:{:x},{:x},{:x},{:x}\n",
 			cpuRegs.CP0.n.Random,   cpuRegs.CP0.n.PageMask, cpuRegs.CP0.n.EntryHi,
 			cpuRegs.CP0.n.EntryLo0, cpuRegs.CP0.n.EntryLo1);
 
@@ -424,7 +425,7 @@ void MFC0()
 	// Note on _Rd_ Condition 9: CP0.Count should be updated even if _Rt_ is 0.
 	if ((_Rd_ != 9) && !_Rt_ ) return;
 
-	//if(bExecBIOS == FALSE && _Rd_ == 25) Console.WriteLn("MFC0 _Rd_ %x = %x", _Rd_, cpuRegs.CP0.r[_Rd_]);
+	//if(bExecBIOS == FALSE && _Rd_ == 25) Log::Console.info("MFC0 _Rd_ {:x} = {:x}\n", _Rd_, cpuRegs.CP0.r[_Rd_]);
 	switch (_Rd_)
 	{
 		case 12:
@@ -446,12 +447,12 @@ void MFC0()
 				COP0_UpdatePCCR();
 				cpuRegs.GPR.r[_Rt_].SD[0] = (s32)cpuRegs.PERF.n.pcr1;
 			}
-		    /*Console.WriteLn("MFC0 PCCR = %x PCR0 = %x PCR1 = %x IMM= %x",  params
+		    /*Log::Console.info("MFC0 PCCR = {:x} PCR0 = {:x} PCR1 = {:x} IMM= {:x}\n",  params
 		    cpuRegs.PERF.n.pccr, cpuRegs.PERF.n.pcr0, cpuRegs.PERF.n.pcr1, _Imm_ & 0x3F);*/
 		break;
 
 		case 24:
-			COP0_LOG("MFC0 Breakpoint debug Registers code = %x", cpuRegs.code & 0x3FF);
+			Log::EE::COP0.info("MFC0 Breakpoint debug Registers code = {:x}\n", cpuRegs.code & 0x3FF);
 		break;
 
 		case 9:
@@ -471,7 +472,7 @@ void MFC0()
 
 void MTC0()
 {
-	//if(bExecBIOS == FALSE && _Rd_ == 25) Console.WriteLn("MTC0 _Rd_ %x = %x", _Rd_, cpuRegs.CP0.r[_Rd_]);
+	//if(bExecBIOS == FALSE && _Rd_ == 25) Log::Console.info("MTC0 _Rd_ {:x} = {:x}\n", _Rd_, cpuRegs.CP0.r[_Rd_]);
 	switch (_Rd_)
 	{
 		case 9:
@@ -488,11 +489,11 @@ void MTC0()
 		break;
 
 		case 24:
-			COP0_LOG("MTC0 Breakpoint debug Registers code = %x", cpuRegs.code & 0x3FF);
+			Log::EE::COP0.info("MTC0 Breakpoint debug Registers code = {:x}\n", cpuRegs.code & 0x3FF);
 		break;
 
 		case 25:
-			/*if(bExecBIOS == FALSE && _Rd_ == 25) Console.WriteLn("MTC0 PCCR = %x PCR0 = %x PCR1 = %x IMM= %x", params
+			/*if(bExecBIOS == FALSE && _Rd_ == 25) Log::Console.info("MTC0 PCCR = {:x} PCR0 = {:x} PCR1 = {:x} IMM= {:x}\n", params
 				cpuRegs.PERF.n.pccr, cpuRegs.PERF.n.pcr0, cpuRegs.PERF.n.pcr1, _Imm_ & 0x3F);*/
 			if (0 == (_Imm_ & 1)) // MTPS
 			{
@@ -561,10 +562,10 @@ void ERET() {
 	// quick_exit vs exit: quick_exit won't call static storage destructor (OS will manage). It helps
 	// avoiding the race condition between threads destruction.
 	if (vtune > 30 * million) {
-		Console.WriteLn("VTUNE: quick_exit");
+		Log::Console.info("VTUNE: quick_exit\n");
 		std::quick_exit(EXIT_SUCCESS);
 	} else if (!(vtune % million)) {
-		Console.WriteLn("VTUNE: ERET was called %uM times", vtune/million);
+		Log::Console.info("VTUNE: ERET was called {}M times\n", vtune/million);
 	}
 
 #endif

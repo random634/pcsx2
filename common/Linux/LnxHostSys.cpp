@@ -80,7 +80,7 @@ static void SysPageFaultSignalFilter(int signal, siginfo_t* siginfo, void*)
 
 void _platform_InstallSignalHandler()
 {
-	Log::Console.info("Installing POSIX SIGSEGV handler...");
+	Log::Console.info("Installing POSIX SIGSEGV handler...\n");
 	struct sigaction sa;
 
 	sigemptyset(&sa.sa_mask);

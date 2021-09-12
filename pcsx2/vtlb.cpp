@@ -146,7 +146,7 @@ DataType __fastcall vtlb_memRead(u32 addr)
 
 	//has to: translate, find function, call function
 	u32 paddr=vmv.assumeHandlerGetPAddr(addr);
-	//Console.WriteLn("Translated 0x%08X to 0x%08X", addr,paddr);
+	//Log::Console.info("Translated 0x{:08X} to 0x{:08X}\n", addr,paddr);
 	//return reinterpret_cast<TemplateHelper<DataSize,false>::HandlerType*>(vtlbdata.RWFT[TemplateHelper<DataSize,false>::sidx][0][hand])(paddr,data);
 
 	switch( DataSize )
@@ -184,7 +184,7 @@ void __fastcall vtlb_memRead64(u32 mem, mem64_t *out)
 	{
 		//has to: translate, find function, call function
 		u32 paddr = vmv.assumeHandlerGetPAddr(mem);
-		//Console.WriteLn("Translated 0x%08X to 0x%08X", addr,paddr);
+		//Log::Console.info("Translated 0x{:08X} to 0x{:08X}\n", addr,paddr);
 		vmv.assumeHandler<64, false>()(paddr, out);
 	}
 }
@@ -210,7 +210,7 @@ void __fastcall vtlb_memRead128(u32 mem, mem128_t *out)
 	{
 		//has to: translate, find function, call function
 		u32 paddr = vmv.assumeHandlerGetPAddr(mem);
-		//Console.WriteLn("Translated 0x%08X to 0x%08X", addr,paddr);
+		//Log::Console.info("Translated 0x{:08X} to 0x{:08X}\n", addr,paddr);
 		vmv.assumeHandler<128, false>()(paddr, out);
 	}
 }
@@ -249,7 +249,7 @@ void __fastcall vtlb_memWrite(u32 addr, DataType data)
 	{
 		//has to: translate, find function, call function
 		u32 paddr = vmv.assumeHandlerGetPAddr(addr);
-		//Console.WriteLn("Translated 0x%08X to 0x%08X", addr,paddr);
+		//Log::Console.info("Translated 0x{:08X} to 0x{:08X}\n", addr,paddr);
 		return vmv.assumeHandler<sizeof(DataType)*8, true>()(paddr, data);
 	}
 }
@@ -275,7 +275,7 @@ void __fastcall vtlb_memWrite64(u32 mem, const mem64_t* value)
 	{
 		//has to: translate, find function, call function
 		u32 paddr = vmv.assumeHandlerGetPAddr(mem);
-		//Console.WriteLn("Translated 0x%08X to 0x%08X", addr,paddr);
+		//Log::Console.info("Translated 0x{:08X} to 0x{:08X}\n", addr,paddr);
 
 		vmv.assumeHandler<64, true>()(paddr, value);
 	}
@@ -302,7 +302,7 @@ void __fastcall vtlb_memWrite128(u32 mem, const mem128_t *value)
 	{
 		//has to: translate, find function, call function
 		u32 paddr = vmv.assumeHandlerGetPAddr(mem);
-		//Console.WriteLn("Translated 0x%08X to 0x%08X", addr,paddr);
+		//Log::Console.info("Translated 0x{:08X} to 0x{:08X}\n", addr,paddr);
 
 		vmv.assumeHandler<128, true>()(paddr, value);
 	}
@@ -414,7 +414,7 @@ static __ri void vtlb_Miss(u32 addr,u32 mode)
 	{
 		static int spamStop = 0;
 		if ( spamStop++ < 50 )
-			Console.Error( R5900Exception::TLBMiss( addr, !!mode ).FormatMessage() );
+			Log::EE::R5900.error(R5900Exception::TLBMiss(addr, !!mode).FormatMessage().utf8_string());
 	}
 }
 
@@ -432,7 +432,7 @@ static __ri void vtlb_BusError(u32 addr,u32 mode)
 #endif
 		Cpu->ThrowCpuException( R5900Exception::BusError( addr, !!mode ) );
 	else
-		Console.Error( R5900Exception::TLBMiss( addr, !!mode ).FormatMessage() );
+		Log::EE::R5900.error(R5900Exception::TLBMiss(addr, !!mode).FormatMessage().utf8_string());
 }
 
 template<typename OperandType, u32 saddr>
