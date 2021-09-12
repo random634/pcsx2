@@ -19,6 +19,9 @@
 #include <fmt/core.h>
 #include <vector>
 
+/// Levels to log at.
+///
+/// LogSources can filter logs to only display logs with levels greater than or equal to a value
 enum class LogLevel : u8
 {
 	Unset    = 0, ///< Inherit log level from parent
@@ -50,6 +53,10 @@ static bool operator>=(LogLevel a, LogLevel b)
 	return static_cast<u8>(a) >= static_cast<u8>(b);
 }
 
+/// Styles for text
+///
+/// These intentionally don't specify colors, so each output can choose its own color set based on what colors are available, etc
+/// Maybe we'll let users customize the mapping in the future too
 enum class LogStyle : u8
 {
 	General,  ///< General information
@@ -64,6 +71,8 @@ enum class LogStyle : u8
 
 class LogSource;
 
+/// A place for log messages to be sent
+/// See `LogSink.h` for conforming implementations
 class LogSink
 {
 public:
@@ -72,6 +81,14 @@ public:
 	virtual void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) = 0;
 };
 
+/// ----------------------------------------------------------------------------------------
+///  LogSource -- For printing messages to the console.
+/// ----------------------------------------------------------------------------------------
+/// General ConsoleWrite Threading Guideline:
+///   PCSX2 is a threaded environment and multiple threads can write to the console asynchronously.
+///   Individual calls to a LogSource will be written in atomic fashion, however "partial" logs may end up interrupted by logs on other threads.
+///   In cases where you want to print multi-line blocks of uninterrupted logs, compound the entire log into a single large string and issue that in one call.
+///   A `MultiPieceLog` can assist in doing this.
 class LogSource
 {
 	LogLevel m_cachedLevel; ///< The log level to be used for deciding whether to log
@@ -241,6 +258,55 @@ public:
 	/// Change the output of this source
 	/// Supply a nullptr to make the source inherit its parent's output
 	void setSink(LogSink* sink);
+};
+
+/// Gather multiple logs to print atomically
+class MultiPieceLog
+{
+	LogSource& m_source;
+	LogLevel m_level;
+	std::string m_log;
+public:
+	MultiPieceLog(LogSource& source, LogLevel level): m_source(source) , m_level(level) {}
+
+	template <typename S>
+	void add(const S& str)
+	{
+		if (!m_source.shouldLog(m_level))
+			return;
+		fmt::detail::check_format_string<>(str);
+		m_log += std::string_view(str);
+	}
+
+	template <typename S, typename Arg1, typename... Args>
+	void add(const S& str, const Arg1& arg1, const Args&... args)
+	{
+		if (!m_source.shouldLog(m_level))
+			return;
+		fmt::format_to(std::back_inserter(m_log), arg1, args...);
+	}
+
+	template <typename S, typename... Args>
+	void addLine(const S& s, const Args&... args)
+	{
+		if (!m_source.shouldLog(m_level))
+			return;
+		add(s, args...);
+		m_log.push_back('\n');
+	}
+
+	void submit()
+	{
+		if (m_log.empty())
+			return;
+		m_source.log(m_level, m_log);
+		m_log.clear();
+	}
+
+	~MultiPieceLog()
+	{
+		submit();
+	}
 };
 
 /// Increase a source's indent level until the end of the current scope
