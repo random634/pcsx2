@@ -68,6 +68,10 @@ enum class LogStyle : u8
 	Trace,    ///< Trace level logs
 	Warning,  ///< Warnings
 	Error,    ///< Error / Critical
+	CompatibilityStrongBlack, ///< For easy migration of old log calls, replace / rename later
+	CompatibilityMagenta,     ///< For easy migration of old log calls, replace / rename later
+	CompatibilityOrange,      ///< For easy migration of old log calls, replace / rename later
+	CompatibilityGreen,       ///< For easy migration of old log calls, replace / rename later
 };
 
 class LogSource;

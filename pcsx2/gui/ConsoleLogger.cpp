@@ -1225,6 +1225,10 @@ static ConsoleColors logStyleToConsoleColor(LogStyle style)
 		case LogStyle::Trace:    return Color_White;
 		case LogStyle::Warning:  return Color_StrongOrange;
 		case LogStyle::Error:    return Color_StrongRed;
+		case LogStyle::CompatibilityStrongBlack: return Color_StrongBlack;
+		case LogStyle::CompatibilityMagenta:     return Color_Magenta;
+		case LogStyle::CompatibilityOrange:      return Color_Orange;
+		case LogStyle::CompatibilityGreen:       return Color_Green;
 	}
 }
 

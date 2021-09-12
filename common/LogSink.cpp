@@ -130,6 +130,10 @@ static const char* styleToTerminalFormat(LogStyle style)
 		case LogStyle::Trace:    return "\033[2m\033[34m"; // Light Blue
 		case LogStyle::Warning:  return "\033[1m\033[35m"; // Bold Magenta
 		case LogStyle::Error:    return "\033[1m\033[31m"; // Bold Red
+		case LogStyle::CompatibilityStrongBlack: return "\033[1m";
+		case LogStyle::CompatibilityMagenta:     return "\033[35m";
+		case LogStyle::CompatibilityOrange:      return "\033[35m";
+		case LogStyle::CompatibilityGreen:       return "\033[32m";
 	}
 }
 
