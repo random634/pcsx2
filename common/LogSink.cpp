@@ -85,7 +85,7 @@ void TextLogSink::logOnThread(LogLevel level, LogStyle style, u8 indent, const L
 static bool checkSupportsColor(FILE* file)
 {
 #ifdef __POSIX__
-	if (!isatty(fileno(file)))
+	if (!file || !isatty(fileno(file)))
 		return false;
 	char* term = getenv("TERM");
 	if (!term || (0 == strcmp(term, "dumb")))
@@ -178,16 +178,3 @@ void log(LogLevel level, LogStyle style, const LogSource& source, std::string_vi
 	logOnThread(level, style, source.currentIndent(), source, msg);
 }
 #endif
-
-MultiOutputLogSink::MultiOutputLogSink(std::vector<LogSink*> outputs)
-	: m_outputs(outputs)
-{
-}
-
-void MultiOutputLogSink::log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg)
-{
-	for (LogSink* output : m_outputs)
-	{
-		output->log(level, style, source, msg);
-	}
-}

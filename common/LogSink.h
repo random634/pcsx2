@@ -38,11 +38,11 @@ public:
 
 class FileLogSink final : public TextLogSink
 {
+public:
 	/// File to output to
 	FILE* m_file;
 	/// Lock
 	std::mutex m_mtx;
-public:
 	FileLogSink(FILE* file);
 	void outputNewline() override;
 	void outputText(LogStyle style, std::string_view msg) override;
@@ -65,11 +65,3 @@ public:
 
 extern OutputDebugStringLogSink defaultLogSink;
 #endif
-
-class MultiOutputLogSink final : public LogSink
-{
-	std::vector<LogSink*> m_outputs;
-public:
-	MultiOutputLogSink(std::vector<LogSink*> outputs);
-	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override;
-};
