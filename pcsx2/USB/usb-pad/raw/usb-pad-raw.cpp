@@ -278,7 +278,7 @@ namespace usb_pad
 						continue; // if here then maybe something is up with HIDP_CAPS.NumberInputValueCaps
 					}
 
-					//Console.Warning("Min/max %d/%d\t", pValueCaps[i].LogicalMin, pValueCaps[i].LogicalMax);
+					//Log::Console.warning("Min/max {}/{}\t\n", pValueCaps[i].LogicalMin, pValueCaps[i].LogicalMax);
 
 					//Get mapped axis for physical axis
 					uint16_t v = 0;

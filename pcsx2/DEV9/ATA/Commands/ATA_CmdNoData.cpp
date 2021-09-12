@@ -148,14 +148,14 @@ void ATA::HDD_SetFeatures()
 					udmaMode = mode;
 					break;
 				default:
-					Console.Error("DEV9: ATA: Unknown transfer mode");
+					Log::Console.error("DEV9: ATA: Unknown transfer mode\n");
 					CmdNoDataAbort();
 					break;
 			}
 		}
 		break;
 		default:
-			Console.Error("DEV9: ATA: Unknown feature mode");
+			Log::Console.error("DEV9: ATA: Unknown feature mode\n");
 			break;
 	}
 	PostCmdNoData();

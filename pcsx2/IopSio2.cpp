@@ -196,7 +196,7 @@ u8 sio2_fifoOut(){
 		//PAD_LOG("READING %x\n",sio2.buf[sio2.recvIndex]);
 		return sio2.buf[sio2.recvIndex++];
 	} else {
-		Console.Error( "*PCSX2*: buffer overrun" );
+		Log::Console.error("*PCSX2*: buffer overrun\n" );
 	}
 	return 0; // No Data
 }

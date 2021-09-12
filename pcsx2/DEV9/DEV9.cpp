@@ -262,7 +262,7 @@ void HDDWriteFIFO()
 		const int spaceSectors = (SPD_DBUF_AVAIL_MAX * 512 - unread) / 512;
 		if (spaceSectors < 0)
 		{
-			Console.Error("DEV9: No Space on SPEED FIFO");
+			Log::Console.error("DEV9: No Space on SPEED FIFO\n");
 			pxAssert(false);
 			abort();
 		}
@@ -287,14 +287,14 @@ void IOPReadFIFO(int bytes)
 {
 	dev9.fifo_bytes_read += bytes;
 	if (dev9.fifo_bytes_read > dev9.fifo_bytes_write)
-		Console.Error("DEV9: UNDERFLOW BY IOP");
+		Log::Console.error("DEV9: UNDERFLOW BY IOP\n");
 	//FIFOIntr();
 }
 void IOPWriteFIFO(int bytes)
 {
 	dev9.fifo_bytes_write += bytes;
 	if (dev9.fifo_bytes_write - SPD_DBUF_AVAIL_MAX * 512 > dev9.fifo_bytes_read)
-		Console.Error("DEV9: OVERFLOW BY IOP");
+		Log::Console.error("DEV9: OVERFLOW BY IOP\n");
 	//FIFOIntr();
 }
 void FIFOIntr()
@@ -573,15 +573,15 @@ void DEV9write8(u32 addr, u8 value)
 	switch (addr)
 	{
 		case 0x10000020:
-			Console.Error("DEV9: SPD_R_INTR_CAUSE, WTFH ?");
+			Log::Console.error("DEV9: SPD_R_INTR_CAUSE, WTFH ?\n");
 			dev9.irqcause = 0xff;
 			break;
 		case SPD_R_INTR_STAT:
-			Console.Error("DEV9: SPD_R_INTR_STAT,  WTFH ?");
+			Log::Console.error("DEV9: SPD_R_INTR_STAT,  WTFH ?\n");
 			dev9.irqcause = value;
 			return;
 		case SPD_R_INTR_MASK:
-			Console.Error("DEV9: SPD_R_INTR_MASK8, WTFH ?");
+			Log::Console.error("DEV9: SPD_R_INTR_MASK8, WTFH ?\n");
 			break;
 
 		case SPD_R_PIO_DIR:
@@ -647,7 +647,7 @@ void DEV9write8(u32 addr, u8 value)
 				}
 				break;
 				default:
-					Console.Error("DEV9: Unknown EEPROM COMMAND");
+					Log::Console.error("DEV9: Unknown EEPROM COMMAND\n");
 					break;
 			}
 			return;
@@ -755,7 +755,7 @@ void DEV9write16(u32 addr, u16 value)
 				}
 				break;
 				default:
-					Console.Error("DEV9: Unknown EEPROM COMMAND");
+					Log::Console.error("DEV9: Unknown EEPROM COMMAND\n");
 					break;
 			}
 			return;
@@ -780,7 +780,7 @@ void DEV9write16(u32 addr, u16 value)
 			//	DevCon.WriteLn("DEV9: SPD_R_DMA_CTRL 16bit DMA Mode");
 
 			if ((value & SPD_DMA_PAUSE) != 0)
-				Console.Error("DEV9: SPD_R_DMA_CTRL Pause DMA Not Implemented");
+				Log::Console.error("DEV9: SPD_R_DMA_CTRL Pause DMA Not Implemented\n");
 
 			if ((value & 0b1111111111101000) != 0)
 				Console.Error("DEV9: SPD_R_DMA_CTRL Unknown value written %x", value);
@@ -861,9 +861,9 @@ void DEV9write16(u32 addr, u16 value)
 				DevCon.WriteLn("DEV9: IF_CTRL Unknown Bit 3 Set");
 
 			if (value & (1 << 4))
-				Console.Error("DEV9: IF_CTRL Unknown Bit 4 Set");
+				Log::Console.error("DEV9: IF_CTRL Unknown Bit 4 Set\n");
 			if (value & (1 << 5))
-				Console.Error("DEV9: IF_CTRL Unknown Bit 5 Set");
+				Log::Console.error("DEV9: IF_CTRL Unknown Bit 5 Set\n");
 
 			if ((value & SPD_IF_HDD_RESET) == 0) //Maybe?
 			{
@@ -995,7 +995,7 @@ void DEV9write32(u32 addr, u32 value)
 	switch (addr)
 	{
 		case SPD_R_INTR_MASK:
-			Console.Error("DEV9: SPD_R_INTR_MASK, WTFH ?");
+			Log::Console.error("DEV9: SPD_R_INTR_MASK, WTFH ?\n");
 			break;
 		default:
 			dev9Ru32(addr) = value;

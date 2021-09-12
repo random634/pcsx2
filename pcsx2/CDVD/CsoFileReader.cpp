@@ -166,7 +166,7 @@ bool CsoFileReader::InitializeBuffers()
 	m_z_stream->opaque = Z_NULL;
 	if (inflateInit2(m_z_stream, -15) != Z_OK)
 	{
-		Console.Error("Unable to initialize zlib for CSO decompression.");
+		Log::Console.error("Unable to initialize zlib for CSO decompression.\n");
 		return false;
 	}
 
@@ -237,7 +237,7 @@ int CsoFileReader::ReadChunk(void *dst, s64 chunkID)
 		// Just read directly, easy.
 		if (PX_fseeko(m_src, frameRawPos, SEEK_SET) != 0)
 		{
-			Console.Error("Unable to seek to uncompressed CSO data.");
+			Log::Console.error("Unable to seek to uncompressed CSO data.\n");
 			return 0;
 		}
 		return fread(dst, 1, m_frameSize, m_src);
@@ -246,7 +246,7 @@ int CsoFileReader::ReadChunk(void *dst, s64 chunkID)
 	{
 		if (PX_fseeko(m_src, frameRawPos, SEEK_SET) != 0)
 		{
-			Console.Error("Unable to seek to compressed CSO data.");
+			Log::Console.error("Unable to seek to compressed CSO data.\n");
 			return 0;
 		}
 		// This might be less bytes than frameRawSize in case of padding on the last frame.
@@ -262,7 +262,7 @@ int CsoFileReader::ReadChunk(void *dst, s64 chunkID)
 		bool success = status == Z_STREAM_END && m_z_stream->total_out == m_frameSize;
 
 		if (!success)
-			Console.Error("Unable to decompress CSO frame using zlib.");
+			Log::Console.error("Unable to decompress CSO frame using zlib.\n");
 		inflateReset(m_z_stream);
 
 		return success ? m_frameSize : 0;

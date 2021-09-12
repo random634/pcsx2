@@ -46,7 +46,7 @@ s32 CALLBACK ISOopen(const char* pTitle)
 
 	if ((pTitle == NULL) || (pTitle[0] == 0))
 	{
-		Console.Error("CDVDiso Error: No filename specified.");
+		Log::Console.error("CDVDiso Error: No filename specified.\n");
 		return -1;
 	}
 
@@ -146,7 +146,7 @@ static void FindLayer1Start()
 	iso.ReadSync(buffer.data(), 16);
 	if (!testForPrimaryVolumeDescriptor(buffer))
 	{
-		Console.Error("isoFile: Invalid layer0 Primary Volume Descriptor");
+		Log::Console.error("isoFile: Invalid layer0 Primary Volume Descriptor\n");
 		return;
 	}
 
@@ -166,7 +166,7 @@ static void FindLayer1Start()
 
 		if (!testForPrimaryVolumeDescriptor(buffer))
 		{
-			Console.Error("isoFile: Invalid layer1 Primary Volume Descriptor");
+			Log::Console.error("isoFile: Invalid layer1 Primary Volume Descriptor\n");
 			return;
 		}
 		layer1start = blockresult;

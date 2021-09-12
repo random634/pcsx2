@@ -113,7 +113,7 @@ bool Gif_HandlerAD_MTVU(u8* pMem)
 	{ // SIGNAL
 		GUNIT_WARN("GIF Handler - SIGNAL");
 		if (vu1Thread.mtvuInterrupts.load(std::memory_order_acquire) & VU_Thread::InterruptFlagSignal)
-			Console.Error("GIF Handler MTVU - Double SIGNAL Not Handled");
+			Log::Console.error("GIF Handler MTVU - Double SIGNAL Not Handled\n");
 		vu1Thread.gsSignal.store(((u64)data[1] << 32) | data[0], std::memory_order_relaxed);
 		vu1Thread.mtvuInterrupts.fetch_or(VU_Thread::InterruptFlagSignal, std::memory_order_release);
 	}
@@ -122,7 +122,7 @@ bool Gif_HandlerAD_MTVU(u8* pMem)
 		GUNIT_WARN("GIF Handler - FINISH");
 		u32 old = vu1Thread.mtvuInterrupts.fetch_or(VU_Thread::InterruptFlagFinish, std::memory_order_relaxed);
 		if (old & VU_Thread::InterruptFlagFinish)
-			Console.Error("GIF Handler MTVU - Double FINISH Not Handled");
+			Log::Console.error("GIF Handler MTVU - Double FINISH Not Handled\n");
 	}
 	else if (reg == 0x62)
 	{ // LABEL
@@ -155,32 +155,32 @@ bool Gif_HandlerAD_Debug(u8* pMem)
 	u32 reg = pMem[8];
 	if (reg == 0x50)
 	{
-		Console.Error("GIF Handler Debug - BITBLTBUF");
+		Log::Console.error("GIF Handler Debug - BITBLTBUF\n");
 		return 1;
 	}
 	else if (reg == 0x52)
 	{
-		Console.Error("GIF Handler Debug - TRXREG");
+		Log::Console.error("GIF Handler Debug - TRXREG\n");
 		return 1;
 	}
 	else if (reg == 0x53)
 	{
-		Console.Error("GIF Handler Debug - TRXDIR");
+		Log::Console.error("GIF Handler Debug - TRXDIR\n");
 		return 1;
 	}
 	else if (reg == 0x60)
 	{
-		Console.Error("GIF Handler Debug - SIGNAL");
+		Log::Console.error("GIF Handler Debug - SIGNAL\n");
 		return 1;
 	}
 	else if (reg == 0x61)
 	{
-		Console.Error("GIF Handler Debug - FINISH");
+		Log::Console.error("GIF Handler Debug - FINISH\n");
 		return 1;
 	}
 	else if (reg == 0x62)
 	{
-		Console.Error("GIF Handler Debug - LABEL");
+		Log::Console.error("GIF Handler Debug - LABEL\n");
 		return 1;
 	}
 	else if (reg >= 0x63 && reg != 0x7f)

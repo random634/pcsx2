@@ -937,7 +937,7 @@ __fi void cdvdReadInterrupt()
 				CDVDREAD_INT(cdvd.ReadTime);
 			}
 			else
-				Console.Error("CDVD READ ERROR, sector = 0x%08x", cdvd.Sector);
+				Log::Console.error("CDVD READ ERROR, sector = 0x{:08x}\n", cdvd.Sector);
 
 			return;
 		}
@@ -1492,7 +1492,7 @@ static __fi void cdvdWrite14(u8 rt)
 
 static __fi void fail_pol_cal()
 {
-	Console.Error("[MG] ERROR - Make sure the file is already decrypted!!!");
+	Log::Console.error("[MG] ERROR - Make sure the file is already decrypted!!!\n");
 	cdvd.Result[0] = 0x80;
 }
 

@@ -472,7 +472,7 @@ struct Gif_Path
 			return mtvu.gsPackQueue.front();
 		}
 
-		Console.Error("MTVU: Expected gsPackQueue to have elements!");
+		Log::Console.error("MTVU: Expected gsPackQueue to have elements!\n");
 		pxAssert(0);
 		return GS_Packet(); // gsPack.size will be 0
 	}

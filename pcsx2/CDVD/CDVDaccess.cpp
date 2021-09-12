@@ -212,7 +212,7 @@ static int FindDiskType(int mType)
 		if (td.type == CDVD_AUDIO_TRACK)
 		{
 			audioTracks++;
-			Console.WriteLn(" * * Track %d: Audio (%d sectors)", i, tlength);
+			Log::Console.info(" * * Track {}: Audio ({} sectors)\n", i, tlength);
 		}
 		else
 		{

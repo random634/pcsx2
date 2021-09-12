@@ -94,7 +94,7 @@ SimpleQueue<T>::~SimpleQueue()
 	{
 		if (!IsQueueEmpty())
 		{
-			Console.Error("DEV9: Queue not empty");
+			Log::Console.error("DEV9: Queue not empty\n");
 			pxAssert(false);
 
 			//Empty Queue

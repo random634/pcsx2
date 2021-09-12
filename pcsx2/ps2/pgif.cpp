@@ -457,7 +457,7 @@ void PGIFrQword(u32 addr, void* dat)
 	if (addr == PGPU_CMD_FIFO)
 	{
 		//shouldn't happen
-		Console.Error("PGIF QW CMD read =ERR!");
+		Log::Console.error("PGIF QW CMD read =ERR!\n");
 	}
 	else if (addr == PGPU_DAT_FIFO)
 	{
@@ -471,7 +471,7 @@ void PGIFrQword(u32 addr, void* dat)
 	}
 	else
 	{
-		Console.WriteLn("PGIF QWord Read from address %08X  ERR - shouldnt happen!", addr);
+		Log::Console.info("PGIF QWord Read from address {:08X}  ERR - shouldnt happen!\n", addr);
 		Console.WriteLn("Data = %08X %08X %08X %08X ", *(u32*)(data + 0), *(u32*)(data + 1), *(u32*)(data + 2), *(u32*)(data + 3));
 	}
 }
@@ -484,7 +484,7 @@ void PGIFwQword(u32 addr, void* dat)
 
 	if (addr == PGPU_CMD_FIFO)
 	{
-		Console.Error("PGIF QW CMD write!");
+		Log::Console.error("PGIF QW CMD write!\n");
 	}
 	else if (addr == PGPU_DAT_FIFO)
 	{
@@ -652,7 +652,7 @@ void processPgpuDma()
 {
 	if (!dmaRegs.chcr.bits.TSM)
 	{
-		Console.Error("SyncMode 0 on GPU DMA!");
+		Log::Console.error("SyncMode 0 on GPU DMA!\n");
 	}
 	if (dmaRegs.chcr.bits.TSM == 3)
 	{
@@ -679,7 +679,7 @@ void processPgpuDma()
 		}
 		else
 		{
-			Console.Error("Error: Linked list from GPU DMA!");
+			Log::Console.error("Error: Linked list from GPU DMA!\n");
 			return;
 		}
 	}
@@ -718,10 +718,10 @@ u32 psxDma2GpuR(u32 addr)
 			break;
 		case PGPU_DMA_TADR:
 			data = pgpuDmaTadr;
-			Console.Error("PGPU DMA read TADR!");
+			Log::Console.error("PGPU DMA read TADR!\n");
 			break;
 		default:
-			Console.Error("Unknown PGPU DMA read 0x%08X", addr);
+			Log::Console.error("Unknown PGPU DMA read 0x{:08X}\n", addr);
 			break;
 	}
 	if (addr != PGPU_DMA_CHCR)
@@ -750,7 +750,7 @@ void psxDma2GpuW(u32 addr, u32 data)
 			break;
 		case PGPU_DMA_TADR:
 			pgpuDmaTadr = data;
-			Console.Error("PGPU DMA write TADR! ");
+			Log::Console.error("PGPU DMA write TADR! \n");
 			break;
 		default:
 			Console.Error("Unknown PGPU DMA write 0x%08X = 0x%08X", addr, data);

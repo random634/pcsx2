@@ -300,7 +300,7 @@ static void iIopDumpBlock(int startpc, u8* ptr)
 		"mydump1", WX_STR(filename), "mydump1").mb_str());
 
 	if (!WIFEXITED(status))
-		Console.Error("IOP dump didn't terminate normally");
+		Log::Console.error("IOP dump didn't terminate normally\n");
 #endif
 }
 

@@ -87,7 +87,7 @@ namespace PacketReader::IP
 		if (length > bufferSize)
 		{
 			if (!fromICMP)
-				Console.Error("DEV9: IP_Packet: Unexpected Length");
+				Log::Console.error("DEV9: IP_Packet: Unexpected Length\n");
 			length = (u16)bufferSize;
 		}
 
@@ -127,7 +127,7 @@ namespace PacketReader::IP
 						options.push_back(new IPopRouterAlert(buffer, offset));
 						break;
 					default:
-						Console.Error("DEV9: IP_Packet: Got Unknown IP Option %d with len %d", opKind, opLen);
+						Log::Console.error("DEV9: IP_Packet: Got Unknown IP Option {} with len {}\n", opKind, opLen);
 						options.push_back(new IPopUnk(buffer, offset));
 						break;
 				}

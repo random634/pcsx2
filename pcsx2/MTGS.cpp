@@ -576,7 +576,7 @@ void SysMtgsThread::ExecuteTaskInThread()
 		// parallel to this handler aren't accidentally blocked.
 		if (m_SignalRingEnable.exchange(false))
 		{
-			//Console.Warning( "(MTGS Thread) Dangling RingSignal on empty buffer!  signalpos=0x%06x", m_SignalRingPosition.exchange(0) ) );
+			//Log::Console.warning("(MTGS Thread) Dangling RingSignal on empty buffer!  signalpos=0x{:06x}\n", m_SignalRingPosition.exchange(0) ) );
 			m_SignalRingPosition.store(0, std::memory_order_release);
 			m_sem_OnRingReset.Post();
 		}
@@ -584,7 +584,7 @@ void SysMtgsThread::ExecuteTaskInThread()
 		if (m_VsyncSignalListener.exchange(false))
 			m_sem_Vsync.Post();
 
-		//Console.Warning( "(MTGS Thread) Nothing to do!  ringpos=0x%06x", m_ReadPos );
+		//Log::Console.warning("(MTGS Thread) Nothing to do!  ringpos=0x{:06x}\n", m_ReadPos );
 	}
 }
 

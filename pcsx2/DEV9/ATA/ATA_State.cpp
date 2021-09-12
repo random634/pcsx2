@@ -81,7 +81,7 @@ void ATA::Close()
 	//verify queue
 	if (!writeQueue.IsQueueEmpty())
 	{
-		Console.Error("DEV9: ATA: Write queue not empty, possible data loss");
+		Log::Console.error("DEV9: ATA: Write queue not empty, possible data loss\n");
 		pxAssert(false);
 		abort(); //All data must be written at this point
 	}
@@ -203,7 +203,7 @@ void ATA::Write16(u32 addr, u16 value)
 {
 	if (addr != ATA_R_CMD && (regStatus & (ATA_STAT_BUSY | ATA_STAT_DRQ)) != 0)
 	{
-		Console.Error("DEV9: ATA: DEVICE BUSY, DROPPING WRITE");
+		Log::Console.error("DEV9: ATA: DEVICE BUSY, DROPPING WRITE\n");
 		return;
 	}
 	switch (addr)
@@ -346,7 +346,7 @@ s64 ATA::HDD_GetLBA()
 		regStatus |= (u8)ATA_STAT_ERR;
 		regError |= (u8)ATA_ERR_ABORT;
 
-		Console.Error("DEV9: ATA: Tried to get LBA address while LBA mode disabled");
+		Log::Console.error("DEV9: ATA: Tried to get LBA address while LBA mode disabled\n");
 		//(c.Nh + h).Ns+(s-1)
 		//s64 CHSasLBA = ((regLcyl + (regHcyl << 8)) * curHeads + (regSelect & 0x0F)) * curSectors + (regSector - 1);
 		return -1;
@@ -379,7 +379,7 @@ void ATA::HDD_SetLBA(s64 sectorNum)
 		regStatus |= ATA_STAT_ERR;
 		regError |= ATA_ERR_ABORT;
 
-		Console.Error("DEV9: ATA: Tried to set LBA address while LBA mode disabled");
+		Log::Console.error("DEV9: ATA: Tried to set LBA address while LBA mode disabled\n");
 	}
 }
 

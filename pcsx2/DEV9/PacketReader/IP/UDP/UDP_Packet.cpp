@@ -38,7 +38,7 @@ namespace PacketReader::IP::UDP
 
 		if (length > bufferSize)
 		{
-			Console.Error("DEV9: UDP_Packet: Unexpected Length");
+			Log::Console.error("DEV9: UDP_Packet: Unexpected Length\n");
 			length = (u16)bufferSize;
 		}
 

@@ -305,7 +305,7 @@ u32* recGetImm64(u32 hi, u32 lo)
 	imm64[0] = lo;
 	imm64[1] = hi;
 
-	//Console.Warning("Consts allocated: %d of %u", (recConstBufPtr - recConstBuf) / 2, count);
+	//Log::Console.warning("Consts allocated: {} of {}\n", (recConstBufPtr - recConstBuf) / 2, count);
 
 	return imm64;
 }
@@ -1450,7 +1450,7 @@ void recompileNextInstruction(int delayslot)
 	const OPCODE& opcode = GetCurrentInstruction();
 
 	//pxAssert( !(g_pCurInstInfo->info & EEINSTINFO_NOREC) );
-	//Console.Warning("opcode name = %s, it's cycles = %d\n",opcode.Name,opcode.cycles);
+	//Log::Console.warning("opcode name = {}, it's cycles = {}\n\n",opcode.Name,opcode.cycles);
 	// if this instruction is a jump or a branch, exit right away
 	if (delayslot)
 	{

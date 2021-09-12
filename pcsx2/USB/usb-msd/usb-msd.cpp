@@ -819,7 +819,7 @@ namespace usb_msd
 						usb_packet_copy(p, &cbw, 31);
 						if (le32_to_cpu(cbw.sig) != 0x43425355)
 						{
-							Console.Warning("usb-msd: Bad signature %08x\n",
+							Log::Console.warning("usb-msd: Bad signature {:08x}\n\n",
 									le32_to_cpu(cbw.sig));
 							goto fail;
 						}

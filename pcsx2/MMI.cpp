@@ -1009,7 +1009,7 @@ void QFSRV() {				// JayteeMaster: changed a bit to avoid screw up
 		//if( saZero >= 388800 )
 			//Log::Console.info("SA Is Zero, Bitch: {} zeros and counting.\n", saZero);
 	} else {
-		//Console.WriteLn( "SA Properly Valued at: %d (after %d zeros)", sa_amt, saZero );
+		//Log::Console.info("SA Properly Valued at: {} (after {} zeros)\n", sa_amt, saZero );
 		//saZero = 0;
 		if (sa_amt < 64) {
 			/*

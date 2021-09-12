@@ -375,7 +375,7 @@ u32 UpdateVSyncRate()
 	case GS_VideoMode::Unknown:
 	default:
 		total_scanlines = SCANLINES_TOTAL_NTSC;
-		Console.Error("PCSX2-Counters: Unknown video mode detected");
+		Log::Console.error("PCSX2-Counters: Unknown video mode detected\n");
 		pxAssertDev(false , "Unknown video mode detected via SetGsCrt");
 	}
 

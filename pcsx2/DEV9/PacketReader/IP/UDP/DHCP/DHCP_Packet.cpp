@@ -70,7 +70,7 @@ namespace PacketReader::IP::UDP::DHCP
 			}
 			if ((offset + 1) >= bufferSize)
 			{
-				Console.Error("DEV9: DHCP_Packet: Unexpected end of packet");
+				Log::Console.error("DEV9: DHCP_Packet: Unexpected end of packet\n");
 				options.push_back(new DHCPopEND());
 				opReadFin = true;
 				continue;
@@ -139,13 +139,13 @@ namespace PacketReader::IP::UDP::DHCP
 					options.push_back(new DHCPopClientID(buffer, offset));
 					break;
 				default:
-					Console.Error("DEV9: DHCP_Packet: Got Unknown Option %d with len %d", opKind, opLen);
+					Log::Console.error("DEV9: DHCP_Packet: Got Unknown Option {} with len {}\n", opKind, opLen);
 					break;
 			}
 			offset += opLen + 2;
 			if (offset >= bufferSize)
 			{
-				Console.Error("DEV9: DHCP_Packet: Unexpected end of packet");
+				Log::Console.error("DEV9: DHCP_Packet: Unexpected end of packet\n");
 				options.push_back(new DHCPopNOP());
 				opReadFin = true;
 			}
@@ -192,7 +192,7 @@ namespace PacketReader::IP::UDP::DHCP
 			}
 			else
 			{
-				Console.Error("DEV9: DHCP_Packet: Oversized DHCP packet not handled");
+				Log::Console.error("DEV9: DHCP_Packet: Oversized DHCP packet not handled\n");
 				//We need space for DHCP End
 				if (len == maxLenth)
 				{

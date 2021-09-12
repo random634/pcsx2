@@ -209,7 +209,7 @@ bool YamlGameDatabaseImpl::initDatabase(std::ifstream& stream)
 	{
 		if (!stream)
 		{
-			Console.Error("[GameDB] Unable to open GameDB file.");
+			Log::Console.error("[GameDB] Unable to open GameDB file.\n");
 			return false;
 		}
 		// yaml-cpp has memory leak issues if you persist and modify a YAML::Node

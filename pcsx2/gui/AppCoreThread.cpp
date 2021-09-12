@@ -667,7 +667,7 @@ void AppCoreThread::DoCpuExecute()
 			//Suspend();
 
 			// [TODO] Issue error dialog to the user here...
-			Console.Error("Too many execution errors.  VM execution has been suspended!");
+			Log::Console.error("Too many execution errors.  VM execution has been suspended!\n");
 
 			// Hack: this keeps the EE thread from running more code while the SysExecutor
 			// thread catches up and signals it for suspension.

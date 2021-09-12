@@ -258,7 +258,7 @@ void iDumpBlock(u32 ee_pc, u32 ee_size, uptr x86_pc, u32 x86_size)
 			);
 
 	if (!WIFEXITED(status))
-		Console.Error("IOP dump didn't terminate normally");
+		Log::Console.error("IOP dump didn't terminate normally\n");
 #endif
 }
 

@@ -82,7 +82,7 @@ static __fi int IPU1chain() {
 
 		if (pMem == NULL)
 		{
-			Console.Error("ipu1dma NULL!");
+			Log::Console.error("ipu1dma NULL!\n");
 			return totalqwc;
 		}
 

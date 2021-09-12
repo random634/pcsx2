@@ -96,7 +96,7 @@ void rx_process(NetPacket* pk)
 
 	if (!(pbd->ctrl_stat & SMAP_BD_RX_EMPTY))
 	{
-		Console.Error("DEV9: ERROR : Discarding %d bytes (RX%d not ready)", bytes, dev9.rxbdi);
+		Log::Console.error("DEV9: ERROR : Discarding {} bytes (RX{} not ready)\n", bytes, dev9.rxbdi);
 		return;
 	}
 
@@ -148,7 +148,7 @@ void tx_process()
 
 		if (!(pbd->ctrl_stat & SMAP_BD_TX_READY))
 		{
-			Console.Error("DEV9: SMAP: ERROR : !pbd->ctrl_stat&SMAP_BD_TX_READY");
+			Log::Console.error("DEV9: SMAP: ERROR : !pbd->ctrl_stat&SMAP_BD_TX_READY\n");
 			break;
 		}
 		if (pbd->length & 3)
@@ -158,7 +158,7 @@ void tx_process()
 
 		if (pbd->length > 1514)
 		{
-			Console.Error("DEV9: SMAP: ERROR : Trying to send packet too big.");
+			Log::Console.error("DEV9: SMAP: ERROR : Trying to send packet too big.\n");
 		}
 		else
 		{
@@ -235,7 +235,7 @@ void tx_process()
 	//if some error/early exit signal TXDNV
 	if (fc != cnt || cnt == 0)
 	{
-		Console.Error("DEV9: SMAP: WARN : (fc!=cnt || cnt==0) but packet send request was made oO..");
+		Log::Console.error("DEV9: SMAP: WARN : (fc!=cnt || cnt==0) but packet send request was made oO..\n");
 		_DEV9irq(SMAP_INTR_TXDNV, 0);
 	}
 	//if we actualy send something send TXEND
@@ -258,12 +258,12 @@ void emac3_write(u32 addr)
 			//DevCon.WriteLn("DEV9: SMAP: SMAP_R_EMAC3_TxMODE0_L write %x", value);
 			//Process TX  here ?
 			if (!(value & SMAP_E3_TX_GNP_0))
-				Console.Error("DEV9: SMAP_R_EMAC3_TxMODE0_L: SMAP_E3_TX_GNP_0 not set");
+				Log::Console.error("DEV9: SMAP_R_EMAC3_TxMODE0_L: SMAP_E3_TX_GNP_0 not set\n");
 
 			tx_process();
 			value = value & ~SMAP_E3_TX_GNP_0;
 			if (value)
-				Console.Error("DEV9: SMAP_R_EMAC3_TxMODE0_L: extra bits set !");
+				Log::Console.error("DEV9: SMAP_R_EMAC3_TxMODE0_L: extra bits set !\n");
 			break;
 		case SMAP_R_EMAC3_TxMODE1_L:
 			//DevCon.WriteLn("DEV9: SMAP_R_EMAC3_TxMODE1_L 32bit write %x", value);

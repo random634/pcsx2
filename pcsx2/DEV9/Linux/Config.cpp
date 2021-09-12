@@ -144,7 +144,7 @@ void LoadConf()
 
 	if (doc == NULL)
 	{
-		Console.Error("Unable to parse configuration file! Suggest deleting it and starting over.");
+		Log::Console.error("Unable to parse configuration file! Suggest deleting it and starting over.\n");
 	}
 
 	for (cur_node = xmlDocGetRootElement(doc)->children; cur_node; cur_node = cur_node->next)

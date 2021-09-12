@@ -54,15 +54,15 @@ void ATA::HDD_Smart()
 			SMART_ReturnStatus();
 			return;
 		case 0xD1: //SMART_READ_THRESH
-			Console.Error("DEV9: ATA: SMART_READ_THRESH Not Implemented");
+			Log::Console.error("DEV9: ATA: SMART_READ_THRESH Not Implemented\n");
 			CmdNoDataAbort();
 			return;
 		case 0xD0: //SMART_READ_DATA
-			Console.Error("DEV9: ATA: SMART_READ_DATA Not Implemented");
+			Log::Console.error("DEV9: ATA: SMART_READ_DATA Not Implemented\n");
 			CmdNoDataAbort();
 			return;
 		case 0xD5: //SMART_READ_LOG
-			Console.Error("DEV9: ATA: SMART_READ_LOG Not Implemented");
+			Log::Console.error("DEV9: ATA: SMART_READ_LOG Not Implemented\n");
 			CmdNoDataAbort();
 			return;
 		case 0xD4: //SMART_EXECUTE_OFFLINE

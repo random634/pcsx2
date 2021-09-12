@@ -594,7 +594,7 @@ int ParseArgumentString(u32 arg_block)
 	// Check our args block
 	Log::Console.info("ParseArgumentString: Saving these strings:\n");
 	for (int a = 0; a < argc; a++)
-		Console.WriteLn("%p -> '%s'.", g_argPtrs[a], (char *)PSM(g_argPtrs[a]));
+		Log::Console.info("{} -> '{}'.", (void*)g_argPtrs[a], (char *)PSM(g_argPtrs[a]));
 #endif
 	return argc;
 }

@@ -171,7 +171,7 @@ int GetMACAddress(char* adapter, mac_address* addr)
 	}
 	close(fd);
 #else
-	Console.Error("Could not get MAC address for adapter, OS not supported");
+	Log::Console.error("Could not get MAC address for adapter, OS not supported\n");
 #endif
 	return retval;
 }
@@ -223,14 +223,14 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 	dlt = pcap_datalink(adhandle);
 	dlt_name = (char*)pcap_datalink_val_to_name(dlt);
 
-	Console.Error("DEV9: Device uses DLT %d: %s", dlt, dlt_name);
+	Log::Console.error("DEV9: Device uses DLT {}: {}\n", dlt, dlt_name);
 	switch (dlt)
 	{
 		case DLT_EN10MB:
 			//case DLT_IEEE802_11:
 			break;
 		default:
-			Console.Error("ERROR: Unsupported DataLink Type (%d): %s", dlt, dlt_name);
+			Log::Console.error("ERROR: Unsupported DataLink Type ({}): {}\n", dlt, dlt_name);
 			pcap_close(adhandle);
 			return -1;
 	}

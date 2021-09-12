@@ -106,7 +106,7 @@ namespace InternalServers
 		if (route.fail())
 		{
 			route.close();
-			Console.Error("DHCP: Failed to open /proc/net/route");
+			Log::Console.error("DHCP: Failed to open /proc/net/route\n");
 			return collection;
 		}
 
@@ -151,7 +151,7 @@ namespace InternalServers
 		if (servers.fail())
 		{
 			servers.close();
-			Console.Error("DHCP: Failed to open /etc/resolv.conf");
+			Log::Console.error("DHCP: Failed to open /etc/resolv.conf\n");
 			return collection;
 		}
 
@@ -177,7 +177,7 @@ namespace InternalServers
 					continue;
 
 				if (address == systemdDNS)
-					Console.Error("DHCP: systemd-resolved DNS server is not supported");
+					Log::Console.error("DHCP: systemd-resolved DNS server is not supported\n");
 
 				collection.push_back(address);
 			}
@@ -243,7 +243,7 @@ namespace InternalServers
 			if (gateways.size() > 0)
 				gateway = gateways[0];
 #else
-			Console.Error("DHCP: Unsupported OS, can't find Gateway");
+			Log::Console.error("DHCP: Unsupported OS, can't find Gateway\n");
 #endif
 		}
 	}
@@ -295,7 +295,7 @@ namespace InternalServers
 		}
 		if (dns1.integer == 0 && dns2.integer != 0)
 		{
-			Console.Error("DHCP: DNS1 is zero, but DNS2 is valid, using DNS2 as DNS1");
+			Log::Console.error("DHCP: DNS1 is zero, but DNS2 is valid, using DNS2 as DNS1\n");
 			//no value for DNS1, but we have a value for DNS2
 			//set DNS1 to DNS2 and zero DNS2
 			dns1 = dns2;
@@ -346,33 +346,33 @@ namespace InternalServers
 					continue;
 				case 1:
 					if (netmask != ((DHCPopSubnet*)dhcp.options[i])->subnetMask)
-						Console.Error("DHCP: SubnetMask missmatch");
+						Log::Console.error("DHCP: SubnetMask missmatch\n");
 					break;
 				case 3:
 					if (((DHCPopRouter*)dhcp.options[i])->routers.size() != 1)
-						Console.Error("DHCP: Routers count missmatch");
+						Log::Console.error("DHCP: Routers count missmatch\n");
 
 					if (gateway != ((DHCPopRouter*)dhcp.options[i])->routers[0])
-						Console.Error("DHCP: RouterIP missmatch");
+						Log::Console.error("DHCP: RouterIP missmatch\n");
 					break;
 				case 6:
 					// clang-format off
 					if (((((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 0 && dns1.integer == 0) ||
 						 (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 1 && dns1.integer != 0 && dns2.integer == 0) ||
 						 (((DHCPopDNS*)dhcp.options[i])->dnsServers.size() == 2 && dns2.integer != 0)) == false)
-						Console.Error("DHCP: DNS count missmatch");
+						Log::Console.error("DHCP: DNS count missmatch\n");
 					// clang-format on
 
 					if ((((DHCPopDNS*)dhcp.options[i])->dnsServers.size() > 0 && dns1 != ((DHCPopDNS*)dhcp.options[i])->dnsServers[0]) ||
 						(((DHCPopDNS*)dhcp.options[i])->dnsServers.size() > 1 && dns2 != ((DHCPopDNS*)dhcp.options[i])->dnsServers[1]))
-						Console.Error("DHCP: DNS missmatch");
+						Log::Console.error("DHCP: DNS missmatch\n");
 					break;
 				case 12:
 					//TODO use name?
 					break;
 				case 50:
 					if (ps2IP != ((DHCPopREQIP*)dhcp.options[i])->requestedIP)
-						Console.Error("DHCP: ReqIP missmatch");
+						Log::Console.error("DHCP: ReqIP missmatch\n");
 					break;
 				case 51:
 					leaseTime = ((DHCPopIPLT*)(dhcp.options[i]))->ipLeaseTime;
@@ -382,7 +382,7 @@ namespace InternalServers
 					break;
 				case 54:
 					if (NetAdapter::internalIP != ((DHCPopSERVIP*)dhcp.options[i])->serverIP)
-						Console.Error("DHCP: ServIP missmatch");
+						Log::Console.error("DHCP: ServIP missmatch\n");
 					break;
 				case 55:
 					reqList = ((DHCPopREQLIST*)(dhcp.options[i]))->requests;

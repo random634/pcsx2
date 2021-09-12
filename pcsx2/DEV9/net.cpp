@@ -51,7 +51,7 @@ void NetRxThread()
 			if (rx_fifo_can_rx())
 				rx_process(&tmp);
 			else
-				Console.Error("DEV9: rx_fifo_can_rx() false after nif->recv(), dropping");
+				Log::Console.error("DEV9: rx_fifo_can_rx() false after nif->recv(), dropping\n");
 		}
 
 		using namespace std::chrono_literals;
@@ -99,7 +99,7 @@ void InitNet()
 
 	if (!na)
 	{
-		Console.Error("DEV9: Failed to GetNetAdapter()");
+		Log::Console.error("DEV9: Failed to GetNetAdapter()\n");
 		config.ethEnable = false;
 		return;
 	}
@@ -274,7 +274,7 @@ void NetAdapter::InitInternalServer(ifaddrs* adapter)
 #endif
 {
 	if (adapter == nullptr)
-		Console.Error("DEV9: InitInternalServer() got nullptr for adapter");
+		Log::Console.error("DEV9: InitInternalServer() got nullptr for adapter\n");
 
 	if (config.InterceptDHCP)
 		dhcpServer.Init(adapter);
@@ -293,7 +293,7 @@ void NetAdapter::ReloadInternalServer(ifaddrs* adapter)
 #endif
 {
 	if (adapter == nullptr)
-		Console.Error("DEV9: ReloadInternalServer() got nullptr for adapter");
+		Log::Console.error("DEV9: ReloadInternalServer() got nullptr for adapter\n");
 
 	if (config.InterceptDHCP)
 		dhcpServer.Init(adapter);

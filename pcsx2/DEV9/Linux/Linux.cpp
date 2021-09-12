@@ -56,7 +56,7 @@ IP_Address IPControl_GetValue(GtkEntry* entryCtl)
 	IP_Address ret;
 	if (inet_pton(AF_INET, gtk_entry_get_text(entryCtl), &ret) == 1)
 		return ret;
-	Console.Error("Invalid IP address entered");
+	Log::Console.error("Invalid IP address entered\n");
 	return {0};
 }
 

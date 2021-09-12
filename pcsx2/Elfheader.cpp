@@ -64,10 +64,10 @@ void ElfObject::initElfHeaders()
 		secthead = (ELF_SHR*)&data[header.e_shoff];
 
 	if ( ( header.e_shnum > 0 ) && ( header.e_shentsize != sizeof(ELF_SHR) ) )
-		Console.Error( "(ELF) Size of section headers is not standard" );
+		Log::Console.error("(ELF) Size of section headers is not standard\n" );
 
 	if ( ( header.e_phnum > 0 ) && ( header.e_phentsize != sizeof(ELF_PHR) ) )
-		Console.Error( "(ELF) Size of program headers is not standard" );
+		Log::Console.error("(ELF) Size of program headers is not standard\n" );
 
 	//getCRC();
 
@@ -354,7 +354,7 @@ int GetPS2ElfName( wxString& name )
 
 		if( retype == 0 )
 		{
-			Console.Error("(GetElfName) Disc image is *not* a PlayStation or PS2 game!");
+			Log::Console.error("(GetElfName) Disc image is *not* a PlayStation or PS2 game!\n");
 			return 0;
 		}
 	}

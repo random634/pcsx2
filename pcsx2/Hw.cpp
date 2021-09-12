@@ -308,7 +308,7 @@ __ri bool hwDmacSrcChainWithStack(DMACh& dma, int id) {
 
                 default:
                     // If ASR1 and ASR0 are messed up, end the transfer.
-                    //Console.Error("TAG_RET: ASR 1 & 0 == 1. This shouldn't happen!");
+                    //Log::Console.error("TAG_RET: ASR 1 & 0 == 1. This shouldn't happen!\n");
                     //dma.tadr += 16;						   //Clear tag address - Kills Klonoa 2
                     return true;
             }

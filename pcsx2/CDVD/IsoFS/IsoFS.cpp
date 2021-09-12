@@ -84,14 +84,14 @@ IsoDirectory::IsoDirectory(SectorSource& r)
 					break;
 
 				default:
-					Console.Error("(IsoFS) Unknown partition type ID=%d, encountered at block 0x%x", sector[0], i);
+					Log::Console.error("(IsoFS) Unknown partition type ID={}, encountered at block 0x{:x}\n", sector[0], i);
 					break;
 			}
 		}
 		else
 		{
 			sector[9] = 0;
-			Console.Error("(IsoFS) Invalid partition descriptor encountered at block 0x%x: '%s'", i, &sector[1]);
+			Log::Console.error("(IsoFS) Invalid partition descriptor encountered at block 0x{:x}: '{}'\n", i, &sector[1]);
 			break; // if no valid root partition was found, an exception will be thrown below.
 		}
 

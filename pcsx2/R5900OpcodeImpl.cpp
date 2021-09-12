@@ -210,7 +210,7 @@ static int __Deci2Call(int call, u32 *addr)
 				d2ptr[3], d2ptr[2], d2ptr[1], d2ptr[0]);
 
 //			cpuRegs.pc = deci2handler;
-//			Log::Console.WriteLn("deci2msg: {}\n",  (char*)PSM(d2ptr[4]+0xc));
+//			Log::Console.info("deci2msg: {}\n",  (char*)PSM(d2ptr[4]+0xc));
 
 			if (d2ptr[1]>0xc){
 				// this looks horribly wrong, justification please?
@@ -1146,7 +1146,7 @@ static void trap(u16 code=0)
 	// throw R5900Exception::Trap(code);
 
 	cpuRegs.pc -= 4;
-	Console.Warning("Trap exception at 0x%08x", cpuRegs.pc);
+	Log::Console.warning("Trap exception at 0x{:08x}\n", cpuRegs.pc);
 	cpuException(0x34, cpuRegs.branch);
 }
 

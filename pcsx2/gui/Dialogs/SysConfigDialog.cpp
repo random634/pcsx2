@@ -55,7 +55,7 @@ void Dialogs::SysConfigDialog::UpdateGuiForPreset ( int presetIndex, bool preset
  	if( !m_listbook )
 		return;
 
-	//Console.WriteLn("Applying config to Gui: preset #%d, presets enabled: %s", presetIndex, presetsEnabled?"true":"false");
+	//Log::Console.info("Applying config to Gui: preset #{}, presets enabled: {}\n", presetIndex, presetsEnabled?"true":"false");
 
 	AppConfig preset = *g_Conf;
 	preset.IsOkApplyPreset( presetIndex, false );	//apply a preset to a copy of g_Conf.
@@ -174,7 +174,7 @@ void Dialogs::SysConfigDialog::Preset_Scroll(wxScrollEvent &event)
 //The panels will write themselves to g_Conf on apply (AFTER this function) and will also trigger a global OnSettingsApplied.
 void Dialogs::SysConfigDialog::Apply()
 {
-	//Console.WriteLn("Applying preset to to g_Conf: Preset index: %d, EnablePresets: %s", (int)m_slider_presets->GetValue(), m_check_presets->IsChecked()?"true":"false");
+	//Log::Console.info("Applying preset to to g_Conf: Preset index: {}, EnablePresets: {}\n", (int)m_slider_presets->GetValue(), m_check_presets->IsChecked()?"true":"false");
 	g_Conf->EnablePresets	= m_check_presets->IsChecked();
 	g_Conf->PresetIndex		= m_slider_presets->GetValue();
 	

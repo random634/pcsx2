@@ -232,7 +232,7 @@ namespace usb_eyetoy
 				CLEAR(cap);
 				if (ioctl(fd, VIDIOC_QUERYCAP, &cap) >= 0)
 				{
-					Console.Warning("Camera: %s / %s", dev_name, (char*)cap.card);
+					Log::Console.warning("Camera: {} / {}\n", dev_name, (char*)cap.card);
 					if (!selectedDevice.empty() && strcmp(selectedDevice.c_str(), (char*)cap.card) == 0)
 					{
 						goto cont;

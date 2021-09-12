@@ -757,7 +757,7 @@ void usb_ep_dump(USBDevice* dev)
 				if (first)
 				{
 					first = 0;
-					Console.Warning("  Interface %d, alternative %d\n",
+					Log::Console.warning("  Interface {}, alternative {}\n\n",
 							ifnum, dev->altsetting[ifnum]);
 				}
 				Console.Warning("    Endpoint %d, IN, %s, %d max\n", ep,
@@ -770,7 +770,7 @@ void usb_ep_dump(USBDevice* dev)
 				if (first)
 				{
 					first = 0;
-					Console.Warning("  Interface %d, alternative %d\n",
+					Log::Console.warning("  Interface {}, alternative {}\n\n",
 							ifnum, dev->altsetting[ifnum]);
 				}
 				Console.Warning("    Endpoint %d, OUT, %s, %d max\n", ep,
