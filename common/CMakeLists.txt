@@ -19,6 +19,8 @@ target_sources(common PRIVATE
 	Exceptions.cpp
 	FastFormatString.cpp
 	IniInterface.cpp
+	Log.cpp
+	LogSink.cpp
 	Mutex.cpp
 	PathUtils.cpp
 	PrecompiledHeader.cpp
@@ -70,6 +72,8 @@ target_sources(common PRIVATE
 	EventSource.h
 	Exceptions.h
 	General.h
+	Log.h
+	LogSink.h
 	MemcpyFast.h
 	MemsetFast.inl
 	Path.h
@@ -127,7 +131,7 @@ if(WIN32)
 	target_link_libraries(common PUBLIC pthreads4w Winmm.lib)
 endif()
 
-target_link_libraries(common PRIVATE ${LIBC_LIBRARIES} PUBLIC wxWidgets::all)
+target_link_libraries(common PRIVATE ${LIBC_LIBRARIES} PUBLIC wxWidgets::all fmt::fmt)
 target_compile_features(common PUBLIC cxx_std_17)
 target_include_directories(common PUBLIC ../3rdparty/include ../)
 target_compile_definitions(common PUBLIC "${PCSX2_DEFS}")

@@ -69,6 +69,8 @@
     <ClCompile Include="Windows\WinHostSys.cpp" />
     <ClCompile Include="Windows\WinMisc.cpp" />
     <ClCompile Include="Windows\WinThreads.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="LogSink.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="RwMutex.cpp" />
     <ClCompile Include="Semaphore.cpp" />
@@ -117,6 +119,8 @@
     <ClInclude Include="wxGuiTools.h" />
     <ClInclude Include="Threading.h" />
     <ClInclude Include="PersistentThread.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="LogSink.h" />
     <ClInclude Include="RwMutex.h" />
     <ClInclude Include="emitter\implement\bmi.h" />
     <ClInclude Include="emitter\cpudetect_internal.h" />
