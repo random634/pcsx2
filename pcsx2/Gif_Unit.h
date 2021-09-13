@@ -245,7 +245,7 @@ struct Gif_Path
 	{
 		if (IsDevBuild)
 		{
-			DevCon.WriteLn(Color_Red, "Gif Path[%d] - MTGS Wait! [r=0x%x]", idx + 1, getReadAmount());
+			Log::Console.debug(LogStyle::CompatibilityRed,   "Gif Path[{:d}] - MTGS Wait! [r=0x{:x}]\n", idx + 1, getReadAmount());
 			Gif_MTGS_Wait(isMTVU());
 			Log::Console.debug(LogStyle::CompatibilityGreen, "Gif Path[{:d}] - MTGS Wait! [r=0x{:x}]\n", idx + 1, getReadAmount());
 			return;

@@ -283,7 +283,7 @@ struct eeProfiler
 		{
 			u64 count = v[i].first;
 			double stat = (double)count / (double)total * 100.0;
-			DevCon.WriteLn("%-8s - [%3.4f%%][count=%u]",
+			Log::Console.debug("{:<8s} - [{:.4f}%][count={:d}]\n",
 				eeOpcodeName[v[i].second], stat, (u32)count);
 			if (stat < 0.01)
 				break;
@@ -327,13 +327,13 @@ struct eeProfiler
 
 		Log::Console.debug("\nEE Memory Profiler:\n");
 		Log::Console.debug("Total = 0x{:08x}_{:08x}\n", (u32)(u64)(total >> 32), (u32)total);
-		DevCon.WriteLn("  RAM = 0x%08x_%08x [%3.4f%%] Const[%3.4f%%]", (u32)(u64)(ram >> 32), (u32)ram, ram_p, ram_const_p);
-		DevCon.WriteLn("  REG = 0x%08x_%08x [%3.4f%%] Const[%3.4f%%]", (u32)(u64)(reg >> 32), (u32)reg, reg_p, reg_const_p);
-		DevCon.WriteLn("  GS  = 0x%08x_%08x [%3.4f%%]", (u32)(u64)(gs >> 32), (u32)gs, gs_p);
-		DevCon.WriteLn("  VU  = 0x%08x_%08x [%3.4f%%]", (u32)(u64)(vu >> 32), (u32)vu, vu_p);
+		Log::Console.debug("    RAM = 0x{:08x}_{:08x} [{:.4f}%] Const[{:.4f}%]\n", (u32)(u64)(ram >> 32), (u32)ram, ram_p, ram_const_p);
+		Log::Console.debug("    REG = 0x{:08x}_{:08x} [{:.4f}%] Const[{:.4f}%]\n", (u32)(u64)(reg >> 32), (u32)reg, reg_p, reg_const_p);
+		Log::Console.debug("    GS  = 0x{:08x}_{:08x} [{:.4f}%]\n", (u32)(u64)(gs >> 32), (u32)gs, gs_p);
+		Log::Console.debug("    VU  = 0x{:08x}_{:08x} [{:.4f}%]\n", (u32)(u64)(vu >> 32), (u32)vu, vu_p);
 
 		u64 total_ram = memStatsSlow + memStatsFast;
-		DevCon.WriteLn("\n  RAM Fast [%3.4f%%] RAM Slow [%3.4f%%]. Total 0x%08x_%08x [%3.4f%%]",
+		Log::Console.debug("\n    RAM Fast [{:.4f}%] RAM Slow [{:.4f}%]. Total 0x{:08x}_{:08x} [{:.4f}%]\n",
 			per(memStatsFast, total_ram), per(memStatsSlow, total_ram), (u32)(u64)(total_ram >> 32), (u32)total_ram, per(total_ram, total));
 
 		v.clear();
@@ -358,7 +358,7 @@ struct eeProfiler
 		{
 			u64    count = v[i].first;
 			double stat  = (double)count / (double)(reg - reg_const) * 100.0;
-			DevCon.WriteLn("%04x - [%3.4f%%][count=%u]",
+			Log::Console.debug("{:04x} - [{:.4f}%][count={:d}]\n",
 				v[i].second, stat, (u32)count);
 			if (stat < 0.01)
 				break;
@@ -369,7 +369,7 @@ struct eeProfiler
 		{
 			u64    count = vc[i].first;
 			double stat  = (double)count / (double)reg_const * 100.0;
-			DevCon.WriteLn("%04x - [%3.4f%%][count=%u]",
+			Log::Console.debug("{:04x} - [{:.4f}%][count={:d}]\n",
 				vc[i].second, stat, (u32)count);
 			if (stat < 0.01)
 				break;

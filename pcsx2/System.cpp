@@ -419,8 +419,8 @@ void SysMainMemory::ReserveAll()
 {
 	pxInstallSignalHandler();
 
-	DevCon.WriteLn( Color_StrongBlue, "Mapping host memory for virtual systems..." );
-	ConsoleIndentScope indent(1);
+	Log::Console.debug(LogStyle::Header, "Mapping host memory for virtual systems...\n");
+	ScopedLogIndent indent(Log::Console);
 
 	m_ee.Reserve(MainMemory());
 	m_iop.Reserve(MainMemory());
@@ -432,8 +432,8 @@ void SysMainMemory::CommitAll()
 	vtlb_Core_Alloc();
 	if (m_ee.IsCommitted() && m_iop.IsCommitted() && m_vu.IsCommitted()) return;
 
-	DevCon.WriteLn( Color_StrongBlue, "Allocating host memory for virtual systems..." );
-	ConsoleIndentScope indent(1);
+	Log::Console.debug(LogStyle::Header, "Allocating host memory for virtual systems...\n");
+	ScopedLogIndent indent(Log::Console);
 
 	m_ee.Commit();
 	m_iop.Commit();
@@ -445,8 +445,8 @@ void SysMainMemory::ResetAll()
 {
 	CommitAll();
 
-	DevCon.WriteLn( Color_StrongBlue, "Resetting host memory for virtual systems..." );
-	ConsoleIndentScope indent(1);
+	Log::Console.debug(LogStyle::Header, "Resetting host memory for virtual systems...\n");
+	ScopedLogIndent indent(Log::Console);
 
 	m_ee.Reset();
 	m_iop.Reset();
@@ -459,7 +459,7 @@ void SysMainMemory::DecommitAll()
 {
 	if (!m_ee.IsCommitted() && !m_iop.IsCommitted() && !m_vu.IsCommitted()) return;
 
-	Log::Console.info(LogStyle::CompatibilityBlue, "Decommitting host memory for virtual systems...\n");
+	Log::Console.info(LogStyle::Header, "Decommitting host memory for virtual systems...\n");
 	ScopedLogIndent indent(Log::Console);
 
 	// On linux, the MTVU isn't empty and the thread still uses the m_ee/m_vu memory

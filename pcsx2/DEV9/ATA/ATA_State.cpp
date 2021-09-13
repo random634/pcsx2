@@ -172,7 +172,8 @@ u16 ATA::Read16(u32 addr)
 			else
 				return regLcylHOB;
 		case ATA_R_HCYL:
-			//DevCon.WriteLn("DEV9: *ATA_R_HCYL 16bit read at address % x, value % x, Active %s", addr, regHcyl, (GetSelectedDevice() == 0) ? " True " : " False ");
+
+			//Log::Console.debug("DEV9: *ATA_R_HCYL 16bit read at address {:x}, value {:x}, Active {:s}\n", addr, regHcyl, (GetSelectedDevice() == 0) ? " True " : " False ");
 			if (GetSelectedDevice() != 0)
 				return 0;
 			if (!regControlHOBRead)
@@ -180,7 +181,7 @@ u16 ATA::Read16(u32 addr)
 			else
 				return regHcylHOB;
 		case ATA_R_SELECT:
-			//DevCon.WriteLn("DEV9: *ATA_R_SELECT 16bit read at address % x, value % x, Active %s", addr, regSelect, (GetSelectedDevice() == 0) ? " True " : " False ");
+			//Log::Console.debug("DEV9: *ATA_R_SELECT 16bit read at address {:x}, value {:x}, Active {:s}\n", addr, regSelect, (GetSelectedDevice() == 0) ? " True " : " False ");
 			return regSelect;
 		case ATA_R_STATUS:
 			//Log::Console.debug("DEV9: *ATA_R_STATUS (Fallthough to ATA_R_ALT_STATUS)\n");
@@ -188,7 +189,7 @@ u16 ATA::Read16(u32 addr)
 			dev9.irqcause &= ~ATA_INTR_INTRQ;
 			[[fallthrough]];
 		case ATA_R_ALT_STATUS:
-			//DevCon.WriteLn("DEV9: *ATA_R_ALT_STATUS 16bit read at address % x, value % x, Active %s", addr, regStatus, (GetSelectedDevice() == 0) ? " True " : " False ");
+			//Log::Console.debug("DEV9: *ATA_R_ALT_STATUS 16bit read at address {:x}, value {:x}, Active {:s}\n", addr, regStatus, (GetSelectedDevice() == 0) ? " True " : " False ");
 			//raise IRQ?
 			if (GetSelectedDevice() != 0)
 				return 0;

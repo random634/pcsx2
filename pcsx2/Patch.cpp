@@ -313,8 +313,7 @@ namespace PatchFunc
 		// exception a little bit.
 
 		// print the actual patch lines only in verbose mode (even in devel)
-		if (DevConWriterEnabled)
-			DevCon.WriteLn(cmd + L" " + param);
+		Log::Console.trace("{:s} {:s}\n", cmd, param);
 
 		try
 		{

@@ -120,15 +120,16 @@ VirtualMemoryManager::VirtualMemoryManager(const wxString& name, uptr base, size
 
 	m_pageuse = new std::atomic<bool>[m_pages_reserved]();
 
-	FastFormatUnicode mbkb;
-	uint mbytes = reserved_bytes / _1mb;
-	if (mbytes)
-		mbkb.Write("[%umb]", mbytes);
-	else
-		mbkb.Write("[%ukb]", reserved_bytes / 1024);
+	const char* suffix = "mb";
+	uint num = reserved_bytes / _1mb;
+	if (!num)
+	{
+		suffix = "kb";
+		num = reserved_bytes / 1024;
+	}
 
-	DevCon.WriteLn(Color_Gray, L"%-32s @ %ls -> %ls %ls", WX_STR(m_name),
-		pxsPtr(m_baseptr), pxsPtr((uptr)m_baseptr + reserved_bytes), mbkb.c_str());
+	Log::Console.debug(LogStyle::CompatibilityGray, "{:<32s} @ 0x{:08X} -> 0x{:08X} [{:d}{:s}]\n", m_name,
+		(uptr)m_baseptr, (uptr)m_baseptr + reserved_bytes, num, suffix);
 }
 
 VirtualMemoryManager::~VirtualMemoryManager()
@@ -286,15 +287,16 @@ void* VirtualMemoryReserve::Assign(VirtualMemoryManagerPtr allocator, void* base
 	if (!m_baseptr)
 		return nullptr;
 
-	FastFormatUnicode mbkb;
-	uint mbytes = reserved_bytes / _1mb;
-	if (mbytes)
-		mbkb.Write("[%umb]", mbytes);
-	else
-		mbkb.Write("[%ukb]", reserved_bytes / 1024);
+	const char* suffix = "mb";
+	uint num = reserved_bytes / _1mb;
+	if (!num)
+	{
+		suffix = "kb";
+		num = reserved_bytes / 1024;
+	}
 
-	DevCon.WriteLn(Color_Gray, L"%-32s @ %ls -> %ls %ls", WX_STR(m_name),
-		pxsPtr(m_baseptr), pxsPtr((uptr)m_baseptr + reserved_bytes), mbkb.c_str());
+	Log::Console.debug(LogStyle::CompatibilityGray, "{:<32s} @ 0x{:08X} -> 0x{:08X} [{:d}{:s}]\n", m_name,
+		(uptr)m_baseptr, (uptr)m_baseptr + reserved_bytes, num, suffix);
 
 	return m_baseptr;
 }
@@ -373,12 +375,12 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 		if (!m_allocator->AllocAtAddress(GetPtrEnd(), toReserveBytes))
 		{
 			Log::Console.warning("{:<32s} could not be passively resized due to virtual memory conflict!\n", m_name);
-			Log::Console.warning("    (attempted to map memory @ {:p} -> {:p})\n", (void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes));
+			Log::Console.warning("    (attempted to map memory @ 0x{:08X} -> 0x{:08X})\n", (uptr)m_baseptr, (uptr)m_baseptr + toReserveBytes);
 			return false;
 		}
 
-		Log::Console.trace("{:<32} @ {:p} -> {:p} [{:d}mb]\n", m_name,
-			(void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes), toReserveBytes / _1mb);
+		Log::Console.debug(LogStyle::CompatibilityGray, "{:<32} @ 0x{:08X} -> 0x{:08X} [{:d}mb]\n", m_name,
+			(uptr)m_baseptr, (uptr)m_baseptr + toReserveBytes, toReserveBytes / _1mb);
 	}
 	else if (newPages < m_pages_reserved)
 	{
@@ -392,8 +394,8 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 
 		m_allocator->Free(GetPtrEnd() - toRemoveBytes, toRemoveBytes);
 
-		Log::Console.trace("{:<32s} @ {:p} -> {:p} [{:d}mb]\n", m_name,
-			(void*)m_baseptr, (void*)GetPtrEnd(), GetReserveSizeInBytes() / _1mb);
+		Log::Console.debug(LogStyle::CompatibilityGray, "{:<32s} @ 0x{:08X} -> 0x{:08X} [{:d}mb]\n", m_name,
+			(uptr)m_baseptr, (uptr)GetPtrEnd(), GetReserveSizeInBytes() / _1mb);
 	}
 
 	m_pages_reserved = newPages;

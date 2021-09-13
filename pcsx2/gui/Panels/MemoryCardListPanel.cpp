@@ -64,7 +64,7 @@ bool EnumerateMemoryCard(McdSlotItem& dest, const wxFileName& filename, const wx
 	dest.Type = MemoryCardType::MemoryCard_None;
 
 	const wxString fullpath(filename.GetFullPath());
-	//DevCon.WriteLn( fullpath );
+	//Log::Console.debug("{:s}\n", fullpath);
 	if (filename.FileExists())
 	{
 		// might be a memory card file

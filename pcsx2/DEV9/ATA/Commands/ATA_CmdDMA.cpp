@@ -96,7 +96,7 @@ void ATA::ATAreadDMA8Mem(u8* pMem, int size)
 	{
 		if (size == 0)
 			return;
-		DevCon.WriteLn("DEV9: DMA read, size %i, transferred %i, total size %i", size, rdTransferred, nsector * 512);
+		Log::Console.debug("DEV9: DMA read, size {:d}, transferred {:d}, total size {:d}\n", size, rdTransferred, nsector * 512);
 
 		//read
 		memcpy(pMem, &readBuffer[rdTransferred], size);
@@ -119,7 +119,7 @@ void ATA::ATAwriteDMA8Mem(u8* pMem, int size)
 	if ((udmaMode >= 0) &&
 		(dev9.if_ctrl & SPD_IF_ATA_DMAEN) != 0)
 	{
-		DevCon.WriteLn("DEV9: DMA write, size %i, transferred %i, total size %i", size, wrTransferred, nsector * 512);
+		Log::Console.debug(LogStyle::CompatibilityCyan, "DEV9: DMA write, size {:d}, transferred {:d}, total size {:d}\n", size, wrTransferred, nsector * 512);
 
 		//write
 		memcpy(&currentWrite[wrTransferred], pMem, size);

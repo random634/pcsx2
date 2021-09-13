@@ -69,7 +69,7 @@ mem32_t __fastcall _hwRead32(u32 mem)
 			
 			// Current assumption: Reads 128 bits and discards the unused portion.
 
-			DevCon.WriteLn( Color_Cyan, "Reading 32-bit FIFO data" );
+			Log::Console.debug(LogStyle::CompatibilityCyan, "Reading 32-bit FIFO data\n");
 
 			u128 out128;
 			_hwRead128<page>(mem & ~0x0f, &out128);
@@ -293,7 +293,7 @@ static void _hwRead64(u32 mem, mem64_t* result )
 			// Current assumption: Reads 128 bits and discards the unused portion.
 
 			uint wordpart = (mem >> 3) & 0x1;
-			DevCon.WriteLn( Color_Cyan, "Reading 64-bit FIFO data (%s 64 bits discarded)", wordpart ? "upper" : "lower" );
+			Log::Console.debug(LogStyle::CompatibilityCyan, "Reading 64-bit FIFO data ({:s} 64 bits discarded)\n", wordpart ? "upper" : "lower" );
 
 			u128 out128;
 			_hwRead128<page>(mem & ~0x0f, &out128);
