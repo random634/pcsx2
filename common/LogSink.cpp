@@ -131,9 +131,13 @@ static const char* styleToTerminalFormat(LogStyle style)
 		case LogStyle::Warning:  return "\033[1m\033[35m"; // Bold Magenta
 		case LogStyle::Error:    return "\033[1m\033[31m"; // Bold Red
 		case LogStyle::CompatibilityStrongBlack: return "\033[1m";
+		case LogStyle::CompatibilityStrongGreen: return "\033[1m\033[32m";
+		case LogStyle::CompatibilityStrongBlue:  return "\033[1m\033[34m";
 		case LogStyle::CompatibilityMagenta:     return "\033[35m";
 		case LogStyle::CompatibilityOrange:      return "\033[35m";
 		case LogStyle::CompatibilityGreen:       return "\033[32m";
+		case LogStyle::CompatibilityBlue:        return "\033[34m";
+		case LogStyle::CompatibilityGray:        return "\033[37m";
 	}
 }
 

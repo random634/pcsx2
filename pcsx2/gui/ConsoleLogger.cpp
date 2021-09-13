@@ -1222,13 +1222,17 @@ static ConsoleColors logStyleToConsoleColor(LogStyle style)
 		case LogStyle::Header:   return Color_StrongBlue;
 		case LogStyle::GameLog:  return Color_Yellow;
 		case LogStyle::Emulator: return Color_Blue;
-		case LogStyle::Trace:    return Color_White;
+		case LogStyle::Trace:    return Color_Gray;
 		case LogStyle::Warning:  return Color_StrongOrange;
 		case LogStyle::Error:    return Color_StrongRed;
 		case LogStyle::CompatibilityStrongBlack: return Color_StrongBlack;
+		case LogStyle::CompatibilityStrongGreen: return Color_StrongGreen;
+		case LogStyle::CompatibilityStrongBlue:  return Color_StrongBlue;
 		case LogStyle::CompatibilityMagenta:     return Color_Magenta;
 		case LogStyle::CompatibilityOrange:      return Color_Orange;
 		case LogStyle::CompatibilityGreen:       return Color_Green;
+		case LogStyle::CompatibilityBlue:        return Color_Blue;
+		case LogStyle::CompatibilityGray:        return Color_Gray;
 	}
 }
 
