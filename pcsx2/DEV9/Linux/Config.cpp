@@ -111,7 +111,7 @@ void SaveConf()
 
 	const std::string file(GetSettingsFolder().Combine(wxString("DEV9.cfg")).GetFullPath());
 
-	Log::Console.info("DEV9: CONF: {}\n", file);
+	Log::Console.info("DEV9: CONF: {:s}\n", file);
 
 	xmlSaveFormatFileEnc(file.c_str(), doc, "UTF-8", 1);
 	//    free(configFile);

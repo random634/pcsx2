@@ -71,7 +71,7 @@ void ringBufPut(struct ringBuf_t* rb, u32* data)
 	else
 	{
 		// This should never happen. If it does, the code is bad somewhere.
-		Console.Error("PGIF FIFO overflow! sz= %X", rb->size);
+		Log::Console.error("PGIF FIFO overflow! sz= {:X}\n", rb->size);
 	}
 }
 
@@ -88,7 +88,7 @@ void ringBufGet(struct ringBuf_t* rb, u32* data)
 	else
 	{
 		// This should never happen. If it does, the code is bad somewhere.
-		Console.Error("PGIF FIFO underflow! sz= %X", rb->size);
+		Log::Console.error("PGIF FIFO underflow! sz= {:X}\n", rb->size);
 	}
 }
 
@@ -394,7 +394,7 @@ void PGIFw(int addr, u32 data)
 			pgif.imm_response.reg.e5 = data;
 			break;
 		case PGPU_CMD_FIFO:
-			Console.Error("PGIF CMD FIFO write by EE (SHOULDN'T HAPPEN) 0x%08X = 0x%08X", addr, data);
+			Log::Console.error("PGIF CMD FIFO write by EE (SHOULDN'T HAPPEN) 0x{:08X} = 0x{:08X}\n", addr, data);
 			break;
 		case PGPU_DAT_FIFO:
 			ringBufPut(&rb_gp0, &data);
@@ -472,7 +472,7 @@ void PGIFrQword(u32 addr, void* dat)
 	else
 	{
 		Log::Console.info("PGIF QWord Read from address {:08X}  ERR - shouldnt happen!\n", addr);
-		Console.WriteLn("Data = %08X %08X %08X %08X ", *(u32*)(data + 0), *(u32*)(data + 1), *(u32*)(data + 2), *(u32*)(data + 3));
+		Log::Console.info("Data = {:08X} {:08X} {:08X} {:08X} \n", *(u32*)(data + 0), *(u32*)(data + 1), *(u32*)(data + 2), *(u32*)(data + 3));
 	}
 }
 
@@ -753,7 +753,7 @@ void psxDma2GpuW(u32 addr, u32 data)
 			Log::Console.error("PGPU DMA write TADR! \n");
 			break;
 		default:
-			Console.Error("Unknown PGPU DMA write 0x%08X = 0x%08X", addr, data);
+			Log::Console.error("Unknown PGPU DMA write 0x{:08X} = 0x{:08X}\n", addr, data);
 			break;
 	}
 }

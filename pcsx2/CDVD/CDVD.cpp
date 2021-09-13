@@ -835,7 +835,7 @@ int cdvdReadSector()
 	// be more correct. (air)
 	psxCpu->Clear(HW_DMA3_MADR, cdvd.BlockSize / 4);
 
-	//	Console.WriteLn("sector %x;%x;%x", PSXMu8(madr+0), PSXMu8(madr+1), PSXMu8(madr+2));
+	//	Log::Console.info("sector {:x};{:x};{:x}\n", PSXMu8(madr+0), PSXMu8(madr+1), PSXMu8(madr+2));
 
 	HW_DMA3_BCR_H16 -= (cdvd.BlockSize / (HW_DMA3_BCR_L16 * 4));
 	HW_DMA3_MADR += cdvd.BlockSize;
@@ -1247,7 +1247,7 @@ u8 cdvdRead(u8 key)
 			// note: notify the console since this is a potentially serious emulation problem:
 			// return -1 (all bits set) instead of 0, improves chances of the software being happy
 			PSXHW_LOG("*Unknown 8bit read at address 0x1f4020%x", key);
-			Console.Error("IOP Unknown 8bit read from addr 0x1f4020%x", key);
+			Log::Console.error("IOP Unknown 8bit read from addr 0x1f4020{:x}\n", key);
 			return -1;
 	}
 }
@@ -1408,7 +1408,7 @@ static void cdvdWrite04(u8 rt)
 		break;
 
 		case N_CD_CHG_SPDL_CTRL: // CdChgSpdlCtrl
-			Log::Console.info("sceCdChgSpdlCtrl({})\n", cdvd.Param[0]);
+			Log::Console.info("sceCdChgSpdlCtrl({:d})\n", cdvd.Param[0]);
 			cdvdSetIrq();
 			break;
 
@@ -1562,7 +1562,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 					default:
 						SetResultSize(1);
 						cdvd.Result[0] = 0x80;
-						Console.Warning("*Unknown Mecacon Command param[0]=%02X", cdvd.Param[0]);
+						Log::Console.warning("*Unknown Mecacon Command param[0]={:02X}\n", cdvd.Param[0]);
 						break;
 				}
 				break;
@@ -1574,7 +1574,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				// Cdvd.Status can be different than 1 here, yet we may still have to report an open status.
 				// Gonna have to investigate further. (rama)
 
-				//Console.Warning("CdTrayReqState. cdvd.Status = %d", cdvd.Status);
+				//Log::Console.warning("CdTrayReqState. cdvd.Status = {:d}\n", cdvd.Status);
 				SetResultSize(1);
 
 				if (cdvd.Status == CDVD_STATUS_TRAY_OPEN)
@@ -1592,7 +1592,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 
 			case 0x06: // CdTrayCtrl  (1:1)
 				SetResultSize(1);
-				//Console.Warning( "CdTrayCtrl, param = %d", cdvd.Param[0]);
+				//Log::Console.warning("CdTrayCtrl, param = {:d}\n", cdvd.Param[0]);
 				if (cdvd.Param[0] == 0)
 					cdvd.Result[0] = cdvdCtrlTrayOpen();
 				else
@@ -2065,7 +2065,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				SetResultSize(1); //in:5
 				cdvd.mg_size = 0;
 				cdvd.mg_datatype = 1; //header data
-				Console.WriteLn("[MG] hcode=%d cnum=%d a2=%d length=0x%X",
+				Log::Console.info("[MG] hcode={:d} cnum={:d} a2={:d} length=0x{:X}\n",
 								cdvd.Param[0], cdvd.Param[3], cdvd.Param[4], cdvd.mg_maxsize = cdvd.Param[1] | (((int)cdvd.Param[2]) << 8));
 
 				cdvd.Result[0] = 0; // 0 complete ; 1 busy ; 0x80 error
@@ -2079,7 +2079,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 
 				cdvd.mg_maxsize = 0;                       // don't allow any write
 				cdvd.mg_size = 8 + 16 * cdvd.mg_buffer[4]; //new offset, i just moved the data
-				Log::Console.info("[MG] BIT count={}\n", cdvd.mg_buffer[4]);
+				Log::Console.info("[MG] BIT count={:d}\n", cdvd.mg_buffer[4]);
 
 				cdvd.Result[0] = (cdvd.mg_datatype == 1) ? 0 : 0x80; // 0 complete ; 1 busy ; 0x80 error
 				cdvd.Result[1] = (cdvd.mg_size >> 0) & 0xFF;
@@ -2224,7 +2224,7 @@ void cdvdWrite(u8 key, u8 rt)
 			cdvdWrite3A(rt);
 			break;
 		default:
-			Console.Warning("IOP Unknown 8bit write to addr 0x1f4020%x = 0x%x", key, rt);
+			Log::Console.warning("IOP Unknown 8bit write to addr 0x1f4020{:x} = 0x{:x}\n", key, rt);
 			break;
 	}
 }

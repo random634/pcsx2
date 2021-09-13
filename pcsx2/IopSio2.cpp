@@ -157,7 +157,7 @@ void sio2_serialIn(u8 value){
 	sioWrite8(value);
 
 	if (sio2.packet.sendSize >= BUFSIZE) {//asadr
-		Console.Warning("*PCSX2*: sendSize >= %d", BUFSIZE);
+		Log::Console.warning("*PCSX2*: sendSize >= {:d}\n", BUFSIZE);
 	} else {
 		sio2.buf[sio2.packet.sendSize] = sioRead8();
 		sio2.packet.sendSize++;
@@ -184,7 +184,7 @@ void sio2_fifoIn(u8 value){
 	SIODMAWrite(value);
 
 	if (sio2.packet.sendSize >= BUFSIZE) {//asadr
-		Log::Console.info("*PCSX2*: sendSize >= {}\n", BUFSIZE);
+		Log::Console.info("*PCSX2*: sendSize >= {:d}\n", BUFSIZE);
 	} else {
 		sio2.buf[sio2.packet.sendSize] = sioRead8();
 		sio2.packet.sendSize++;
@@ -196,7 +196,7 @@ u8 sio2_fifoOut(){
 		//PAD_LOG("READING %x\n",sio2.buf[sio2.recvIndex]);
 		return sio2.buf[sio2.recvIndex++];
 	} else {
-		Log::Console.error("*PCSX2*: buffer overrun\n" );
+		Log::Console.error("*PCSX2*: buffer overrun\n");
 	}
 	return 0; // No Data
 }

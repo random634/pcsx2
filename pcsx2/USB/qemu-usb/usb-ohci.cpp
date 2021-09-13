@@ -1487,7 +1487,7 @@ uint32_t ohci_mem_read(OHCIState* ptr, uint32_t addr)
 	int idx = (addr - ptr->mem_base) >> 2;
 	if (idx < countof(reg_names))
 	{
-		Console.Warning("ohci_mem_read %s(%d): %08x\n", reg_names[idx], idx, val);
+		Log::Console.warning("ohci_mem_read {:s}({:d}): {:08x}\n", reg_names[idx], idx, val);
 	}
 	return val;
 }
@@ -1587,7 +1587,7 @@ void ohci_mem_write(OHCIState* ptr, uint32_t addr, uint32_t val)
 	int idx = (addr - ptr->mem_base) >> 2;
 	if (idx < countof(reg_names))
 	{
-		Console.Warning("ohci_mem_write %s(%d): %08x\n", reg_names[idx], idx, val);
+		Log::Console.warning("ohci_mem_write {:s}({:d}): {:08x}\n", reg_names[idx], idx, val);
 	}
 	ohci_mem_write_impl(ptr, addr, val);
 }

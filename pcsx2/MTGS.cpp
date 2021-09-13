@@ -341,7 +341,7 @@ void SysMtgsThread::ExecuteTaskInThread()
 			uptr stackpos = ringposStack.back();
 			if (stackpos != local_ReadPos)
 			{
-				Console.Error("MTGS Ringbuffer Critical Failure ---> %x to %x (prevCmd: %x)\n", stackpos, local_ReadPos, prevCmd.command);
+				Log::Console.error("MTGS Ringbuffer Critical Failure ---> {:x} to {:x} (prevCmd: {:x})\n", stackpos, local_ReadPos, prevCmd.command);
 			}
 			pxAssert(stackpos == local_ReadPos);
 			prevCmd = tag;
@@ -534,7 +534,7 @@ void SysMtgsThread::ExecuteTaskInThread()
 
 #ifdef PCSX2_DEVBUILD
 						default:
-							Console.Error("GSThreadProc, bad packet (%x) at m_ReadPos: %x, m_WritePos: %x", tag.command, local_ReadPos, m_WritePos.load());
+							Log::Console.error("GSThreadProc, bad packet ({:x}) at m_ReadPos: {:x}, m_WritePos: {:x}\n", tag.command, local_ReadPos, m_WritePos.load());
 							pxFail("Bad packet encountered in the MTGS Ringbuffer.");
 							m_ReadPos.store(m_WritePos.load(std::memory_order_acquire), std::memory_order_release);
 							continue;

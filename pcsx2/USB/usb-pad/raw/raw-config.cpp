@@ -304,7 +304,7 @@ namespace usb_pad
 				HidD_GetAttributes(usbHandle, &attr);
 				if (!HidD_GetPreparsedData(usbHandle, &pPreparsedData))
 				{
-					Console.Warning("Could not get preparsed data from %04x:%04x", attr.VendorID, attr.ProductID);
+					Log::Console.warning("Could not get preparsed data from {:04x}:{:04x}\n", attr.VendorID, attr.ProductID);
 					free(didData);
 					i++;
 					continue;

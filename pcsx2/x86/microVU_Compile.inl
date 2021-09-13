@@ -293,9 +293,9 @@ __fi void eBitPass1(mV, int& branch)
 __ri void eBitWarning(mV)
 {
 	if (mVUpBlock->pState.blockType == 1)
-		Console.Error("microVU%d Warning: Branch, E-bit, Branch! [%04x]",  mVU.index, xPC);
+		Log::Console.error("microVU{:d} Warning: Branch, E-bit, Branch! [{:04x}]\n",  mVU.index, xPC);
 	if (mVUpBlock->pState.blockType == 2)
-		Console.Error("microVU%d Warning: Branch, Branch, Branch! [%04x]", mVU.index, xPC);
+		Log::Console.error("microVU{:d} Warning: Branch, Branch, Branch! [{:04x}]\n", mVU.index, xPC);
 	incPC(2);
 	if (curI & _Ebit_)
 	{
@@ -897,7 +897,7 @@ void* mVUcompile(microVU& mVU, u32 startPC, uptr pState)
 	}
 	if ((x == endCount) && (x != 1))
 	{
-		Log::Console.error("microVU{}: Possible infinite compiling loop!\n", mVU.index);
+		Log::Console.error("microVU{:d}: Possible infinite compiling loop!\n", mVU.index);
 	}
 
 	// E-bit End

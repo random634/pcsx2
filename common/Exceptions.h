@@ -38,7 +38,7 @@ void pxTrap();
 	{ \
 		try \
 		{ \
-			Log::Console.error("Unhandled BaseException in {} (ignored!): {}\n", funcname, ex.FormatDiagnosticMessage()); \
+			Log::Console.error("Unhandled BaseException in {:s} (ignored!): {:s}\n", funcname, ex.FormatDiagnosticMessage()); \
 		} \
 		catch (...) \
 		{ \
@@ -49,7 +49,7 @@ void pxTrap();
 	{ \
 		try \
 		{ \
-			Log::Console.error("Unhandled std::exception in {} (ignored!): {}\n", funcname, ex.what()); \
+			Log::Console.error("Unhandled std::exception in {:s} (ignored!): {:s}\n", funcname, ex.what()); \
 		} \
 		catch (...) \
 		{ \

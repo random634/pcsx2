@@ -183,7 +183,7 @@ static int FindDiskType(int mType)
 	switch (iCDType)
 	{
 		case CDVD_TYPE_DETCTCD:
-			Console.WriteLn(" * CDVD Disk Open: CD, %d tracks (%d to %d):", tn.etrack - tn.strack + 1, tn.strack, tn.etrack);
+			Log::Console.info(" * CDVD Disk Open: CD, {:d} tracks ({:d} to {:d}):\n", tn.etrack - tn.strack + 1, tn.strack, tn.etrack);
 			break;
 
 		case CDVD_TYPE_DETCTDVDS:
@@ -212,12 +212,12 @@ static int FindDiskType(int mType)
 		if (td.type == CDVD_AUDIO_TRACK)
 		{
 			audioTracks++;
-			Log::Console.info(" * * Track {}: Audio ({} sectors)\n", i, tlength);
+			Log::Console.info(" * * Track {:d}: Audio ({:d} sectors)\n", i, tlength);
 		}
 		else
 		{
 			dataTracks++;
-			Console.WriteLn(" * * Track %d: Data (Mode %d) (%d sectors)", i, ((td.type == CDVD_MODE1_TRACK) ? 1 : 2), tlength);
+			Log::Console.info(" * * Track {:d}: Data (Mode {:d}) ({:d} sectors)\n", i, ((td.type == CDVD_MODE1_TRACK) ? 1 : 2), tlength);
 		}
 	}
 

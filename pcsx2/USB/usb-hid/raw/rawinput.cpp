@@ -124,7 +124,7 @@ namespace usb_hid
 							//int axis = (value * 0x3FFF) / pValueCaps[i].LogicalMax;
 							break;
 						case HID_USAGE_GENERIC_HATSWITCH:
-							//Console.Warning("Hat: %02X\n", value);
+							//Log::Console.warning("Hat: {:02X}\n", value);
 							break;
 					}
 				}

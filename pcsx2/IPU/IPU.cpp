@@ -87,15 +87,15 @@ void ipuReset()
 void ReportIPU()
 {
 	//Log::Console.info(g_nDMATransfer.desc().utf8_string());
-	Log::Console.info("{}\n", ipu_fifo.in.desc());
-	Log::Console.info("{}\n", ipu_fifo.out.desc());
-	Log::Console.info("{}\n", g_BP.desc());
-	Log::Console.info("vqclut = 0x{}.\n", (void*)vqclut);
-	Log::Console.info("s_thresh = 0x{}.\n", (void*)s_thresh);
+	Log::Console.info("{:s}\n", ipu_fifo.in.desc());
+	Log::Console.info("{:s}\n", ipu_fifo.out.desc());
+	Log::Console.info("{:s}\n", g_BP.desc());
+	Log::Console.info("vqclut = 0x{:p}.\n", (void*)vqclut);
+	Log::Console.info("s_thresh = 0x{:p}.\n", (void*)s_thresh);
 	Log::Console.info("coded_block_pattern = 0x{:x}.\n", coded_block_pattern);
-	Log::Console.info("g_decoder = 0x{}.\n", (void*)&decoder);
-	Log::Console.info("mpeg2_scan = 0x{}.\n", (void*)&mpeg2_scan);
-	Log::Console.info("{}\n\n", ipu_cmd.desc());
+	Log::Console.info("g_decoder = 0x{:p}.\n", (void*)&decoder);
+	Log::Console.info("mpeg2_scan = 0x{:p}.\n", (void*)&mpeg2_scan);
+	Log::Console.info("{:s}\n\n", ipu_cmd.desc());
 }
 
 void SaveStateBase::ipuFreeze()

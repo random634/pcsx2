@@ -77,9 +77,9 @@ void FlatFileReader::BeginRead(void* pBuffer, uint sector, uint count)
 		if (errno == ENOSYS)
 			Log::Console.error("AIO read failed: Check the aio kernel module is loaded\n");
 		else
-			Log::Console.error("AIO read failed: error code {}\n", errno);
+			Log::Console.error("AIO read failed: error code {:d}\n", errno);
 #else
-		Log::Console.error("AIO read failed: error code {}\n", errno);
+		Log::Console.error("AIO read failed: error code {:d}\n", errno);
 #endif
 		return;
 	}

@@ -964,11 +964,11 @@ bool AppConfig::IsOkApplyPreset(int n, bool ignoreMTVU)
 {
 	if (n < 0 || n > GetMaxPresetIndex() )
 	{
-		Log::Console.info("DEV Warning: ApplyPreset({}): index out of range, Aborting.\n", n);
+		Log::Console.info("DEV Warning: ApplyPreset({:d}): index out of range, Aborting.\n", n);
 		return false;
 	}
 
-	//Log::Console.info("Applying Preset {} ...\n", n);
+	//Log::Console.info("Applying Preset {:d} ...\n", n);
 
 	//Have some original and default values at hand to be used later.
 	Pcsx2Config::GSOptions        original_GS = EmuOptions.GS;
@@ -1052,7 +1052,7 @@ bool AppConfig::IsOkApplyPreset(int n, bool ignoreMTVU)
 			break;
 
 		default:
-			Log::Console.info("Developer Warning: Preset #{} is not implemented. (--> Using application default).\n", n);
+			Log::Console.info("Developer Warning: Preset #{:d} is not implemented. (--> Using application default).\n", n);
 	}
 
 

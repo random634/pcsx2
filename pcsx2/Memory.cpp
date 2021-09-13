@@ -407,7 +407,7 @@ static void __fastcall _ext_memWrite32(u32 mem, mem32_t value)
 			return;
 		default: break;
 	}
-	Log::EE::Memory.info("Unknown Memory write32  to  address {} with data {:08x}\n", mem, value);
+	Log::EE::Memory.info("Unknown Memory write32  to  address {:x} with data {:08x}\n", mem, value);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 
@@ -440,7 +440,7 @@ static void __fastcall _ext_memWrite128(u32 mem, const mem128_t *value)
 		//	gsWrite64(mem+8, value[1]); return;
 	}*/
 
-	Log::EE::Memory.info("Unknown Memory write128 to  address {} with data {:08x}_{:08x}_{:08x}_{:08x}\n", mem, ((u32*)value)[3], ((u32*)value)[2], ((u32*)value)[1], ((u32*)value)[0]);
+	Log::EE::Memory.info("Unknown Memory write128 to  address {:x} with data {:08x}_{:08x}_{:08x}_{:08x}\n", mem, ((u32*)value)[3], ((u32*)value)[2], ((u32*)value)[1], ((u32*)value)[0]);
 	cpuTlbMissW(mem, cpuRegs.branch);
 }
 

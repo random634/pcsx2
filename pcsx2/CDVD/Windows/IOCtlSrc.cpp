@@ -229,7 +229,7 @@ bool IOCtlSrc::ReadDVDInfo()
 		}
 		else if(GetLastError() != ERROR_UNRECOGNIZED_MEDIA) // ERROR_UNRECOGNIZED_MEDIA means probably a CD or no disc
 		{
-			Console.Warning("IOCTL Unknown Error %d", GetLastError());
+			Log::Console.warning("IOCTL Unknown Error {:d}\n", GetLastError());
 		}
 		return false;
 	}

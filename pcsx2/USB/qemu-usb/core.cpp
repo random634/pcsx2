@@ -757,10 +757,10 @@ void usb_ep_dump(USBDevice* dev)
 				if (first)
 				{
 					first = 0;
-					Log::Console.warning("  Interface {}, alternative {}\n\n",
+					Log::Console.warning("  Interface {:d}, alternative {:d}\n",
 							ifnum, dev->altsetting[ifnum]);
 				}
-				Console.Warning("    Endpoint %d, IN, %s, %d max\n", ep,
+				Log::Console.warning("    Endpoint {:d}, IN, {:s}, {:d} max\n", ep,
 						tname[dev->ep_in[ep].type],
 						dev->ep_in[ep].max_packet_size);
 			}
@@ -770,10 +770,10 @@ void usb_ep_dump(USBDevice* dev)
 				if (first)
 				{
 					first = 0;
-					Log::Console.warning("  Interface {}, alternative {}\n\n",
+					Log::Console.warning("  Interface {:d}, alternative {:d}\n",
 							ifnum, dev->altsetting[ifnum]);
 				}
-				Console.Warning("    Endpoint %d, OUT, %s, %d max\n", ep,
+				Log::Console.warning("    Endpoint {:d}, OUT, {:s}, {:d} max\n", ep,
 						tname[dev->ep_out[ep].type],
 						dev->ep_out[ep].max_packet_size);
 			}

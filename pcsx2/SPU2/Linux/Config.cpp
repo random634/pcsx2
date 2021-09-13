@@ -163,8 +163,8 @@ void ReadSettings()
 
 	if (mods[OutputModule] == nullptr)
 	{
-		Console.Warning("* SPU2: Unknown output module '%s' specified in configuration file.", temp.wc_str());
-		Console.Warning("* SPU2: Defaulting to SDL (%s).", SDLOut->GetIdent());
+		Log::Console.warning("* SPU2: Unknown output module '{:s}' specified in configuration file.\n", temp);
+		Log::Console.warning("* SPU2: Defaulting to SDL ({:s}).\n", wxString(SDLOut->GetIdent()));
 		OutputModule = FindOutputModuleById(SDLOut->GetIdent());
 	}
 

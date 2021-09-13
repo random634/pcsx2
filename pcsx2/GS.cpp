@@ -81,7 +81,7 @@ static __fi void gsCSRwrite( const tGS_CSR& csr )
 	if(csr.FLUSH)
 	{
 		// Our emulated GS has no FIFO, but if it did, it would flush it here...
-		//Console.WriteLn("GS_CSR FLUSH GS fifo: %x (CSRr=%x)", value, GSCSRr);
+		//Log::Console.info("GS_CSR FLUSH GS fifo: {:x} (CSRr={:x})\n", value, GSCSRr);
 	}
 	
 	if(csr.SIGNAL)

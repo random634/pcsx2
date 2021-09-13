@@ -191,7 +191,7 @@ void SysLogMachineCaps()
 {
 	if ( !PCSX2_isReleaseVersion )
 	{
-		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "\nPCSX2 {}.{}.{}-{} {}"
+		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "\nPCSX2 {:u}.{:u}.{:u}-{:d} {:s}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
@@ -202,7 +202,7 @@ void SysLogMachineCaps()
 	}
 	else // shorter release version string
 	{
-		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "PCSX2 {}.{}.{}-{}"
+		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "PCSX2 {:u}.{:u}.{:u}-{:d}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
@@ -212,12 +212,12 @@ void SysLogMachineCaps()
 		);
 	}
 
-	Log::PCSX2.info("Savestate version: 0x{}\n", g_SaveVersion);
+	Log::PCSX2.info("Savestate version: 0x{:x}\n", g_SaveVersion);
 
 	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "Host Machine Init:\n");
 	Log::PCSX2.info(
-		"    Operating System =  {}\n"
-		"    Physical RAM     =  {} MB\n",
+		"    Operating System =  {:s}\n"
+		"    Physical RAM     =  {:u} MB\n",
 		GetOSVersionString(),
 		(u32)(GetPhysicalMemory() / _1mb)
 	);
@@ -225,10 +225,10 @@ void SysLogMachineCaps()
 	u32 speed = x86caps.CalculateMHz();
 
 	Log::PCSX2.info(
-		"    CPU name         =  {}\n"
-		"    Vendor/Model     =  {} (stepping {:02X})\n"
-		"    CPU speed        =  {}.{:03} ghz ({} logical thread{})\n"
-		"    x86PType         =  {}\n"
+		"    CPU name         =  {:s}\n"
+		"    Vendor/Model     =  {:s} (stepping {:02X})\n"
+		"    CPU speed        =  {:u}.{:03u} ghz ({:d} logical thread{:s})\n"
+		"    x86PType         =  {:s}\n"
 		"    x86Flags         =  {:08x} {:08x}\n"
 		"    x86EFlags        =  {:08x}\n\n",
 		fromUTF8(x86caps.FamilyName).Trim().Trim(false),
@@ -253,16 +253,10 @@ void SysLogMachineCaps()
 
 	if( x86caps.hasStreamingSIMD4ExtensionsA )		features[1].Add( L"SSE4a " );
 
-	const wxString result[2] =
-	{
-		JoinString( features[0], L".. " ),
-		JoinString( features[1], L".. " )
-	};
-
 	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "x86 Features Detected:\n");
-	Log::PCSX2.info("    {}\n", JoinString(features[0], L".. "));
-	if (!result[1].IsEmpty())
-		Log::PCSX2.info("    {}\n", JoinString(features[1], L".. "));
+	Log::PCSX2.info("    {:s}\n", JoinString(features[0], L".. "));
+	if (!features[1].IsEmpty())
+		Log::PCSX2.info("    {:s}\n", JoinString(features[1], L".. "));
 #ifdef __M_X86_64
 	Log::PCSX2.info("    Pcsx2 was compiled as 64-bits.\n");
 #endif

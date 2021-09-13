@@ -227,7 +227,7 @@ SIO_WRITE sioWriteController(u8 data)
 #endif
 		break;
 	}
-	//Console.WriteLn( "SIO: sent = %02X  From pad data =  %02X  bufCnt %08X ", data, sio.buf[sio.bufCount], sio.bufCount);
+	//Log::Console.info("SIO: sent = {:02X}  From pad data =  {:02X}  bufCnt {:08X} \n", data, sio.buf[sio.bufCount], sio.bufCount);
 	sioInterrupt(); //Don't all commands(transfers) cause an interrupt?
 }
 
@@ -478,7 +478,7 @@ SIO_WRITE memcardWrite(u8 data)
 			u8 xor_check = mcd->DoXor(&sio.buf[4], checksum_pos - 4);
 				
 			if(xor_check != sio.buf[sio.bufCount])
-				Console.Warning("MemWrite: Checksum invalid! XOR: %02X, IN: %02X\n", xor_check, sio.buf[sio.bufCount]);
+				Log::Console.warning("MemWrite: Checksum invalid! XOR: {:02X}, IN: {:02X}\n", xor_check, sio.buf[sio.bufCount]);
 
 			sio.buf[sio.bufCount] = xor_check;
 			mcd->Write(&sio.buf[4], transfer_size);
@@ -899,7 +899,7 @@ void chkTriggerInt() {
 
 static void sioWrite8inl(u8 data)
 {
-//	Console.WriteLn( "SIO DATA write %02X  mode %08X " , data, siomode);
+//	Log::Console.info("SIO DATA write {:02X}  mode {:08X} \n" , data, siomode);
 	switch(siomode)
 	{
 	case SIO_START: sioWriteStart(data); break;
@@ -922,7 +922,7 @@ static void sioWrite8inl(u8 data)
 
 	sioInterrupt();
 	//chkTriggerInt();
-	//Console.WriteLn( "SIO0 WR DATA COMMON %02X  INT_STAT= %08X  IOPpc= %08X " , data, psxHu32(0x1070), psxRegs.pc);
+	//Log::Console.info("SIO0 WR DATA COMMON {:02X}  INT_STAT= {:08X}  IOPpc= {:08X} \n" , data, psxHu32(0x1070), psxRegs.pc);
 	byteCnt++;
 }
 
@@ -951,7 +951,7 @@ void sioWriteCtrl16(u16 value)
 {
 	static u8 tcount[2];
 
-//	Console.WriteLn( "SIO0 WR CTRL %02X  IOPpc= %08X " , value, psxRegs.pc);
+//	Log::Console.info("SIO0 WR CTRL {:02X}  IOPpc= {:08X} \n" , value, psxRegs.pc);
 
 	tcount[sio.port] = sio.bufCount;
 	sio.port = (value >> 13) & 1;
@@ -994,7 +994,7 @@ u8 sioRead8()
 		ret = sio.ret;
 	}
 		//	sio.StatReg &= ~TX_RDY; //all clear (transfer of byte ended)
-//	Console.WriteLn( "SIO DATA read %02X  stat= %08X " , ret, sio.StatReg);
+//	Log::Console.info("SIO DATA read {:02X}  stat= {:08X} \n" , ret, sio.StatReg);
 	return ret;
 }
 

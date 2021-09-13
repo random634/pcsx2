@@ -221,7 +221,7 @@ _mVUt void __fc mVUprintRegs()
 // Gets called by mVUaddrFix at execution-time
 static void __fc mVUwarningRegAccess(u32 prog, u32 pc)
 {
-	Console.Error("microVU0 Warning: Accessing VU1 Regs! [%04x] [%x]", pc, prog);
+	Log::Console.error("microVU0 Warning: Accessing VU1 Regs! [{:04x}] [{:x}]\n", pc, prog);
 }
 
 static void __fc mVUTBit()

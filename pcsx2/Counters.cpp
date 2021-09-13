@@ -640,7 +640,7 @@ __fi void rcntUpdate_vSync()
 		if( vblankinc > 1 )
 		{
 			if( hsc != vSyncInfo.hScanlinesPerFrame )
-				Log::Console.info(" ** vSync > Abnormal Scanline Count: {}\n", hsc);
+				Log::Console.info(" ** vSync > Abnormal Scanline Count: {:d}\n", hsc);
 			hsc = 0;
 			vblankinc = 0;
 		}

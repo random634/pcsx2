@@ -76,7 +76,7 @@ static void __fastcall psxDmaGeneric(u32 madr, u32 bcr, u32 chcr, u32 spuCore)
 			break;
 
 		default:
-			Console.Error("*** DMA %d - SPU unknown *** %x addr = %x size = %x", dmaNum, chcr, madr, bcr);
+			Log::Console.error("*** DMA {:d} - SPU unknown *** {:x} addr = {:x} size = {:x}\n", dmaNum, chcr, madr, bcr);
 			break;
 	}
 }

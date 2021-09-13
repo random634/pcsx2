@@ -278,7 +278,7 @@ namespace usb_pad
 						continue; // if here then maybe something is up with HIDP_CAPS.NumberInputValueCaps
 					}
 
-					//Log::Console.warning("Min/max {}/{}\t\n", pValueCaps[i].LogicalMin, pValueCaps[i].LogicalMax);
+					//Log::Console.warning("Min/max {:d}/{:d}\t\n", pValueCaps[i].LogicalMin, pValueCaps[i].LogicalMax);
 
 					//Get mapped axis for physical axis
 					uint16_t v = 0;
@@ -293,7 +293,7 @@ namespace usb_pad
 							v = mapping->axisMap[pValueCaps[i].Range.UsageMin - HID_USAGE_GENERIC_X];
 							break;
 						case HID_USAGE_GENERIC_HATSWITCH:
-							//Console.Warning("Hat: %02X\n", value);
+							//Log::Console.warning("Hat: {:02X}\n", value);
 							v = mapping->axisMap[6];
 							break;
 					}
@@ -306,7 +306,7 @@ namespace usb_pad
 						switch (PLY_GET_VALUE(j, v))
 						{
 							case PAD_AXIS_X: // X-axis
-								//Console.Warning("X: %d\n", value);
+								//Log::Console.warning("X: {:d}\n", value);
 								// Need for logical min too?
 								//generic_data.axis_x = ((value - pValueCaps[i].LogicalMin) * 0x3FF) / (pValueCaps[i].LogicalMax - pValueCaps[i].LogicalMin);
 								if (subtype == WT_DRIVING_FORCE_PRO || subtype == WT_DRIVING_FORCE_PRO_1102)
@@ -322,19 +322,19 @@ namespace usb_pad
 								break;
 
 							case PAD_AXIS_Z: // Z-axis
-								//Console.Warning("Z: %d\n", value);
+								//Log::Console.warning("Z: {:d}\n", value);
 								//XXX Limit value range to 0..255
 								mapping->data[j].throttle = (value * 0xFF) / pValueCaps[i].LogicalMax;
 								break;
 
 							case PAD_AXIS_RZ: // Rotate-Z
-								//Console.Warning("Rz: %d\n", value);
+								//Log::Console.warning("Rz: {:d}\n", value);
 								//XXX Limit value range to 0..255
 								mapping->data[j].brake = (value * 0xFF) / pValueCaps[i].LogicalMax;
 								break;
 
 							case PAD_AXIS_HAT: // TODO Hat Switch
-								//Console.Warning("Hat: %02X\n", value);
+								//Log::Console.warning("Hat: {:02X}\n", value);
 								//TODO 4 vs 8 direction hat switch
 								if (pValueCaps[i].LogicalMax == 4 && value < 4)
 									mapping->data[j].hatswitch = HATS_8TO4[value];
@@ -478,7 +478,7 @@ namespace usb_pad
 				return 0;
 			}
 			else
-				Console.Warning("USB: Could not open device '%s'.\nPassthrough and FFB will not work.\n", path.c_str());
+				Log::Console.warning("USB: Could not open device '{:s}'.\nPassthrough and FFB will not work.\n", path);
 
 			return 0;
 		}

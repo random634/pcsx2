@@ -560,7 +560,7 @@ void recCOP2_SPEC1();
 void recCOP2_SPEC2();
 void rec_C2UNK()
 {
-	Console.Error("Cop2 bad opcode: %x", cpuRegs.code);
+	Log::Console.error("Cop2 bad opcode: {:x}\n", cpuRegs.code);
 }
 
 // This is called by EE Recs to setup sVU info, this isn't needed for mVU Macro (cottonvibes)

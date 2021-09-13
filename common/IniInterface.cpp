@@ -261,7 +261,7 @@ void IniLoader::_EnumEntry(const wxString& var, int& value, const wxChar* const*
 
 	if (enumArray[i] == NULL)
 	{
-		Log::Console.warning("(LoadSettings) Warning: Unrecognized value '{}' on key '{}'\n    Using the default setting of '{}'.\n",
+		Log::Console.warning("(LoadSettings) Warning: Unrecognized value '{:s}' on key '{:s}'\n    Using the default setting of '{:s}'.\n",
 			retval, var, wxString(enumArray[defvalue]));
 		value = defvalue;
 	}
@@ -410,10 +410,10 @@ void IniSaver::_EnumEntry(const wxString& var, int& value, const wxChar* const* 
 
 	if (value >= cnt)
 	{
-		Log::Console.warning("(SaveSettings) An illegal enumerated index was detected when saving '{}'\n", var);
+		Log::Console.warning("(SaveSettings) An illegal enumerated index was detected when saving '{:s}'\n", var);
 		Log::Console.warning(
-			"    Illegal Value: {}\n"
-			"    Using Default: {} ({})\n",
+			"    Illegal Value: {:s}\n"
+			"    Using Default: {:s} ({:s})\n",
 			value, defvalue, wxString(enumArray[defvalue]));
 
 		// Cause a debug assertion, since this is a fully recoverable error.

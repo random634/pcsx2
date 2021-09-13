@@ -26,7 +26,7 @@ namespace usb_msd
 	{
 #ifndef NDEBUG
 		const gchar* text = gtk_entry_get_text(GTK_ENTRY(widget));
-		Console.Warning("Entry text:%s\n", text);
+		Log::Console.warning("Entry text:{:s}\n", text);
 #endif
 	}
 

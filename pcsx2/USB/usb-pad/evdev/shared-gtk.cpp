@@ -511,7 +511,7 @@ namespace usb_pad
 			{
 				if ((fd = open(it.path.c_str(), O_RDONLY | O_NONBLOCK)) < 0)
 				{
-					Console.Warning("USB: failed to open '%s'", it.path.c_str());
+					Log::Console.warning("USB: failed to open '{:s}'\n", it.path);
 					continue;
 				}
 

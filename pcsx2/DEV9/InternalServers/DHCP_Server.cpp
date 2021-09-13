@@ -397,7 +397,7 @@ namespace InternalServers
 				case 255: //End
 					break;
 				default:
-					Log::Console.error("DHCP: Got Unhandled Option {}\n", dhcp.options[i]->GetCode());
+					Log::Console.error("DHCP: Got Unhandled Option {:d}\n", dhcp.options[i]->GetCode());
 					break;
 			}
 		}
@@ -459,7 +459,7 @@ namespace InternalServers
 					case 54: //Server Identifier (Already Added)
 						break;
 					default:
-						Log::Console.error("DHCP: Got Unhandled Request {}\n", reqList[i]);
+						Log::Console.error("DHCP: Got Unhandled Request {:d}\n", reqList[i]);
 						break;
 				}
 			}

@@ -69,7 +69,7 @@ namespace usb_hid
 			int fd = 0;
 			if ((fd = open(path.c_str(), O_RDONLY)) < 0)
 			{
-				Console.Warning("Cannot open %s\n", path.c_str());
+				Log::Console.warning("Cannot open {:s}\n", path);
 			}
 			else
 			{

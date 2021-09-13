@@ -287,7 +287,7 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 	if (!info || (!langCode.IsEmpty() && (langCode.CmpNoCase(info->CanonicalName) != 0)))
 	{
 		if (!info)
-			Console.Warning( "Invalid language identifier (wxID=%d)", wxLangId );
+			Log::Console.warning("Invalid language identifier (wxID={:d})\n", wxLangId );
 
 		if (!langCode.IsEmpty() && (langCode.CmpNoCase(L"default")!=0))
 		{

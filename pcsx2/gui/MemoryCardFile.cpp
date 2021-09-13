@@ -490,14 +490,14 @@ s32 FileMemoryCard::Save(uint slot, const u8* src, u32 adr, int size)
 		for (int i = 0; i < size; i++)
 		{
 			if ((m_currentdata[i] & src[i]) != src[i])
-				Console.Warning("(FileMcd) Warning: writing to uncleared data. (%d) [%08X]", slot, adr);
+				Log::Console.warning("(FileMcd) Warning: writing to uncleared data. ({:d}) [{:08X}]\n", slot, adr);
 			m_currentdata[i] &= src[i];
 		}
 
 		// Checksumness
 		{
 			if (adr == m_chkaddr)
-				Console.Warning("(FileMcd) Warning: checksum sector overwritten. (%d)", slot);
+				Log::Console.warning("(FileMcd) Warning: checksum sector overwritten. ({:d})\n", slot);
 
 			u64* pdata = (u64*)&m_currentdata[0];
 			u32 loops = size / 8;

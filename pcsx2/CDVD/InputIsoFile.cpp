@@ -62,7 +62,7 @@ void InputIsoFile::BeginRead2(uint lsn)
 	{
 		// While this usually indicates that the ISO is corrupted, some games do attempt
 		// to read past the end of the disc, so don't error here.
-		Log::Console.info("isoFile error: Block index is past the end of file! ({} >= {}).\n", lsn, m_blocks);
+		Log::Console.info("isoFile error: Block index is past the end of file! ({:u} >= {:u}).\n", lsn, m_blocks);
 		return;
 	}
 
@@ -274,8 +274,8 @@ bool InputIsoFile::Open(const wxString& srcfile, bool testOnly)
 
 	ConsoleIndentScope indent;
 
-	Log::Console.info("Image type  = {}\n", nameFromType(m_type));
-	//Log::Console.info("Fileparts   = {}\n", m_numparts); // Pointless print, it's 1 unless it says otherwise above
+	Log::Console.info("Image type  = {:s}\n", nameFromType(m_type));
+	//Log::Console.info("Fileparts   = {:u}\n", m_numparts); // Pointless print, it's 1 unless it says otherwise above
 	DevCon.WriteLn("blocks      = %u", m_blocks);
 	DevCon.WriteLn("offset      = %d", m_offset);
 	DevCon.WriteLn("blocksize   = %u", m_blocksize);

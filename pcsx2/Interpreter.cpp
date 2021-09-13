@@ -162,7 +162,7 @@ static void execI()
 	runs++;
 	if (runs > 1599999999){ //leave some time to startup the testgame
 		if (opcode.Name[0] == 'L') { //find all opcodes beginning with "L"
-			Log::Console.info("Load {}\n", opcode.Name);
+			Log::Console.info("Load {:s}\n", opcode.Name);
 		}
 	}
 #endif

@@ -207,7 +207,7 @@ namespace usb_pad
 				usb_packet_copy(p, data, MIN(p->iov.size, sizeof(data)));
 				/*Console.Warning("usb-pad: data token out len=0x%X %X,%X,%X,%X,%X,%X,%X,%X\n",len,
 			data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);*/
-				//Console.Warning("usb-pad: data token out len=0x%X\n",len);
+				//Log::Console.warning("usb-pad: data token out len=0x{:X}\n",len);
 				ret = s->pad->TokenOut(data, p->iov.size);
 				break;
 			default:
@@ -444,7 +444,7 @@ namespace usb_pad
 
 		u_wheel_data_t* w = (u_wheel_data_t*)buf;
 
-		//Console.Warning("usb-pad: axis x %d\n", data.axis_x);
+		//Log::Console.warning("usb-pad: axis x {:d}\n", data.axis_x);
 		switch (type)
 		{
 			case WT_GENERIC:
@@ -801,7 +801,7 @@ namespace usb_pad
 		PadProxyBase* proxy = RegisterPad::instance().Proxy(varApi);
 		if (!proxy)
 		{
-			Log::Console.info("usb-pad: {}: Invalid input API.\n", TypeName());
+			Log::Console.info("usb-pad: {:s}: Invalid input API.\n", TypeName());
 			return nullptr;
 		}
 

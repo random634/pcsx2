@@ -170,7 +170,7 @@ namespace usb_eyetoy
 
 					case EIO:
 					default:
-						Console.Warning("Camera: %s error %d, %s", "VIDIOC_DQBUF", errno, strerror(errno));
+						Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_DQBUF", errno, strerror(errno));
 						return -1;
 				}
 			}
@@ -181,7 +181,7 @@ namespace usb_eyetoy
 
 			if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
 			{
-				Console.Warning("Camera: %s error %d, %s", "VIDIOC_QBUF", errno, strerror(errno));
+				Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_QBUF", errno, strerror(errno));
 				return -1;
 			}
 
@@ -232,7 +232,7 @@ namespace usb_eyetoy
 				CLEAR(cap);
 				if (ioctl(fd, VIDIOC_QUERYCAP, &cap) >= 0)
 				{
-					Log::Console.warning("Camera: {} / {}\n", dev_name, (char*)cap.card);
+					Log::Console.warning("Camera: {:s} / {:s}\n", dev_name, (char*)cap.card);
 					if (!selectedDevice.empty() && strcmp(selectedDevice.c_str(), (char*)cap.card) == 0)
 					{
 						goto cont;
@@ -249,7 +249,7 @@ namespace usb_eyetoy
 				fd = open(dev_name, O_RDWR | O_NONBLOCK, 0);
 				if (-1 == fd)
 				{
-					Console.Warning("Camera: Cannot open '%s': %d, %s", dev_name, errno, strerror(errno));
+					Log::Console.warning("Camera: Cannot open '{:s}': {:d}, {:s}\n", dev_name, errno, strerror(errno));
 					return -1;
 				}
 			}
@@ -261,25 +261,25 @@ namespace usb_eyetoy
 			{
 				if (EINVAL == errno)
 				{
-					Console.Warning("Camera: %s is no V4L2 device", dev_name);
+					Log::Console.warning("Camera: {:s} is no V4L2 device\n", dev_name);
 					return -1;
 				}
 				else
 				{
-					Console.Warning("Camera: %s error %d, %s", "VIDIOC_QUERYCAP", errno, strerror(errno));
+					Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_QUERYCAP", errno, strerror(errno));
 					return -1;
 				}
 			}
 
 			if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE))
 			{
-				Console.Warning("Camera: %s is no video capture device", dev_name);
+				Log::Console.warning("Camera: {:s} is no video capture device\n", dev_name);
 				return -1;
 			}
 
 			if (!(cap.capabilities & V4L2_CAP_STREAMING))
 			{
-				Console.Warning("Camera: %s does not support streaming i/o", dev_name);
+				Log::Console.warning("Camera: {:s} does not support streaming i/o\n", dev_name);
 				return -1;
 			}
 
@@ -318,7 +318,7 @@ namespace usb_eyetoy
 				frmsize.index = 0;
 				while (xioctl(fd, VIDIOC_ENUM_FRAMESIZES, &frmsize) >= 0)
 				{
-					Console.Warning("Camera: supported format[%d] '%s' : %dx%d",
+					Log::Console.warning("Camera: supported format[{:d}] '{:s}' : {:d}x{:d}\n",
 							fmtd.index, fmtd.description,
 							frmsize.discrete.width, frmsize.discrete.height);
 					frmsize.index++;
@@ -335,7 +335,7 @@ namespace usb_eyetoy
 
 			if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt))
 			{
-				Console.Warning("Camera: %s error %d, %s", "VIDIOC_S_FMT", errno, strerror(errno));
+				Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_S_FMT", errno, strerror(errno));
 				return -1;
 			}
 			pixelformat = fmt.fmt.pix.pixelformat;
@@ -352,19 +352,19 @@ namespace usb_eyetoy
 			{
 				if (EINVAL == errno)
 				{
-					Console.Warning("Camera: %s does not support memory mapping", dev_name);
+					Log::Console.warning("Camera: {:s} does not support memory mapping\n", dev_name);
 					return -1;
 				}
 				else
 				{
-					Console.Warning("Camera: %s error %d, %s", "VIDIOC_REQBUFS", errno, strerror(errno));
+					Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_REQBUFS", errno, strerror(errno));
 					return -1;
 				}
 			}
 
 			if (req.count < 2)
 			{
-				Console.Warning("Camera: Insufficient buffer memory on %s", dev_name);
+				Log::Console.warning("Camera: Insufficient buffer memory on {:s}\n", dev_name);
 				return -1;
 			}
 
@@ -387,7 +387,7 @@ namespace usb_eyetoy
 
 				if (-1 == xioctl(fd, VIDIOC_QUERYBUF, &buf))
 				{
-					Console.Warning("Camera: %s error %d, %s", "VIDIOC_QUERYBUF", errno, strerror(errno));
+					Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_QUERYBUF", errno, strerror(errno));
 					return -1;
 				}
 
@@ -396,7 +396,7 @@ namespace usb_eyetoy
 
 				if (MAP_FAILED == buffers[n_buffers].start)
 				{
-					Console.Warning("Camera: %s error %d, %s", "mmap", errno, strerror(errno));
+					Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "mmap", errno, strerror(errno));
 					return -1;
 				}
 			}
@@ -411,7 +411,7 @@ namespace usb_eyetoy
 
 				if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
 				{
-					Console.Warning("Camera: %s error %d, %s", "VIDIOC_QBUF", errno, strerror(errno));
+					Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_QBUF", errno, strerror(errno));
 					return -1;
 				}
 			}
@@ -420,7 +420,7 @@ namespace usb_eyetoy
 			type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 			if (-1 == xioctl(fd, VIDIOC_STREAMON, &type))
 			{
-				Console.Warning("Camera: %s error %d, %s", "VIDIOC_STREAMON", errno, strerror(errno));
+				Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_STREAMON", errno, strerror(errno));
 				return -1;
 			}
 			return 0;
@@ -445,7 +445,7 @@ namespace usb_eyetoy
 					{
 						if (errno == EINTR)
 							continue;
-						Console.Warning("Camera: %s error %d, %s", "select", errno, strerror(errno));
+						Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "select", errno, strerror(errno));
 						break;
 					}
 
@@ -470,7 +470,7 @@ namespace usb_eyetoy
 			type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 			if (-1 == xioctl(fd, VIDIOC_STREAMOFF, &type))
 			{
-				Console.Warning("Camera: %s error %d, %s", "VIDIOC_STREAMOFF", errno, strerror(errno));
+				Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "VIDIOC_STREAMOFF", errno, strerror(errno));
 				return -1;
 			}
 
@@ -478,7 +478,7 @@ namespace usb_eyetoy
 			{
 				if (-1 == munmap(buffers[i].start, buffers[i].length))
 				{
-					Console.Warning("Camera: %s error %d, %s", "munmap", errno, strerror(errno));
+					Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "munmap", errno, strerror(errno));
 					return -1;
 				}
 			}
@@ -486,7 +486,7 @@ namespace usb_eyetoy
 
 			if (-1 == close(fd))
 			{
-				Console.Warning("Camera: %s error %d, %s", "close", errno, strerror(errno));
+				Log::Console.warning("Camera: {:s} error {:d}, {:s}\n", "close", errno, strerror(errno));
 				return -1;
 			}
 			fd = -1;

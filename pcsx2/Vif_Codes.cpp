@@ -81,7 +81,7 @@ static __fi void vuExecMicro(int idx, u32 addr)
 
 	if (vifRegs.itops > (idx ? 0x3ffu : 0xffu))
 	{
-		Log::Console.info("VIF{} ITOP overrun! {:x}\n", idx, vifRegs.itops);
+		Log::Console.info("VIF{:d} ITOP overrun! {:x}\n", idx, vifRegs.itops);
 		vifRegs.itops &= (idx ? 0x3ffu : 0xffu);
 	}
 
@@ -540,7 +540,7 @@ vifOp(vifCode_Null)
 		// if ME1, then force the vif to interrupt
 		if (!(vifXRegs.err.ME1))
 		{ // Ignore vifcode and tag mismatch error
-			Log::Console.info("Vif{}: Unknown VifCmd! [{:x}]\n", idx, vifX.cmd);
+			Log::Console.info("Vif{:d}: Unknown VifCmd! [{:x}]\n", idx, vifX.cmd);
 			vifXRegs.stat.ER1 = true;
 			vifX.vifstalled.enabled = VifStallEnable(vifXch);
 			vifX.vifstalled.value = VIF_IRQ_STALL;
@@ -553,7 +553,7 @@ vifOp(vifCode_Null)
 		if (vifXRegs.code & 0x80000000)
 			vifX.irq = 0;
 	}
-	pass2 { Log::Console.error("Vif{} bad vifcode! [CMD = {:x}]\n", idx, vifX.cmd); }
+	pass2 { Log::Console.error("Vif{:d} bad vifcode! [CMD = {:x}]\n", idx, vifX.cmd); }
 	pass3 { VifCodeLog("Null"); }
 	return 1;
 }

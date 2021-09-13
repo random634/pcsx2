@@ -81,7 +81,7 @@ __fi void EventSource<ListenerType>::_DispatchRaw(ListenerIterator iter, const L
 			}
 			else
 			{
-				Log::Console.error("Ignoring runtime error thrown from event listener: {}\n", ex.FormatDiagnosticMessage());
+				Log::Console.error("Ignoring runtime error thrown from event listener: {:s}\n", ex.FormatDiagnosticMessage());
 			}
 		}
 		catch (BaseException& ex)
@@ -91,7 +91,7 @@ __fi void EventSource<ListenerType>::_DispatchRaw(ListenerIterator iter, const L
 				ex.DiagMsg() = L"Non-runtime BaseException thrown from event listener .. " + ex.DiagMsg();
 				throw;
 			}
-			Log::Console.error("Ignoring non-runtime BaseException thrown from event listener: {}\n", ex.FormatDiagnosticMessage());
+			Log::Console.error("Ignoring non-runtime BaseException thrown from event listener: {:s}\n", ex.FormatDiagnosticMessage());
 		}
 		++iter;
 	}

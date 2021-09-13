@@ -783,7 +783,7 @@ void DEV9write16(u32 addr, u16 value)
 				Log::Console.error("DEV9: SPD_R_DMA_CTRL Pause DMA Not Implemented\n");
 
 			if ((value & 0b1111111111101000) != 0)
-				Console.Error("DEV9: SPD_R_DMA_CTRL Unknown value written %x", value);
+				Log::Console.error("DEV9: SPD_R_DMA_CTRL Unknown value written {:x}\n", value);
 
 			break;
 		case SPD_R_XFR_CTRL:
@@ -807,7 +807,7 @@ void DEV9write16(u32 addr, u16 value)
 			//	DevCon.WriteLn("DEV9: SPD_R_XFR_CTRL For DMA Disabled");
 
 			if ((value & 0b1111111101111000) != 0)
-				Console.Error("DEV9: SPD_R_XFR_CTRL Unknown value written %x", value);
+				Log::Console.error("DEV9: SPD_R_XFR_CTRL Unknown value written {:x}\n", value);
 
 			break;
 		case SPD_R_DBUF_STAT:
@@ -825,7 +825,7 @@ void DEV9write16(u32 addr, u16 value)
 			}
 
 			if (value != 3)
-				Console.Error("DEV9: SPD_R_DBUF_STAT 16bit write %x Which != 3!!!", value);
+				Log::Console.error("DEV9: SPD_R_DBUF_STAT 16bit write {:x} Which != 3!!!\n", value);
 			break;
 
 		case SPD_R_IF_CTRL:
@@ -883,7 +883,7 @@ void DEV9write16(u32 addr, u16 value)
 			}
 
 			if ((value & 0xFF00) > 0)
-				Console.Error("DEV9: IF_CTRL Unknown Bit(s) %x", (value & 0xFF00));
+				Log::Console.error("DEV9: IF_CTRL Unknown Bit(s) {:x}\n", (value & 0xFF00));
 
 			break;
 		case SPD_R_PIO_MODE: //ATA only? or includes EEPROM?
@@ -909,7 +909,7 @@ void DEV9write16(u32 addr, u16 value)
 					break;
 
 				default:
-					Console.Error("DEV9: SPD_R_PIO_MODE UNKNOWN MODE %x", value);
+					Log::Console.error("DEV9: SPD_R_PIO_MODE UNKNOWN MODE {:x}\n", value);
 					break;
 			}
 			break;
@@ -929,7 +929,7 @@ void DEV9write16(u32 addr, u16 value)
 					DevCon.WriteLn("DEV9: SPD_R_MDMA_MODE 2");
 					break;
 				default:
-					Console.Error("DEV9: SPD_R_MDMA_MODE UNKNOWN MODE %x", value);
+					Log::Console.error("DEV9: SPD_R_MDMA_MODE UNKNOWN MODE {:x}\n", value);
 					break;
 			}
 
@@ -956,7 +956,7 @@ void DEV9write16(u32 addr, u16 value)
 					DevCon.WriteLn("DEV9: SPD_R_UDMA_MODE 4");
 					break;
 				default:
-					Console.Error("DEV9: SPD_R_UDMA_MODE UNKNOWN MODE %x", value);
+					Log::Console.error("DEV9: SPD_R_UDMA_MODE UNKNOWN MODE {:x}\n", value);
 					break;
 			}
 			break;

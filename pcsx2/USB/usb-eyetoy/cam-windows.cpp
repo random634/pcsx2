@@ -413,7 +413,7 @@ namespace usb_eyetoy
 			}
 			else
 			{
-				Log::Console.warning("Camera: dshow_callback: unknown format: len={} bpp={}\n", len, bitsperpixel);
+				Log::Console.warning("Camera: dshow_callback: unknown format: len={:d} bpp={:d}\n", len, bitsperpixel);
 			}
 		}
 

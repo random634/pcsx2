@@ -59,7 +59,7 @@ void Hle_SetElfPath(const char* elfFileName)
 	DevCon.WriteLn("HLE Host: Will load ELF: %s\n", elfFileName);
 	ghc::filesystem::path elf_path{elfFileName};
 	hostRoot = elf_path.parent_path().concat("/").string();
-	Log::Console.info("HLE Host: Set 'host:' root path to: {}\n", hostRoot);
+	Log::Console.info("HLE Host: Set 'host:' root path to: {:s}\n", hostRoot);
 }
 
 namespace R3000A

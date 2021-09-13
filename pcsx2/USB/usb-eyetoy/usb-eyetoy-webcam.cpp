@@ -361,10 +361,10 @@ namespace usb_eyetoy
 						}
 						break;
 					case OV519_R10_H_SIZE:
-						Log::Console.info("EyeToy : Image width : {}\n", data[0] << 4);
+						Log::Console.info("EyeToy : Image width : {:d}\n", data[0] << 4);
 						break;
 					case OV519_R11_V_SIZE:
-						Log::Console.info("EyeToy : Image height : {}\n", data[0] << 3);
+						Log::Console.info("EyeToy : Image height : {:d}\n", data[0] << 3);
 						break;
 					case OV519_GPIO_DATA_OUT0:
 						{
@@ -372,7 +372,7 @@ namespace usb_eyetoy
 							if (led_state != data[0])
 							{
 								led_state = data[0];
-								Log::Console.info("EyeToy : LED : {}\n", !!led_state);
+								Log::Console.info("EyeToy : LED : {:d}\n", !!led_state);
 							}
 						}
 						break;
@@ -395,7 +395,7 @@ namespace usb_eyetoy
 							{
 								const bool mirroring_enabled = val & OV7610_REG_COM_A_MASK_MIRROR;
 								s->videodev->SetMirroring(mirroring_enabled);
-								Log::Console.info("EyeToy : mirroring {}\n", mirroring_enabled ? "ON" : "OFF");
+								Log::Console.info("EyeToy : mirroring {:s}\n", mirroring_enabled ? "ON" : "OFF");
 							}
 						}
 						else if (s->regs[R518_I2C_CTL] == 0x03 && data[0] == 0x05)
@@ -488,7 +488,7 @@ namespace usb_eyetoy
 				else if (devep == 2)
 				{
 					// get audio
-					//Console.Warning("get audio %d\n", len);
+					//Log::Console.warning("get audio {:d}\n", len);
 					memset(data, 0, p->iov.size);
 					usb_packet_copy(p, data, p->iov.size);
 				}
@@ -526,7 +526,7 @@ namespace usb_eyetoy
 	void eyetoy_close(USBDevice* dev)
 	{
 		EYETOYState* s = (EYETOYState*)dev;
-		Log::Console.error("EyeToy : eyetoy_close(); hw={}\n", s->hw_camera_running);
+		Log::Console.error("EyeToy : eyetoy_close(); hw={:d}\n", s->hw_camera_running);
 		if (s->hw_camera_running)
 		{
 			s->hw_camera_running = 0;

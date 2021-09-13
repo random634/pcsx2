@@ -759,7 +759,7 @@ __fi void psxRcntWmode32(int index, u32 value)
 		// Need to set a rate and target
 		if ((counter.mode & 0x7) == 0x7 || (counter.mode & 0x7) == 0x1)
 		{
-			Log::Console.info("Gate set on IOP Counter {}, disabling\n", index);
+			Log::Console.info("Gate set on IOP Counter {:d}, disabling\n", index);
 			counter.mode |= IOPCNT_STOPPED;
 		}
 	}

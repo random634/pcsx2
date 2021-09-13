@@ -127,7 +127,7 @@ namespace PacketReader::IP
 						options.push_back(new IPopRouterAlert(buffer, offset));
 						break;
 					default:
-						Log::Console.error("DEV9: IP_Packet: Got Unknown IP Option {} with len {}\n", opKind, opLen);
+						Log::Console.error("DEV9: IP_Packet: Got Unknown IP Option {:d} with len {:d}\n", opKind, opLen);
 						options.push_back(new IPopUnk(buffer, offset));
 						break;
 				}

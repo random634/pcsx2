@@ -368,16 +368,16 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 		uint toReservePages = newPages - m_pages_reserved;
 		uint toReserveBytes = toReservePages * __pagesize;
 
-		Log::Console.debug("{:<32} is being expanded by {} pages.", m_name, toReservePages);
+		Log::Console.debug("{:<32s} is being expanded by {:d} pages.", m_name, toReservePages);
 
 		if (!m_allocator->AllocAtAddress(GetPtrEnd(), toReserveBytes))
 		{
-			Log::Console.warning("{:<32} could not be passively resized due to virtual memory conflict!\n", m_name);
-			Log::Console.warning("    (attempted to map memory @ {} -> {})\n", (void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes));
+			Log::Console.warning("{:<32s} could not be passively resized due to virtual memory conflict!\n", m_name);
+			Log::Console.warning("    (attempted to map memory @ {:p} -> {:p})\n", (void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes));
 			return false;
 		}
 
-		Log::Console.trace("{:<32} @ {} -> {} [{}mb]\n", m_name,
+		Log::Console.trace("{:<32} @ {:p} -> {:p} [{:d}mb]\n", m_name,
 			(void*)m_baseptr, (void*)((uptr)m_baseptr + toReserveBytes), toReserveBytes / _1mb);
 	}
 	else if (newPages < m_pages_reserved)
@@ -388,11 +388,11 @@ bool VirtualMemoryReserve::TryResize(uint newsize)
 		uint toRemovePages = m_pages_reserved - newPages;
 		uint toRemoveBytes = toRemovePages * __pagesize;
 
-		Log::Console.debug("{:<32} is being shrunk by {} pages.\n", m_name, toRemovePages);
+		Log::Console.debug("{:<32s} is being shrunk by {:d} pages.\n", m_name, toRemovePages);
 
 		m_allocator->Free(GetPtrEnd() - toRemoveBytes, toRemoveBytes);
 
-		Log::Console.trace("{:<32} @ {} -> {} [{}mb]\n", m_name,
+		Log::Console.trace("{:<32s} @ {:p} -> {:p} [{:d}mb]\n", m_name,
 			(void*)m_baseptr, (void*)GetPtrEnd(), GetReserveSizeInBytes() / _1mb);
 	}
 

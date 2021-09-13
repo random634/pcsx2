@@ -189,7 +189,7 @@ static __ri void __fastcall _vuFMACAdd(VURegs * VU, int reg, int xyzw) {
 		VU->fmac[i].statusflag = VU->statusflag;
 		VU->fmac[i].clipflag = VU->clipflag;
 	} else {
-		//Log::Console.error("*PCSX2*: error , out of fmacs {}\n", VU->cycle);
+		//Log::Console.error("*PCSX2*: error , out of fmacs {:d}\n", VU->cycle);
 	}
 }
 

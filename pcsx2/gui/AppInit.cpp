@@ -545,11 +545,11 @@ void Pcsx2App::OnScheduledTermination(wxTimerEvent& evt)
 	{
 		if (--m_term_threshold > 0)
 		{
-			Log::Console.warning("(App) {} saves are still pending; exit postponed...", m_PendingSaves);
+			Log::Console.warning("(App) {:d} saves are still pending; exit postponed...", m_PendingSaves);
 			return;
 		}
 
-		Log::Console.error("(App) {} pending saves have exceeded OnExit threshold and are being prematurely terminated!", m_PendingSaves);
+		Log::Console.error("(App) {:d} pending saves have exceeded OnExit threshold and are being prematurely terminated!", m_PendingSaves);
 	}
 
 	m_timer_Termination->Stop();

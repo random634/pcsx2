@@ -316,7 +316,7 @@ void SPRFROMinterrupt()
 				{
 					if ((spr0ch.madr & ~dmacRegs.rbsr.RMSK) != dmacRegs.rbor.ADDR) Log::Console.info("GIF MFIFO Write outside MFIFO area\n");
 					spr0ch.madr = dmacRegs.rbor.ADDR + (spr0ch.madr & dmacRegs.rbsr.RMSK);
-					//Console.WriteLn("mfifoGIFtransfer %x madr %x, tadr %x", gif->chcr._u32, gif->madr, gif->tadr);
+					//Log::Console.info("mfifoGIFtransfer {:x} madr {:x}, tadr {:x}\n", gif->chcr._u32, gif->madr, gif->tadr);
 					hwMFIFOResume(mfifotransferred);
 					break;
 				}

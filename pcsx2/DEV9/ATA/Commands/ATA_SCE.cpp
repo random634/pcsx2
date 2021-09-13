@@ -28,7 +28,7 @@ void ATA::HDD_SCE()
 			SCE_IDENTIFY_DRIVE();
 			break;
 		default:
-			Console.Error("DEV9: ATA: Unknown SCE command %x", regFeature);
+			Log::Console.error("DEV9: ATA: Unknown SCE command {:x}\n", regFeature);
 			CmdNoDataAbort();
 			return;
 	}

@@ -430,7 +430,7 @@ __fi void _cpuEventTest_Shared()
 	if( iopEventAction )
 	{
 		//if( EEsCycle < -450 )
-		//	Log::Console.info(" IOP ahead by: {} cycles\n", -EEsCycle);
+		//	Log::Console.info(" IOP ahead by: {:d} cycles\n", -EEsCycle);
 
 		EEsCycle = psxCpu->ExecuteBlock( EEsCycle );
 
@@ -451,7 +451,7 @@ __fi void _cpuEventTest_Shared()
 		// IOP extra timeslices in short order.
 
 		cpuSetNextEventDelta( 48 );
-		//Console.Warning( "EE ahead of the IOP -- Rapid Event!  %d", EEsCycle );
+		//Log::Console.warning("EE ahead of the IOP -- Rapid Event!  {:d}\n", EEsCycle );
 	}
 
 	// The IOP could be running ahead/behind of us, so adjust the iop's next branch by its
@@ -584,7 +584,7 @@ int ParseArgumentString(u32 arg_block)
 			}
 			else
 			{
-				Log::Console.info("ParseArgumentString: Discarded additional arguments beyond the maximum of {}.\n", kMaxArgs);
+				Log::Console.info("ParseArgumentString: Discarded additional arguments beyond the maximum of {:d}.\n", kMaxArgs);
 				break;
 			}
 		}
@@ -594,7 +594,7 @@ int ParseArgumentString(u32 arg_block)
 	// Check our args block
 	Log::Console.info("ParseArgumentString: Saving these strings:\n");
 	for (int a = 0; a < argc; a++)
-		Log::Console.info("{} -> '{}'.", (void*)g_argPtrs[a], (char *)PSM(g_argPtrs[a]));
+		Log::Console.info("{:p} -> '{:s}'.", (void*)g_argPtrs[a], (char *)PSM(g_argPtrs[a]));
 #endif
 	return argc;
 }
@@ -617,10 +617,10 @@ void __fastcall eeloadHook()
 	if (argc) // calls to EELOAD *after* the first one during the startup process will come here
 	{
 #if DEBUG_LAUNCHARG
-		Log::Console.info("eeloadHook: EELOAD was called with {} arguments according to $a0 and {} according to vargs block:\n",
+		Log::Console.info("eeloadHook: EELOAD was called with {:d} arguments according to $a0 and {:d} according to vargs block:\n",
 			argc, memRead32(cpuRegs.GPR.n.a1.UD[0] - 4));
 		for (int a = 0; a < argc; a++)
-			Log::Console.info("argv[{}]: {:x} -> {:x} -> '{}'\n", a, cpuRegs.GPR.n.a1.UL[0] + (a * 4),
+			Log::Console.info("argv[{:d}]: {:x} -> {:x} -> '{:s}'\n", a, cpuRegs.GPR.n.a1.UL[0] + (a * 4),
 				memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4)), (char *)PSM(memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4))));
 #endif
 		if (argc > 1)
@@ -634,7 +634,7 @@ void __fastcall eeloadHook()
 		if (!g_Conf->CurrentGameArgs.empty() && !strcmp(elfname.c_str(), "rom0:PS2LOGO"))
 		{
 			const char *argString = g_Conf->CurrentGameArgs.c_str();
-			Log::Console.info("eeloadHook: Supplying launch argument(s) '{}' to module '{}'...\n", argString, elfname);
+			Log::Console.info("eeloadHook: Supplying launch argument(s) '{:s}' to module '{:s}'...\n", argString, elfname);
 
 			// Join all arguments by space characters so they can be processed as one string by ParseArgumentString(), then add the
 			// user's launch arguments onto the end
@@ -649,7 +649,7 @@ void __fastcall eeloadHook()
 			strcpy((char *)PSM(arg_ptr + arg_len + 1), g_Conf->CurrentGameArgs.c_str());
 			u32 first_arg_ptr = memRead32(cpuRegs.GPR.n.a1.UD[0]);
 #if DEBUG_LAUNCHARG
-			Log::Console.info("eeloadHook: arg block is '{}'.\n", (char *)PSM(first_arg_ptr));
+			Log::Console.info("eeloadHook: arg block is '{:s}'.\n", (char *)PSM(first_arg_ptr));
 #endif
 			argc = ParseArgumentString(first_arg_ptr);
 
@@ -661,7 +661,7 @@ void __fastcall eeloadHook()
 			// Check our work
 			Log::Console.info("eeloadHook: New arguments are:\n");
 			for (int a = 0; a < argc; a++)
-				Log::Console.info("argv[{}]: {:x} -> '{}'\n", a, memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4)),
+				Log::Console.info("argv[{:d}]: {:x} -> '{:s}'\n", a, memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4)),
 				(char *)PSM(memRead32(cpuRegs.GPR.n.a1.UD[0] + (a * 4))));
 #endif
 		}
@@ -728,7 +728,7 @@ void __fastcall eeloadHook2()
 	}
 
 	const char *argString = g_Conf->CurrentGameArgs.c_str();
-	Log::Console.info("eeloadHook2: Supplying launch argument(s) '{}' to ELF '{}'.\n", argString, (char *)PSM(g_osdsys_str));
+	Log::Console.info("eeloadHook2: Supplying launch argument(s) '{:s}' to ELF '{:s}'.\n", argString, (char *)PSM(g_osdsys_str));
 
 	// Add args string after game's ELF name that was written over "rom0:OSDSYS" by eeloadHook(). In between the ELF name and args
 	// string we insert a space character so that ParseArgumentString() has one continuous string to process.
@@ -736,7 +736,7 @@ void __fastcall eeloadHook2()
 	memset(PSM(g_osdsys_str + game_len), 0x20, 1);
 	strcpy((char *)PSM(g_osdsys_str + game_len + 1), g_Conf->CurrentGameArgs.c_str());
 #if DEBUG_LAUNCHARG
-	Log::Console.info("eeloadHook2: arg block is '{}'.\n", (char *)PSM(g_osdsys_str));
+	Log::Console.info("eeloadHook2: arg block is '{:s}'.\n", (char *)PSM(g_osdsys_str));
 #endif
 	int argc = ParseArgumentString(g_osdsys_str);
 	
@@ -752,7 +752,7 @@ void __fastcall eeloadHook2()
 
 	// Save argc and argv as incoming arguments for EELOAD function which calls ExecPS2()
 #if DEBUG_LAUNCHARG
-	Log::Console.info("eeloadHook2: Saving {} and {:x} in $a0 and $a1.\n", argc, block_start);
+	Log::Console.info("eeloadHook2: Saving {:d} and {:x} in $a0 and $a1.\n", argc, block_start);
 #endif
 	cpuRegs.GPR.n.a0.SD[0] = argc;
 	cpuRegs.GPR.n.a1.UD[0] = block_start;

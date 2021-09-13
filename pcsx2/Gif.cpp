@@ -402,7 +402,7 @@ void GIFdma()
 
 		if ((dmacRegs.ctrl.STD == STD_GIF) && (gif.prevcycles != 0))
 		{
-			//Console.WriteLn("GS Stall Control Source = %x, Drain = %x\n MADR = %x, STADR = %x", (psHu32(0xe000) >> 4) & 0x3, (psHu32(0xe000) >> 6) & 0x3, gifch.madr, psHu32(DMAC_STADR));
+			//Log::Console.info("GS Stall Control Source = {:x}, Drain = {:x}\n MADR = {:x}, STADR = {:x}\n", (psHu32(0xe000) >> 4) & 0x3, (psHu32(0xe000) >> 6) & 0x3, gifch.madr, psHu32(DMAC_STADR));
 			if ((gifch.madr + (gifch.qwc * 16)) > dmacRegs.stadr.ADDR)
 			{
 				GifDMAInt(4);
@@ -664,7 +664,7 @@ void mfifoGIFtransfer()
 
 		gif.mfifocycles += 2;
 
-		Log::EE::GIF.debug("dmaChain {:08x}_{:08x} size={}, id={}, madr={:x}, tadr={:x} mfifo qwc = {:x} spr0 madr = {:x}\n",
+		Log::EE::GIF.debug("dmaChain {:08x}_{:08x} size={:d}, id={:d}, madr={:x}, tadr={:x} mfifo qwc = {:x} spr0 madr = {:x}\n",
 			ptag[1]._u32, ptag[0]._u32, gifch.qwc, ptag->ID, gifch.madr, gifch.tadr, gif.gifqwc, spr0ch.madr);
 
 		gif.gspath3done = hwDmacSrcChainWithStack(gifch, ptag->ID);

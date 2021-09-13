@@ -62,7 +62,7 @@ namespace usb_hid
 
 					if (fd < 0)
 					{
-						Console.Warning("Evdev: Unable to open device: %s", str.str().c_str());
+						Log::Console.warning("Evdev: Unable to open device: {:s}\n", str.str());
 						continue;
 					}
 

@@ -101,7 +101,7 @@ static __fi bool ProcessEETag()
 	}
 
 	if (Log::SIF.shouldLog(LogLevel::Debug))
-		Log::SIF.debug("{}\n", ptag->tag_to_str());
+		Log::SIF.debug("{:s}\n", ptag->tag_to_str());
 	sif1ch.madr = ptag[1]._u32;
 
 	sif1.ee.end = hwDmacSrcChain(sif1ch, ptag->ID);
@@ -121,7 +121,7 @@ static __fi bool SIFIOPReadTag()
 	// Read a tag.
 	sif1.fifo.read((u32*)&sif1.iop.data, 4);
 	//sif1words = (sif1words + 3) & 0xfffffffc; // Round up to nearest 4.
-	Log::SIF.debug("SIF 1 IOP: dest chain tag madr:{:08X} wc:{:04X} id:{:X} irq:{}\n",
+	Log::SIF.debug("SIF 1 IOP: dest chain tag madr:{:08X} wc:{:04X} id:{:X} irq:{:d}\n",
 		sif1data & 0xffffff, sif1words, sif1tag.ID, sif1tag.IRQ);
 
 	// Only use the first 24 bits.
@@ -331,7 +331,7 @@ __fi void  EEsif1Interrupt()
 __fi void dmaSIF1()
 {
 	if (Log::SIF.shouldLog(LogLevel::Debug))
-		Log::SIF.debug("dmaSIF1{}\n", sif1ch.cmqt_to_str());
+		Log::SIF.debug("dmaSIF1{:s}\n", sif1ch.cmqt_to_str());
 
 	if (sif1.fifo.readPos != sif1.fifo.writePos)
 	{

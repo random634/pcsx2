@@ -489,7 +489,7 @@ namespace Implementations
 	{
 #ifdef PCSX2_DEVBUILD
 		iDumpRegisters(cpuRegs.pc, 0);
-		Console.Warning("hardware registers dumped EE:%x, IOP:%x\n", cpuRegs.pc, psxRegs.pc);
+		Log::Console.warning("hardware registers dumped EE:{:x}, IOP:{:x}\n", cpuRegs.pc, psxRegs.pc);
 #endif
 	}
 

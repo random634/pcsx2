@@ -194,7 +194,7 @@ u16 ATA::Read16(u32 addr)
 				return 0;
 			return regStatus;
 		default:
-			Console.Error("DEV9: ATA: Unknown 16bit read at address %x", addr);
+			Log::Console.error("DEV9: ATA: Unknown 16bit read at address {:x}\n", addr);
 			return 0xff;
 	}
 }
@@ -274,7 +274,7 @@ void ATA::Write16(u32 addr, u16 value)
 			IDE_ExecCmd(value);
 			break;
 		default:
-			Console.Error("DEV9: ATA: UNKNOWN 16bit write at address %x, value %x", addr, value);
+			Log::Console.error("DEV9: ATA: UNKNOWN 16bit write at address {:x}, value {:x}\n", addr, value);
 			break;
 	}
 }

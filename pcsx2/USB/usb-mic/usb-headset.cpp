@@ -991,7 +991,7 @@ namespace usb_mic
 		s->audsrcproxy = RegisterAudioDevice::instance().Proxy(api);
 		if (!s->audsrcproxy)
 		{
-			Log::Console.info("headset: Invalid audio API: '{}'\n", api);
+			Log::Console.info("headset: Invalid audio API: '{:s}'\n", api);
 			delete s;
 			return NULL;
 		}

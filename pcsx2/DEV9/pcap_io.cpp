@@ -167,7 +167,7 @@ int GetMACAddress(char* adapter, mac_address* addr)
 	}
 	else
 	{
-		Log::Console.error("Could not get MAC address for adapter: {}\n", adapter);
+		Log::Console.error("Could not get MAC address for adapter: {:s}\n", adapter);
 	}
 	close(fd);
 #else
@@ -182,7 +182,7 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 	char filter[1024] = "ether broadcast or ether dst ";
 	int dlt;
 	char* dlt_name;
-	Log::Console.info("DEV9: Opening adapter '{}'...\n", adapter);
+	Log::Console.info("DEV9: Opening adapter '{:s}'...\n", adapter);
 
 	pcap_io_switched = switched;
 
@@ -195,8 +195,8 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 			 errbuf // error buffer
 			 )) == NULL)
 	{
-		Log::Console.error("DEV9: {}\n", errbuf);
-		Log::Console.error("DEV9: Unable to open the adapter. {} is not supported by pcap\n", adapter);
+		Log::Console.error("DEV9: {:s}\n", errbuf);
+		Log::Console.error("DEV9: Unable to open the adapter. {:s} is not supported by pcap\n", adapter);
 		return -1;
 	}
 	if (switched)
@@ -208,13 +208,13 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 
 		if (pcap_compile(adhandle, &fp, filter, 1, PCAP_NETMASK_UNKNOWN) == -1)
 		{
-			Log::Console.error("DEV9: Error calling pcap_compile: {}\n", pcap_geterr(adhandle));
+			Log::Console.error("DEV9: Error calling pcap_compile: {:s}\n", pcap_geterr(adhandle));
 			return -1;
 		}
 
 		if (pcap_setfilter(adhandle, &fp) == -1)
 		{
-			Log::Console.error("DEV9: Error setting filter: {}\n", pcap_geterr(adhandle));
+			Log::Console.error("DEV9: Error setting filter: {:s}\n", pcap_geterr(adhandle));
 			return -1;
 		}
 	}
@@ -223,14 +223,14 @@ int pcap_io_init(char* adapter, bool switched, mac_address virtual_mac)
 	dlt = pcap_datalink(adhandle);
 	dlt_name = (char*)pcap_datalink_val_to_name(dlt);
 
-	Log::Console.error("DEV9: Device uses DLT {}: {}\n", dlt, dlt_name);
+	Log::Console.error("DEV9: Device uses DLT {:d}: {:s}\n", dlt, dlt_name);
 	switch (dlt)
 	{
 		case DLT_EN10MB:
 			//case DLT_IEEE802_11:
 			break;
 		default:
-			Log::Console.error("ERROR: Unsupported DataLink Type ({}): {}\n", dlt, dlt_name);
+			Log::Console.error("ERROR: Unsupported DataLink Type ({:d}): {:s}\n", dlt, dlt_name);
 			pcap_close(adhandle);
 			return -1;
 	}
@@ -391,7 +391,7 @@ PCAPAdapter::PCAPAdapter()
 
 	if (pcap_io_init(config.Eth, config.EthApi == NetApi::PCAP_Switched, newMAC) == -1)
 	{
-		Log::Console.error("Can't open Device '{}'\n", config.Eth);
+		Log::Console.error("Can't open Device '{:s}'\n", config.Eth);
 	}
 }
 bool PCAPAdapter::blocks()

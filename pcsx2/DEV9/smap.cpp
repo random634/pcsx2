@@ -96,7 +96,7 @@ void rx_process(NetPacket* pk)
 
 	if (!(pbd->ctrl_stat & SMAP_BD_RX_EMPTY))
 	{
-		Log::Console.error("DEV9: ERROR : Discarding {} bytes (RX{} not ready)\n", bytes, dev9.rxbdi);
+		Log::Console.error("DEV9: ERROR : Discarding {:d} bytes (RX{:d} not ready)\n", bytes, dev9.rxbdi);
 		return;
 	}
 
@@ -169,7 +169,7 @@ void tx_process()
 
 			if (!(pbd->pointer >= 0x1000))
 			{
-				Console.Error("DEV9: SMAP: ERROR: odd , !pbd->pointer>0x1000 | 0x%X %u", pbd->pointer, pbd->length);
+				Log::Console.error("DEV9: SMAP: ERROR: odd , !pbd->pointer>0x1000 | 0x{:X} {:u}\n", pbd->pointer, pbd->length);
 			}
 			//increase fifo pointer(s)
 			//uh does that even exist on real h/w ?

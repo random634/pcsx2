@@ -210,7 +210,7 @@ static int __Deci2Call(int call, u32 *addr)
 				d2ptr[3], d2ptr[2], d2ptr[1], d2ptr[0]);
 
 //			cpuRegs.pc = deci2handler;
-//			Log::Console.info("deci2msg: {}\n",  (char*)PSM(d2ptr[4]+0xc));
+//			Log::Console.info("deci2msg: {:s}\n",  (char*)PSM(d2ptr[4]+0xc));
 
 			if (d2ptr[1]>0xc){
 				// this looks horribly wrong, justification please?
@@ -1037,7 +1037,7 @@ void SYSCALL()
 					addr = cpuRegs.GPR.n.a0.UL[0] + n_transfer * sizeof(t_sif_dma_transfer);
 					dmat = (t_sif_dma_transfer*)PSM(addr);
 
-					Log::EE::Bios.debug("bios_{}: n_transfer={}, size={:x}, attr={:x}, dest={:x}, src={:x}\n",
+					Log::EE::Bios.debug("bios_{:s}: n_transfer={:d}, size={:x}, attr={:x}, dest={:x}, src={:x}\n",
 							R5900::bios[cpuRegs.GPR.n.v1.UC[0]], n_transfer,
 							dmat->size, dmat->attr,
 							dmat->dest, dmat->src);

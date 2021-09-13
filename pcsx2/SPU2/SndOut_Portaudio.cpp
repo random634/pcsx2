@@ -325,7 +325,7 @@ public:
 		if (err != paNoError)
 		{
 			if (err == paInvalidSampleRate)
-				Console.Warning("Failed to create Port Audio Device %dkhz, Please use Exclusive Mode", SampleRate / 1000);
+				Log::Console.warning("Failed to create Port Audio Device {:d}khz, Please use Exclusive Mode\n", SampleRate / 1000);
 			fprintf(stderr, "* SPU2: PortAudio error: %s\n", Pa_GetErrorText(err));
 			Pa_Terminate();
 			return -1;

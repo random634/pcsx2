@@ -283,7 +283,7 @@ void MapTLB(int i)
 
 void UnmapTLB(int i)
 {
-	Log::EE::COP0.trace("Clear TLB {}: {:08x}-> [{:08x} {:08x}] S={} G={} ASID={} Mask={:03X}\n", i,tlb[i].VPN2,tlb[i].PFN0,tlb[i].PFN1,tlb[i].S,tlb[i].G,tlb[i].ASID,tlb[i].Mask);
+	Log::EE::COP0.trace("Clear TLB {:d}: {:08x}-> [{:08x} {:08x}] S={:d} G={:d} ASID={:d} Mask={:03X}\n", i,tlb[i].VPN2,tlb[i].PFN0,tlb[i].PFN1,tlb[i].S,tlb[i].G,tlb[i].ASID,tlb[i].Mask);
 	u32 mask, addr;
 	u32 saddr, eaddr;
 
@@ -346,7 +346,7 @@ namespace OpcodeImpl {
 namespace COP0 {
 
 void TLBR() {
-	Log::EE::COP0.info("COP0_TLBR {}:{:x},{:x},{:x},{:x}\n",
+	Log::EE::COP0.info("COP0_TLBR {:d}:{:x},{:x},{:x},{:x}\n",
 			cpuRegs.CP0.n.Index,   cpuRegs.CP0.n.PageMask, cpuRegs.CP0.n.EntryHi,
 			cpuRegs.CP0.n.EntryLo0, cpuRegs.CP0.n.EntryLo1);
 
@@ -363,7 +363,7 @@ void TLBWI() {
 
 	//if (j > 48) return;
 
-	Log::EE::COP0.info("COP0_TLBWI {}:{:x},{:x},{:x},{:x}\n",
+	Log::EE::COP0.info("COP0_TLBWI {:d}:{:x},{:x},{:x},{:x}\n",
 			cpuRegs.CP0.n.Index,    cpuRegs.CP0.n.PageMask, cpuRegs.CP0.n.EntryHi,
 			cpuRegs.CP0.n.EntryLo0, cpuRegs.CP0.n.EntryLo1);
 
@@ -380,7 +380,7 @@ void TLBWR() {
 
 	//if (j > 48) return;
 
-	Log::EE::COP0.warning("COP0_TLBWR {}:{:x},{:x},{:x},{:x}\n",
+	Log::EE::COP0.warning("COP0_TLBWR {:d}:{:x},{:x},{:x},{:x}\n",
 			cpuRegs.CP0.n.Random,   cpuRegs.CP0.n.PageMask, cpuRegs.CP0.n.EntryHi,
 			cpuRegs.CP0.n.EntryLo0, cpuRegs.CP0.n.EntryLo1);
 
@@ -565,7 +565,7 @@ void ERET() {
 		Log::Console.info("VTUNE: quick_exit\n");
 		std::quick_exit(EXIT_SUCCESS);
 	} else if (!(vtune % million)) {
-		Log::Console.info("VTUNE: ERET was called {}M times\n", vtune/million);
+		Log::Console.info("VTUNE: ERET was called {:d}M times\n", vtune/million);
 	}
 
 #endif

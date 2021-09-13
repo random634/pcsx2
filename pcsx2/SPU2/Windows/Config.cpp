@@ -139,8 +139,8 @@ void ReadSettings()
 	if (mods[OutputModule] == nullptr)
 	{
 		// Unsupported or legacy module.
-		Console.Warning("* SPU2: Unknown output module '%s' specified in configuration file.", omodid);
-		Console.Warning("* SPU2: Defaulting to XAudio (%s).", XAudio2Out->GetIdent());
+		Log::Console.warning("* SPU2: Unknown output module '{:s}' specified in configuration file.\n", omodid);
+		Log::Console.warning("* SPU2: Defaulting to XAudio ({:s}).\n", XAudio2Out->GetIdent());
 		OutputModule = FindOutputModuleById(XAudio2Out->GetIdent());
 	}
 }

@@ -819,13 +819,13 @@ namespace usb_msd
 						usb_packet_copy(p, &cbw, 31);
 						if (le32_to_cpu(cbw.sig) != 0x43425355)
 						{
-							Log::Console.warning("usb-msd: Bad signature {:08x}\n\n",
+							Log::Console.warning("usb-msd: Bad signature {:08x}\n",
 									le32_to_cpu(cbw.sig));
 							goto fail;
 						}
 						if (cbw.lun != 0)
 						{
-							Console.Warning("usb-msd: Bad LUN %d\n", cbw.lun);
+							Log::Console.warning("usb-msd: Bad LUN {:d}\n", cbw.lun);
 							goto fail;
 						}
 						s->f.tag = le32_to_cpu(cbw.tag);
@@ -1009,7 +1009,7 @@ namespace usb_msd
 		s->file = wfopen(var.c_str(), TEXT("r+b"));
 		if (!s->file)
 		{
-			Log::Console.info("usb-msd: Could not open image file '{}'\n", var);
+			Log::Console.info("usb-msd: Could not open image file '{:s}'\n", var);
 			goto fail;
 		}
 

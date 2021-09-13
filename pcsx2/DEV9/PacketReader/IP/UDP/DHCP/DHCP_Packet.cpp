@@ -139,7 +139,7 @@ namespace PacketReader::IP::UDP::DHCP
 					options.push_back(new DHCPopClientID(buffer, offset));
 					break;
 				default:
-					Log::Console.error("DEV9: DHCP_Packet: Got Unknown Option {} with len {}\n", opKind, opLen);
+					Log::Console.error("DEV9: DHCP_Packet: Got Unknown Option {:d} with len {:d}\n", opKind, opLen);
 					break;
 			}
 			offset += opLen + 2;

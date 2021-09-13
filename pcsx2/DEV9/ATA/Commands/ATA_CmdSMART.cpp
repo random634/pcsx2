@@ -69,7 +69,7 @@ void ATA::HDD_Smart()
 			SMART_ExecuteOfflineImmediate();
 			return;
 		default:
-			Console.Error("DEV9: ATA: Unknown SMART command %x", regFeature);
+			Log::Console.error("DEV9: ATA: Unknown SMART command {:x}\n", regFeature);
 			CmdNoDataAbort();
 			return;
 	}
@@ -87,7 +87,7 @@ void ATA::SMART_SetAutoSaveAttribute()
 			smartAutosave = true;
 			break;
 		default:
-			Log::Console.error("DEV9: ATA: Unknown SMART_ATTR_AUTOSAVE command {}\n", regSector);
+			Log::Console.error("DEV9: ATA: Unknown SMART_ATTR_AUTOSAVE command {:s}\n", regSector);
 			CmdNoDataAbort();
 			return;
 	}

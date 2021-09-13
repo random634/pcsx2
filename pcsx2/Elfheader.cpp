@@ -284,7 +284,7 @@ void ElfObject::loadSectionHeaders()
 
 		SymNames = (char*)data.GetPtr(secthead[i_dt].sh_offset);
 		eS = (Elf32_Sym*)data.GetPtr(secthead[i_st].sh_offset);
-		Log::Console.info("found {} symbols\n", secthead[i_st].sh_size / sizeof(Elf32_Sym));
+		Log::Console.info("found {:d} symbols\n", secthead[i_st].sh_size / sizeof(Elf32_Sym));
 
 		for(uint i = 1; i < (secthead[i_st].sh_size / sizeof(Elf32_Sym)); i++) {
 			if ((eS[i].st_value != 0) && (ELF32_ST_TYPE(eS[i].st_info) == 2))
