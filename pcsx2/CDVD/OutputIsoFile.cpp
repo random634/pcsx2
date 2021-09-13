@@ -74,8 +74,8 @@ void OutputIsoFile::WriteHeader(int _blockofs, uint _blocksize, uint _blocks)
 	m_blockofs = _blockofs;
 
 	Log::Console.info("blockoffset = {:d}\n", m_blockofs);
-	Log::Console.info("blocksize   = {:u}\n", m_blocksize);
-	Log::Console.info("blocks      = {:u}\n", m_blocks);
+	Log::Console.info("blocksize   = {:d}\n", m_blocksize);
+	Log::Console.info("blocks      = {:d}\n", m_blocks);
 
 	if (m_version == 2)
 	{

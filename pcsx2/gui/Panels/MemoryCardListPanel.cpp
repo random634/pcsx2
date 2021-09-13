@@ -673,7 +673,7 @@ void Panels::MemoryCardListPanel_Simple::UiCreateNewCard(McdSlotItem& card)
 		card.IsPresent = true;
 		if (card.Slot >= 0)
 		{
-			Log::Console.info("Setting new memory card to slot {:u}: '{:s}'\n", card.Slot, card.Filename.GetFullName());
+			Log::Console.info("Setting new memory card to slot {:d}: '{:s}'\n", card.Slot, card.Filename.GetFullName());
 		}
 		else
 		{

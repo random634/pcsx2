@@ -169,7 +169,7 @@ void tx_process()
 
 			if (!(pbd->pointer >= 0x1000))
 			{
-				Log::Console.error("DEV9: SMAP: ERROR: odd , !pbd->pointer>0x1000 | 0x{:X} {:u}\n", pbd->pointer, pbd->length);
+				Log::Console.error("DEV9: SMAP: ERROR: odd , !pbd->pointer>0x1000 | 0x{:X} {:d}\n", pbd->pointer, pbd->length);
 			}
 			//increase fifo pointer(s)
 			//uh does that even exist on real h/w ?

@@ -305,7 +305,7 @@ u32* recGetImm64(u32 hi, u32 lo)
 	imm64[0] = lo;
 	imm64[1] = hi;
 
-	//Log::Console.warning("Consts allocated: {:d} of {:u}\n", (recConstBufPtr - recConstBuf) / 2, count);
+	//Log::Console.warning("Consts allocated: {:d} of {:d}\n", (recConstBufPtr - recConstBuf) / 2, count);
 
 	return imm64;
 }

@@ -410,7 +410,7 @@ bool FileMemoryCard::Create(const wxString& mcdFile, uint sizeInMB)
 {
 	//int enc[16] = {0x77,0x7f,0x7f,0x77,0x7f,0x7f,0x77,0x7f,0x7f,0x77,0x7f,0x7f,0,0,0,0};
 
-	Log::Console.info("(FileMcd) Creating new {:u}MB memory card: {:s}\n", sizeInMB, mcdFile);
+	Log::Console.info("(FileMcd) Creating new {:d}MB memory card: {:s}\n", sizeInMB, mcdFile);
 
 	wxFFile fp(mcdFile, L"wb");
 	if (!fp.IsOpened())

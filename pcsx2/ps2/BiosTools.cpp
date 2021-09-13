@@ -220,7 +220,7 @@ static void LoadExtraRom( const wxChar* ext, u8 (&dest)[_size] )
 		Log::Console.warning(
 			"BIOS Warning: {:s} could not be read (permission denied?)\n"
 			"    Details: {:s}\n"
-			"    File size: {:u}\n",
+			"    File size: {:d}\n",
 			wxString(ext), ex.FormatDiagnosticMessage(), filesize);
 	}
 }

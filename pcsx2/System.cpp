@@ -191,7 +191,7 @@ void SysLogMachineCaps()
 {
 	if ( !PCSX2_isReleaseVersion )
 	{
-		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "\nPCSX2 {:u}.{:u}.{:u}-{:d} {:s}"
+		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "\nPCSX2 {:d}.{:d}.{:d}-{:d} {:s}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
@@ -202,7 +202,7 @@ void SysLogMachineCaps()
 	}
 	else // shorter release version string
 	{
-		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "PCSX2 {:u}.{:u}.{:u}-{:d}"
+		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "PCSX2 {:d}.{:d}.{:d}-{:d}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
@@ -217,7 +217,7 @@ void SysLogMachineCaps()
 	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "Host Machine Init:\n");
 	Log::PCSX2.info(
 		"    Operating System =  {:s}\n"
-		"    Physical RAM     =  {:u} MB\n",
+		"    Physical RAM     =  {:d} MB\n",
 		GetOSVersionString(),
 		(u32)(GetPhysicalMemory() / _1mb)
 	);
@@ -227,7 +227,7 @@ void SysLogMachineCaps()
 	Log::PCSX2.info(
 		"    CPU name         =  {:s}\n"
 		"    Vendor/Model     =  {:s} (stepping {:02X})\n"
-		"    CPU speed        =  {:u}.{:03u} ghz ({:d} logical thread{:s})\n"
+		"    CPU speed        =  {:d}.{:03d} ghz ({:d} logical thread{:s})\n"
 		"    x86PType         =  {:s}\n"
 		"    x86Flags         =  {:08x} {:08x}\n"
 		"    x86EFlags        =  {:08x}\n\n",
