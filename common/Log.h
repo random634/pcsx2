@@ -160,7 +160,7 @@ public:
 
 	/// Log the given message with the given level using a custom style
 	template <typename S, typename... Args>
-	void logStyle(LogLevel level, LogStyle style, const S& format, const Args&... args) const
+	void log(LogLevel level, LogStyle style, const S& format, const Args&... args) const
 	{
 		if (shouldLog(level))
 		{
