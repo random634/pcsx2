@@ -1244,7 +1244,12 @@ public:
 	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override
 	{
 		wxString str = wxString::FromUTF8(msg.data(), msg.size());
+		wxString indent;
+		if (source.currentIndent())
+			indent.append(source.currentIndent() * 4, ' ');
 		ScopedLogLock locker;
+		if (source.currentIndent())
+			locker.WindowPtr && locker.WindowPtr->Write(logStyleToConsoleColor(style), indent);
 		bool needsSleep = locker.WindowPtr && locker.WindowPtr->Write(logStyleToConsoleColor(style), str);
 		locker.Release();
 		if (needsSleep)
