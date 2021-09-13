@@ -1233,6 +1233,8 @@ static ConsoleColors logStyleToConsoleColor(LogStyle style)
 		case LogStyle::CompatibilityGreen:       return Color_Green;
 		case LogStyle::CompatibilityBlue:        return Color_Blue;
 		case LogStyle::CompatibilityGray:        return Color_Gray;
+		case LogStyle::CompatibilityCyan:        return Color_Cyan;
+		case LogStyle::CompatibilityRed:         return Color_Red;
 	}
 }
 

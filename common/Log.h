@@ -76,6 +76,8 @@ enum class LogStyle : u8
 	CompatibilityGreen,       ///< For easy migration of old log calls, replace / rename later
 	CompatibilityBlue,        ///< For easy migration of old log calls, replace / rename later
 	CompatibilityGray,        ///< For easy migration of old log calls, replace / rename later
+	CompatibilityCyan,        ///< For easy migration of old log calls, replace / rename later
+	CompatibilityRed,         ///< For easy migration of old log calls, replace / rename later
 };
 
 class LogSource;

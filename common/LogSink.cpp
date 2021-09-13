@@ -138,6 +138,8 @@ static const char* styleToTerminalFormat(LogStyle style)
 		case LogStyle::CompatibilityGreen:       return "\033[32m";
 		case LogStyle::CompatibilityBlue:        return "\033[34m";
 		case LogStyle::CompatibilityGray:        return "\033[37m";
+		case LogStyle::CompatibilityCyan:        return "\033[36m";
+		case LogStyle::CompatibilityRed:         return "\033[31m";
 	}
 }
 
