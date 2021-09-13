@@ -402,7 +402,7 @@ void PGIFw(int addr, u32 data)
 			drainPgpuDmaNrToIop();
 			break;
 		default:
-			DevCon.Error("PGIF write to unknown location 0xx% , data: %x", addr, data);
+			Log::Dev.error("PGIF write to unknown location 0x{:x} , data: {:x}\n", addr, data);
 			break;
 	}
 }
@@ -439,7 +439,7 @@ u32 PGIFr(int addr)
 			rb_gp0_Get(&data);
 			break;
 		default:
-			DevCon.Error("PGIF read from unknown location 0xx%", addr);
+			Log::Dev.error("PGIF read from unknown location 0x{:x}\n", addr);
 			break;
 	}
 	//if (addr != PGPU_DAT_FIFO)
@@ -536,7 +536,7 @@ void drainPgpuDmaLl()
 		return;
 
 	if (dmaRegs.chcr.bits.MAS)
-		DevCon.Error("Unimplemented backward memory step on PGPU DMA Linked List");
+		Log::Dev.error("Unimplemented backward memory step on PGPU DMA Linked List\n");
 
 	if (dma.ll_dma.current_word >= dma.ll_dma.total_words)
 	{
@@ -590,7 +590,7 @@ void drainPgpuDmaNrToGpu()
 		ringBufPut(&rb_gp0, &data);
 		if (dmaRegs.chcr.bits.MAS)
 		{
-			DevCon.Error("Unimplemented backward memory step on TO GPU DMA");
+			Log::Dev.error("Unimplemented backward memory step on TO GPU DMA\n");
 		}
 		dmaRegs.madr.address += 4;
 		dma.normal.address += 4;
@@ -623,7 +623,7 @@ void drainPgpuDmaNrToIop()
 		iopMemWrite32(dma.normal.address, data);
 		if (dmaRegs.chcr.bits.MAS)
 		{
-			DevCon.Error("Unimplemented backward memory step on FROM GPU DMA");
+			Log::Dev.error("Unimplemented backward memory step on FROM GPU DMA\n");
 		}
 		dmaRegs.madr.address += 4;
 		dma.normal.address += 4;

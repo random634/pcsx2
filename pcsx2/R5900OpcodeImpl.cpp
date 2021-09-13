@@ -938,7 +938,7 @@ void SYSCALL()
 						case 0x73: mode = "DVD PAL 720x480 @ ??.???"; gsSetVideoMode(GS_VideoMode::DVD_PAL); break;
 
 						default:
-							DevCon.Error("Mode %x is not supported. Report me upstream", cpuRegs.GPR.n.a1.UC[0]);
+							Log::Dev.error("Mode {:x} is not supported. Report me upstream\n", cpuRegs.GPR.n.a1.UC[0]);
 							gsSetVideoMode(GS_VideoMode::Unknown);
 					}
 					Log::Dev.warning("Set GS CRTC configuration. {:s} {:s} ({:s})\n",mode.c_str(), inter, field);

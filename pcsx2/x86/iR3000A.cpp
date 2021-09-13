@@ -900,7 +900,7 @@ static __fi u32 psxRecClearMem(u32 pc)
 	{
 		if (pc >= pexblock->startpc && pc < pexblock->startpc + pexblock->size * 4)
 		{
-			DevCon.Error("[IOP] Impossible block clearing failure");
+			Log::Dev.error("[IOP] Impossible block clearing failure\n");
 			pxFailDev("[IOP] Impossible block clearing failure");
 		}
 	}

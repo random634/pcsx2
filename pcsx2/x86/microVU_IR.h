@@ -360,7 +360,7 @@ public:
 					if (mapI.VFreg == mapX.VFreg)
 					{
 						if (mapI.xyzw && mapI.xyzw < 0xf)
-							DevCon.Error("microVU Error: writeBackReg() [%d]", mapI.VFreg);
+							Log::Dev.error("microVU Error: writeBackReg() [{:d}]\n", mapI.VFreg);
 						clearReg(i); // Invalidate any Cached Regs of same vf Reg
 					}
 				}
@@ -409,7 +409,7 @@ public:
 					{
 						if (mapI.xyzw && mapI.xyzw < 0xf)
 						{
-							DevCon.Error("microVU Error: clearNeeded() [%d]", mapI.VFreg);
+							Log::Dev.error("microVU Error: clearNeeded() [{:d}]\n", mapI.VFreg);
 						}
 						if (mergeRegs == 1)
 						{

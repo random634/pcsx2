@@ -697,7 +697,7 @@ struct Gif_Unit
 	{
 		if (!CanDoGif())
 		{
-			DevCon.Error("Gif Unit - Signal or PSE Set or Dir = GS to EE");
+			Log::Dev.error("Gif Unit - Signal or PSE Set or Dir = GS to EE\n");
 			return 0;
 		}
 		bool didPath3 = false;

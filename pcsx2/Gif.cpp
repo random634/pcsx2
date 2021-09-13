@@ -180,7 +180,7 @@ void incGifChAddr(u32 qwc)
 		hwDmacSrcTadrInc(gifch);
 	}
 	else
-		DevCon.Error("incGifAddr() Error!");
+		Log::Dev.error("incGifAddr() Error!\n");
 }
 
 __fi void gifCheckPathStatus()

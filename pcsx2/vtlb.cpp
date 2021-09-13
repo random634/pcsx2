@@ -385,7 +385,7 @@ void __fastcall GoemonUnloadTlb(u32 key)
 				tlb[i].low_add  = 0xFEFEFEFE;
 				tlb[i].high_add = 0xFEFEFEFE;
 			} else {
-				DevCon.Error("GoemonUnloadTlb: Entry %d is not valid. Key %x", i, tlb[i].key);
+				Log::Dev.error("GoemonUnloadTlb: Entry {:d} is not valid. Key {:x}\n", i, tlb[i].key);
 			}
 		}
 	}

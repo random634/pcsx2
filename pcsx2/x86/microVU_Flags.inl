@@ -272,7 +272,7 @@ __fi void mVUsetupFlags(mV, microFlagCycles& mFC)
 	if (mVUregs.flagInfo & 1)
 	{
 		if (mVUregs.needExactMatch)
-			DevCon.Error("mVU ERROR!!!");
+			Log::Dev.error("mVU ERROR!!!\n");
 	}
 
 	const bool pf = false; // Print Flag Info
@@ -409,7 +409,7 @@ void _mVUflagPass(mV, u32 startPC, u32 sCount, u32 found, std::vector<u32>& v)
 			incPC(1);
 		}
 
-		// if (mVUbranch&&(branch>=3)&&(branch<=5)) { DevCon.Error("Double Branch [%x]", xPC); mVUregs.needExactMatch |= 7; break; }
+		// if (mVUbranch&&(branch>=3)&&(branch<=5)) { Log::Dev.error("Double Branch [{:x}]\n", xPC); mVUregs.needExactMatch |= 7; break; }
 
 		if (branch >= 2)
 		{

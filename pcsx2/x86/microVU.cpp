@@ -246,7 +246,7 @@ u64 mVUrangesHash(microVU& mVU, microProgram& prog)
 	{
 		if ((it[0].start < 0) || (it[0].end < 0))
 		{
-			DevCon.Error("microVU%d: Negative Range![%d][%d]", mVU.index, it[0].start, it[0].end);
+			Log::Dev.error("microVU{:d}: Negative Range![{:d}][{:d}]\n", mVU.index, it[0].start, it[0].end);
 		}
 		for (int i = it[0].start / 4; i < it[0].end / 4; i++)
 		{
@@ -294,7 +294,7 @@ __fi bool mVUcmpProg(microVU& mVU, microProgram& prog, const bool cmpWholeProg)
 		{
 			auto cmpOffset = [&](void* x) { return (u8*)x + range.start; };
 			if ((range.start < 0) || (range.end < 0))
-				DevCon.Error("microVU%d: Negative Range![%d][%d]", mVU.index, range.start, range.end);
+				Log::Dev.error("microVU{:d}: Negative Range![{:d}][{:d}]\n", mVU.index, range.start, range.end);
 			if (memcmp_mmx(cmpOffset(prog.data), cmpOffset(mVU.regs().Micro), (range.end - range.start)))
 				return false;
 		}

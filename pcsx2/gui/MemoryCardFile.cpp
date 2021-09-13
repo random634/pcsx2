@@ -454,7 +454,7 @@ s32 FileMemoryCard::Read(uint slot, u8* dest, u32 adr, int size)
 	wxFFile& mcfp(m_file[slot]);
 	if (!mcfp.IsOpened())
 	{
-		DevCon.Error("(FileMcd) Ignoring attempted read from disabled slot.");
+		Log::Dev.error("(FileMcd) Ignoring attempted read from disabled slot.\n");
 		memset(dest, 0, size);
 		return 1;
 	}
@@ -469,7 +469,7 @@ s32 FileMemoryCard::Save(uint slot, const u8* src, u32 adr, int size)
 
 	if (!mcfp.IsOpened())
 	{
-		DevCon.Error("(FileMcd) Ignoring attempted save/write to disabled slot.");
+		Log::Dev.error("(FileMcd) Ignoring attempted save/write to disabled slot.\n");
 		return 1;
 	}
 
@@ -536,7 +536,7 @@ s32 FileMemoryCard::EraseBlock(uint slot, u32 adr)
 
 	if (!mcfp.IsOpened())
 	{
-		DevCon.Error("MemoryCard: Ignoring erase for disabled slot.");
+		Log::Dev.error("MemoryCard: Ignoring erase for disabled slot.\n");
 		return 1;
 	}
 
