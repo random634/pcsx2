@@ -389,7 +389,7 @@ void __fastcall iopMemWrite16(u32 mem, u16 value)
 						return;
 				}
 #if PSX_EXTRALOGS
-				DevCon.Warning("IOP 16 Write to %x value %x", mem, value);
+				Log::Dev.warning("IOP 16 Write to {:x} value {:x}\n", mem, value);
 #endif
 				psxSu16(mem) = value; return;
 			}
@@ -475,7 +475,7 @@ void __fastcall iopMemWrite32(u32 mem, u32 value)
 
 				}
 #if PSX_EXTRALOGS
-				DevCon.Warning("IOP 32 Write to %x value %x", mem, value);
+				Log::Dev.warning("IOP 32 Write to {:x} value {:x}\n", mem, value);
 #endif
 				psxSu32(mem) = value;
 

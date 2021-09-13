@@ -481,7 +481,7 @@ s32 DoCDVDreadTrack(u32 lsn, int mode)
 			break;
 	}
 
-	//DevCon.Warning("CDVD readTrack(lsn=%d,mode=%d)",params lsn, lastReadSize);
+	//Log::Dev.warning("CDVD readTrack(lsn={:d},mode={:d})\n",params lsn, lastReadSize);
 	lastLSN = lsn;
 	return CDVD->readTrack(lsn, mode);
 }

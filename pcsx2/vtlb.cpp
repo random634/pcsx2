@@ -82,7 +82,7 @@ __inline int CheckCache(u32 addr)
 
 	if(((cpuRegs.CP0.n.Config >> 16) & 0x1) == 0) 
 	{
-		//DevCon.Warning("Data Cache Disabled! %x", cpuRegs.CP0.n.Config);
+		//Log::Dev.warning("Data Cache Disabled! {:x}\n", cpuRegs.CP0.n.Config);
 		return false;//
 	}
 
@@ -92,7 +92,7 @@ __inline int CheckCache(u32 addr)
 			mask  = tlb[i].PageMask;
 			
 			if ((addr >= tlb[i].PFN1) && (addr <= tlb[i].PFN1 + mask)) {
-				//DevCon.Warning("Yay! Cache check cache addr=%x, mask=%x, addr+mask=%x, VPN2=%x PFN0=%x", addr, mask, (addr & mask), tlb[i].VPN2, tlb[i].PFN0); 
+				//Log::Dev.warning("Yay! Cache check cache addr={:x}, mask={:x}, addr+mask={:x}, VPN2={:x} PFN0={:x}\n", addr, mask, (addr & mask), tlb[i].VPN2, tlb[i].PFN0);
 				return true;
 			}
 		}
@@ -100,7 +100,7 @@ __inline int CheckCache(u32 addr)
 			mask  = tlb[i].PageMask;
 			
 			if ((addr >= tlb[i].PFN0) && (addr <= tlb[i].PFN0 + mask)) {
-				//DevCon.Warning("Yay! Cache check cache addr=%x, mask=%x, addr+mask=%x, VPN2=%x PFN0=%x", addr, mask, (addr & mask), tlb[i].VPN2, tlb[i].PFN0); 
+				//Log::Dev.warning("Yay! Cache check cache addr={:x}, mask={:x}, addr+mask={:x}, VPN2={:x} PFN0={:x}\n", addr, mask, (addr & mask), tlb[i].VPN2, tlb[i].PFN0);
 				return true;
 			}
 		}

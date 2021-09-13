@@ -262,7 +262,7 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 	{
 		// todo: psx mode: this is new
 		if( sizeof(T) == 2 )
-			DevCon.Warning( "HwWrite16 to PS1 GPU? @ 0x%08X .. What manner of trickery is this?!", addr );
+			Log::Dev.warning("HwWrite16 to PS1 GPU? @ 0x{:08X} .. What manner of trickery is this?!\n", addr );
 
 		pxAssert(sizeof(T) == 4);
 
@@ -361,7 +361,7 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 				psxDma1(HW_DMA1_MADR, HW_DMA1_BCR, HW_DMA1_CHCR);
 			break;
 			mcase(0x1f8010ac):
-				DevCon.Warning("SIF2 IOP TADR?? write");
+				Log::Dev.warning("SIF2 IOP TADR?? write\n");
 				psxHu(addr) = val;
 			break;
 
@@ -437,10 +437,10 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 					newtmp &= ~0x80000000;
 				}
 				//if (newtmp != old)
-				//	DevCon.Warning("ICR Old %x New %x", old, newtmp);
+				//	Log::Dev.warning("ICR Old {:x} New {:x}\n", old, newtmp);
 				psxHu(addr) = newtmp;
 				if ((HW_DMA_ICR >> 15) & 0x1) {
-					DevCon.Warning("Force ICR IRQ!");
+					Log::Dev.warning("Force ICR IRQ!\n");
 					psxRegs.CP0.n.Cause &= ~0x7C;
 					iopIntcIrq(3);
 				}
@@ -452,7 +452,7 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 			
 			mcase(0x1f8010f6):		// ICR_hi (16 bit?) [dunno if it ever happens]
 			{
-				DevCon.Warning("High ICR Write!!");
+				Log::Dev.warning("High ICR Write!!\n");
 				const u32 val2 = (u32)val << 16;
 				const u32 tmp = (~val2) & HW_DMA_ICR;
 				psxHu(addr) = (((tmp ^ val2) & 0xffffff) ^ tmp) >> 16;
@@ -475,10 +475,10 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 					newtmp &= ~0x80000000;
 				}
 				//if (newtmp != old)
-				//	DevCon.Warning("ICR2 Old %x New %x", old, newtmp);
+				//	Log::Dev.warning("ICR2 Old {:x} New {:x}\n", old, newtmp);
 				psxHu(addr) = newtmp;
 				if ((HW_DMA_ICR2 >> 15) & 0x1) {
-					DevCon.Warning("Force ICR2 IRQ!");
+					Log::Dev.warning("Force ICR2 IRQ!\n");
 					psxRegs.CP0.n.Cause &= ~0x7C;
 					iopIntcIrq(3);
 				}
@@ -490,7 +490,7 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 
 			mcase(0x1f801576):		// ICR2_hi (16 bit?) [dunno if it ever happens]
 			{
-				DevCon.Warning("ICR2 high write!");
+				Log::Dev.warning("ICR2 high write!\n");
 				const u32 val2 = (u32)val << 16;
 				const u32 tmp = (~val2) & HW_DMA_ICR2;
 				psxHu(addr) = (((tmp ^ val2) & 0xffffff) ^ tmp) >> 16;

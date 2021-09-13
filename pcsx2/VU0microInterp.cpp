@@ -158,7 +158,7 @@ static void _vu0Exec(VURegs* VU)
 			if(VU->takedelaybranch)
 			{				
 				VU->branch = 1;
-				DevCon.Warning("VU0 - Branch/Jump in Delay Slot");
+				Log::Dev.warning("VU0 - Branch/Jump in Delay Slot\n");
 				VU->branchpc = VU->delaybranchpc;
 				VU->delaybranchpc = 0;
 				VU->takedelaybranch = false;

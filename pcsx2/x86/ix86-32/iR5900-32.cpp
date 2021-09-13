@@ -1473,7 +1473,7 @@ void recompileNextInstruction(int delayslot)
 		// Original PR and discussion at https://github.com/PCSX2/pcsx2/pull/1783 so we don't forget this information.
 		if (check_branch_delay)
 		{
-			DevCon.Warning("Branch %x in delay slot!", cpuRegs.code);
+			Log::Dev.warning("Branch {:x} in delay slot!\n", cpuRegs.code);
 			_clearNeededX86regs();
 			_clearNeededXMMregs();
 			pc += 4;
@@ -1572,12 +1572,12 @@ void recompileNextInstruction(int delayslot)
 				else if (COP2IsQOP(cpuRegs.code))
 				{
 					std::string disasm;
-					DevCon.Warning("Possible incorrect Q value used in COP2");
+					Log::Dev.warning("Possible incorrect Q value used in COP2\n");
 					for (u32 i = s_pCurBlockEx->startpc; i < s_nEndBlock; i += 4)
 					{
 						disasm = "";
 						disR5900Fasm(disasm, memRead32(i), i, false);
-						DevCon.Warning("%x %s%08X %s", i, i == pc - 4 ? "*" : i == p ? "=" : " ", memRead32(i), disasm.c_str());
+						Log::Dev.warning("{:x} {:s}{:08X} {:s}\n", i, i == pc - 4 ? "*" : i == p ? "=" : " ", memRead32(i), disasm);
 					}
 					break;
 				}
@@ -1596,12 +1596,12 @@ void recompileNextInstruction(int delayslot)
 					if (_Rd_ == 16 && s & 1 || _Rd_ == 17 && s & 2 || _Rd_ == 18 && s & 4)
 					{
 						std::string disasm;
-						DevCon.Warning("Possible old value used in COP2 code");
+						Log::Dev.warning("Possible old value used in COP2 code\n");
 						for (u32 i = s_pCurBlockEx->startpc; i < s_nEndBlock; i += 4)
 						{
 							disasm = "";
 							disR5900Fasm(disasm, memRead32(i), i,false);
-							DevCon.Warning("%x %s%08X %s", i, i == pc - 4 ? "*" : i == p ? "=" : " ", memRead32(i), disasm.c_str());
+							Log::Dev.warning("{:x} {:s}{:08X} {:s}\n", i, i == pc - 4 ? "*" : i == p ? "=" : " ", memRead32(i), disasm);
 						}
 						break;
 					}

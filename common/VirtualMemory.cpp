@@ -92,8 +92,8 @@ VirtualMemoryManager::VirtualMemoryManager(const wxString& name, uptr base, size
 
 	if (!m_baseptr || (upper_bounds != 0 && (((uptr)m_baseptr + reserved_bytes) > upper_bounds)))
 	{
-		DevCon.Warning(L"%s: host memory @ %ls -> %ls is unavailable; attempting to map elsewhere...",
-			WX_STR(m_name), pxsPtr(base), pxsPtr(base + size));
+		Log::Dev.warning("{:s}: host memory @ 0x{:08X} -> 0x{:08X} is unavailable; attempting to map elsewhere...\n",
+			m_name, base, base + size);
 
 		SafeSysMunmap(m_baseptr, reserved_bytes);
 

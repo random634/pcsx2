@@ -105,7 +105,7 @@ public:
 		memset(&m_bucket[b][size], 0, sizeof(nVifBlock));
 
 		if (size > 3)
-			DevCon.Warning("recVifUnpk: Bucket 0x%04x has %d micro-programs", b, size);
+			Log::Dev.warning("recVifUnpk: Bucket 0x{:04x} has {:d} micro-programs\n", b, size);
 	}
 
 	u32 bucket_size(const nVifBlock& dataPtr)

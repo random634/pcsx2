@@ -228,7 +228,7 @@ static void __fc mVUTBit()
 {
 	u32 old = vu1Thread.mtvuInterrupts.fetch_or(VU_Thread::InterruptFlagVUTBit, std::memory_order_release);
 	if (old & VU_Thread::InterruptFlagVUTBit)
-		DevCon.Warning("Old TBit not registered");
+		Log::Dev.warning("Old TBit not registered\n");
 }
 
 static void __fc mVUEBit()

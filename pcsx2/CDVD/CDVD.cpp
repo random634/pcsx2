@@ -662,7 +662,7 @@ static uint cdvdBlockReadTime(CDVD_MODE_TYPE mode)
 	// Required for Shadowman to work
 	// Use SeekToSector as Sector hasn't been updated yet
 	const float sectorSpeed = (((float)(cdvd.SeekToSector-offset) / numSectors) * 0.63f) + 0.37f; 
-	//DevCon.Warning("Read speed %f sector %d\n", sectorSpeed, cdvd.Sector);
+	//Log::Dev.warning("Read speed {:f} sector {:d}\n", sectorSpeed, cdvd.Sector);
 	return ((PSXCLK * cdvd.BlockSize) / ((float)(((mode == MODE_CDROM) ? PSX_CD_READSPEED : PSX_DVD_READSPEED) * cdvd.Speed) * sectorSpeed));
 }
 
@@ -858,7 +858,7 @@ __fi void cdvdActionInterrupt()
 			break;
 
 		case cdvdAction_Standby:
-			DevCon.Warning("CDVD Standby Call");
+			Log::Dev.warning("CDVD Standby Call\n");
 			cdvd.Spinning = true;     //check (rama)
 			cdvd.Ready = CDVD_READY1; //check (rama)
 			cdvd.Sector = cdvd.SeekToSector;
@@ -1272,7 +1272,7 @@ static void cdvdWrite04(u8 rt)
 			// Seek to sector zero.  The cdvdStartSeek function will simulate
 			// spinup times if needed.
 
-			DevCon.Warning("CdStandby : %d", rt);
+			Log::Dev.warning("CdStandby : {:d}\n", rt);
 			cdvd.Action = cdvdAction_Standby;
 			cdvd.ReadTime = cdvdBlockReadTime(MODE_DVDROM);
 			CDVD_INT(cdvdStartSeek(0, MODE_DVDROM));
@@ -1282,7 +1282,7 @@ static void cdvdWrite04(u8 rt)
 			break;
 
 		case N_CD_STOP: // CdStop
-			DevCon.Warning("CdStop : %d", rt);
+			Log::Dev.warning("CdStop : {:d}\n", rt);
 			cdvd.Action = cdvdAction_Stop;
 			CDVD_INT(PSXCLK / 6); // 166ms delay?
 			break;

@@ -145,10 +145,10 @@ __fi void vif0VUFinish()
 	if ((VU0.VI[REG_VPU_STAT].UL & 1))
 	{
 		int _cycles = VU0.cycle;
-		//DevCon.Warning("Finishing VU0");
+		//Log::Dev.warning("Finishing VU0\n");
 		vu0Finish();
 		_cycles = VU0.cycle - _cycles;
-		//DevCon.Warning("Finishing VU0 %d cycles", _cycles);
+		//Log::Dev.warning("Finishing VU0 {:d} cycles\n", _cycles);
 		CPU_INT(VIF_VU0_FINISH, _cycles * BIAS); 
 		return;
 	}
@@ -162,7 +162,7 @@ __fi void vif0VUFinish()
 		if(!(cpuRegs.interrupt & 0x1) && vif0ch.chcr.STR && !vif0Regs.stat.test(VIF0_STAT_VSS | VIF0_STAT_VIS | VIF0_STAT_VFS))
 			vif0Interrupt();
 	}
-	//DevCon.Warning("VU0 state cleared");
+	//Log::Dev.warning("VU0 state cleared\n");
 }
 
 __fi void vif0Interrupt()

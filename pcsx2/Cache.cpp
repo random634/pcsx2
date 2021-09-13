@@ -440,7 +440,7 @@ void CACHE()
 		}
 
 		default:
-			DevCon.Warning("Cache mode %x not implemented", _Rt_);
+			Log::Dev.warning("Cache mode {:x} not implemented\n", _Rt_);
 			break;
 	}
 }

@@ -138,7 +138,7 @@ _mVUt void* __fastcall mVUexecute(u32 startPC, u32 cycles)
 	u32 vuLimit = vuIndex ? 0x3ff8 : 0xff8;
 	if (startPC > vuLimit + 7)
 	{
-		DevCon.Warning("microVU%x Warning: startPC = 0x%x, cycles = 0x%x", vuIndex, startPC, cycles);
+		Log::Dev.warning("microVU{:x} Warning: startPC = 0x{:x}, cycles = 0x{:x}\n", vuIndex, startPC, cycles);
 	}
 
 	mVU.cycles = cycles;

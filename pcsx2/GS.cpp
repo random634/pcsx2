@@ -90,7 +90,7 @@ static __fi void gsCSRwrite( const tGS_CSR& csr )
 		//  here or when the IMR is cleared (below).
 		GUNIT_LOG("csr.SIGNAL");
 		if (gifUnit.gsSIGNAL.queued) {
-			//DevCon.Warning("Firing pending signal");
+			//Log::Dev.warning("Firing pending signal\n");
 			GSSIGLBLID.SIGID = (GSSIGLBLID.SIGID & ~gifUnit.gsSIGNAL.data[1])
 				        | (gifUnit.gsSIGNAL.data[0]&gifUnit.gsSIGNAL.data[1]);
 

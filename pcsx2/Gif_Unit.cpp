@@ -98,7 +98,7 @@ bool Gif_HandlerAD(u8* pMem)
 	}
 	else if (reg >= 0x63 && reg != 0x7f)
 	{
-		//DevCon.Warning("GIF Handler - Write to unknown register! [reg=%x]", reg);
+		//Log::Dev.warning("GIF Handler - Write to unknown register! [reg={:x}]\n", reg);
 	}
 	return false;
 }
@@ -144,7 +144,7 @@ bool Gif_HandlerAD_MTVU(u8* pMem)
 	}
 	else if (reg >= 0x63 && reg != 0x7f)
 	{
-		DevCon.Warning("GIF Handler Debug - Write to unknown register! [reg=%x]", reg);
+		Log::Dev.warning("GIF Handler Debug - Write to unknown register! [reg={:x}]\n", reg);
 	}
 	return 0;
 }
@@ -185,7 +185,7 @@ bool Gif_HandlerAD_Debug(u8* pMem)
 	}
 	else if (reg >= 0x63 && reg != 0x7f)
 	{
-		DevCon.Warning("GIF Handler Debug - Write to unknown register! [reg=%x]", reg);
+		Log::Dev.warning("GIF Handler Debug - Write to unknown register! [reg={:x}]\n", reg);
 	}
 	return 0;
 }
@@ -280,7 +280,7 @@ void SaveStateBase::gifFreeze()
 	{
 		if (mtvuMode != THREAD_VU1)
 		{
-			DevCon.Warning("gifUnit: MTVU Mode has switched between save/load state");
+			Log::Dev.warning("gifUnit: MTVU Mode has switched between save/load state\n");
 			// ToDo: gifUnit.SwitchMTVU(mtvuMode);
 		}
 	}

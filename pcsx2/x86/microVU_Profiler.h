@@ -141,7 +141,7 @@ struct microProfiler
 				Log::Console.debug("{:s} - [{:.4f}%][count={:d}]\n",
 					str, stat, (u32)count);
 			}
-			Log::Console.debug("Total = 0x{:x}{:x}\n\n", (u32)(u64)(total >> 32), (u32)total);
+			Log::Console.debug("Total = 0x{:x}{:x}\n", (u32)(u64)(total >> 32), (u32)total);
 		}
 	}
 };

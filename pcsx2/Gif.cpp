@@ -73,7 +73,7 @@ bool CheckPaths()
 	{
 		if (!gifUnit.Path3Masked())
 		{
-			//DevCon.Warning("Path3 stalled APATH %x PSE %x DIR %x Signal %x", gifRegs.stat.APATH, gifRegs.stat.PSE, gifRegs.stat.DIR, gifUnit.gsSIGNAL.queued);
+			//Log::Dev.warning("Path3 stalled APATH {:x} PSE {:x} DIR {:x} Signal {:x}\n", gifRegs.stat.APATH, gifRegs.stat.PSE, gifRegs.stat.DIR, gifUnit.gsSIGNAL.queued);
 			GifDMAInt(128);
 		}
 		return false;
@@ -418,7 +418,7 @@ void GIFdma()
 			ptag = ReadTag();
 			if (ptag == NULL)
 				return;
-			//DevCon.Warning("GIF Reading Tag MSK = %x", vif1Regs.mskpath3);
+			//Log::Dev.warning("GIF Reading Tag MSK = {:x}\n", vif1Regs.mskpath3);
 			GIF_LOG("gifdmaChain %8.8x_%8.8x size=%d, id=%d, addr=%lx tadr=%lx", ptag[1]._u32, ptag[0]._u32, gifch.qwc, ptag->ID, gifch.madr, gifch.tadr);
 			gifRegs.stat.FQC = std::min((u32)0x10, gifch.qwc);
 			CalculateFIFOCSR();
@@ -430,7 +430,7 @@ void GIFdma()
 				{
 					// stalled.
 					// We really need to test this. Pay attention to prevcycles, as it used to trigger GIFchains in the code above. (rama)
-					//DevCon.Warning("GS Stall Control start Source = %x, Drain = %x\n MADR = %x, STADR = %x", (psHu32(0xe000) >> 4) & 0x3, (psHu32(0xe000) >> 6) & 0x3,gifch.madr, psHu32(DMAC_STADR));
+					//Log::Dev.warning("GS Stall Control start Source = {:x}, Drain = {:x}\n MADR = {:x}, STADR = {:x}\n", (psHu32(0xe000) >> 4) & 0x3, (psHu32(0xe000) >> 6) & 0x3,gifch.madr, psHu32(DMAC_STADR));
 					gif.prevcycles = gif.gscycles;
 					gifch.tadr -= 16;
 					gifch.qwc = 0;
@@ -462,7 +462,7 @@ void GIFdma()
 
 void dmaGIF()
 {
-	// DevCon.Warning("dmaGIFstart chcr = %lx, madr = %lx, qwc  = %lx\n tadr = %lx, asr0 = %lx, asr1 = %lx", gifch.chcr._u32, gifch.madr, gifch.qwc, gifch.tadr, gifch.asr0, gifch.asr1);
+	// Log::Dev.warning("dmaGIFstart chcr = {:x}, madr = {:x}, qwc  = {:x}\n tadr = {:x}, asr0 = {:x}, asr1 = {:x}\n", gifch.chcr._u32, gifch.madr, gifch.qwc, gifch.tadr, gifch.asr0, gifch.asr1);
 
 	gif.gspath3done = false; // For some reason this doesn't clear? So when the system starts the thread, we will clear it :)
 
@@ -473,7 +473,7 @@ void dmaGIF()
 
 	if (gifch.chcr.MOD == CHAIN_MODE && gifch.qwc > 0)
 	{
-		//DevCon.Warning(L"GIF QWC on Chain " + gifch.chcr.desc());
+		//Log::Dev.warning("GIF QWC on Chain {:s}\n", gifch.chcr.desc());
 		if ((gifch.chcr.tag().ID == TAG_REFE) || (gifch.chcr.tag().ID == TAG_END) || (gifch.chcr.tag().IRQ && gifch.chcr.TIE))
 		{
 			gif.gspath3done = true;
@@ -693,7 +693,7 @@ void mfifoGIFtransfer()
 
 void gifMFIFOInterrupt()
 {
-	//DevCon.Warning("gifMFIFOInterrupt");
+	//Log::Dev.warning("gifMFIFOInterrupt\n");
 	gif.mfifocycles = 0;
 
 	if (dmacRegs.ctrl.MFD != MFD_GIF)

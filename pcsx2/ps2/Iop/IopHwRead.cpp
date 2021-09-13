@@ -63,12 +63,12 @@ mem8_t __fastcall iopHwRead8_Page1( u32 addr )
 		default:
 			if( masked_addr >= 0x100 && masked_addr < 0x130 )
 			{
-				DevCon.Warning( "HwRead8 from Counter16 [ignored] @ 0x%08x = 0x%02x", addr, psxHu8(addr) );
+				Log::Dev.warning("HwRead8 from Counter16 [ignored] @ 0x{:08x} = 0x{:02x}\n", addr, psxHu8(addr) );
 				ret = psxHu8( addr );
 			}
 			else if( masked_addr >= 0x480 && masked_addr < 0x4a0 )
 			{
-				DevCon.Warning( "HwRead8 from Counter32 [ignored] @ 0x%08x = 0x%02x", addr, psxHu8(addr) );
+				Log::Dev.warning("HwRead8 from Counter32 [ignored] @ 0x{:08x} = 0x{:02x}\n", addr, psxHu8(addr) );
 				ret = psxHu8( addr );
 			}
 			else if( (masked_addr >= pgmsk(HW_USB_START)) && (masked_addr < pgmsk(HW_USB_END)) )
@@ -167,7 +167,7 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 			break;
 			
 			default:
-				DevCon.Warning("Unknown 16bit counter read %x", addr);
+				Log::Dev.warning("Unknown 16bit counter read {:x}\n", addr);
 				ret = psxHu32(addr);
 			break;
 		}
@@ -207,7 +207,7 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 			break;
 
 			default:
-				DevCon.Warning("Unknown 32bit counter read %x", addr);
+				Log::Dev.warning("Unknown 32bit counter read {:x}\n", addr);
 				ret = psxHu32(addr);
 			break;
 		}
@@ -228,7 +228,7 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 			ret = SPU2read( addr );
 		else
 		{
-			DevCon.Warning( "HwRead32 from SPU2? @ 0x%08X .. What manner of trickery is this?!", addr );
+			Log::Dev.warning("HwRead32 from SPU2? @ 0x{:08X} .. What manner of trickery is this?!\n", addr );
 			ret = psxHu32(addr);
 		}
 	}
@@ -239,7 +239,7 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 	{
 		// todo: psx mode: this is new
 		if( sizeof(T) == 2 )
-			DevCon.Warning( "HwRead16 from PS1 GPU? @ 0x%08X .. What manner of trickery is this?!", addr );
+			Log::Dev.warning("HwRead16 from PS1 GPU? @ 0x{:08X} .. What manner of trickery is this?!\n", addr );
 
 		pxAssert(sizeof(T) == 4);
 
@@ -305,13 +305,13 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 			//
 			mcase(0x1f8010ac) :
 				ret = psxHu32(addr);
-				DevCon.Warning("SIF2 IOP TADR?? read");
+				Log::Dev.warning("SIF2 IOP TADR?? read\n");
 			break;
 
 			mcase(HW_PS1_GPU_DATA) :
 				ret = psxGPUr(addr);
 				//ret = psxHu32(addr); // old
-				DevCon.Warning("GPU Data Read %x", ret);
+				Log::Dev.warning("GPU Data Read {:x}\n", ret);
 			break;
 			
 			mcase(HW_PS1_GPU_STATUS) :
@@ -322,7 +322,7 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 				// ret = psxHu32(addr); // old
 				ret = mdecRead0();
 #if PSX_EXTRALOGS
-				DevCon.Warning("MDEC 1820 Read %x", ret);
+				Log::Dev.warning("MDEC 1820 Read {:x}\n", ret);
 #endif
 			break;
 			
@@ -330,7 +330,7 @@ static __fi T _HwRead_16or32_Page1( u32 addr )
 				//ret = psxHu32(addr); // old
 				ret = mdecRead1();
 #if PSX_EXTRALOGS
-			DevCon.Warning("MDEC 1824 Read %x", ret);
+			Log::Dev.warning("MDEC 1824 Read {:x}\n", ret);
 #endif
 			break;
 
@@ -450,7 +450,7 @@ mem32_t __fastcall iopHwRead32_Page8( u32 addr )
 					//ret |= sio2_fifoOut() << 16;
 					//ret |= sio2_fifoOut() << 24;
 				//break;
-					DevCon.Warning("HW_SIO2_FIFO read");
+					Log::Dev.warning("HW_SIO2_FIFO read\n");
 					ret = psxHu32(addr);
 				break;
 

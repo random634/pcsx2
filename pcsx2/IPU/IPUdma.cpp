@@ -115,7 +115,7 @@ int IPU1dma()
 		//We MUST stop the IPU from trying to fill the FIFO with more data if the DMA has been suspended
 		//if we don't, we risk causing the data to go out of sync with the fifo and we end up losing some!
 		//This is true for Dragons Quest 8 and probably others which suspend the DMA.
-		DevCon.Warning("IPU1 running when IPU1 DMA disabled! CHCR %x QWC %x", ipu1ch.chcr._u32, ipu1ch.qwc);
+		Log::Dev.warning("IPU1 running when IPU1 DMA disabled! CHCR {:x} QWC {:x}\n", ipu1ch.chcr._u32, ipu1ch.qwc);
 		return 0;
 	}
 
@@ -152,7 +152,7 @@ int IPU1dma()
 					ipu1cycles += 1; // Add 1 cycles from the QW read for the tag
 					IPU1Status.ChainMode = ptag->ID;
 
-					if(ipu1ch.chcr.TTE) DevCon.Warning("TTE?");
+					if(ipu1ch.chcr.TTE) Log::Dev.warning("TTE?\n");
 					
 					IPU1Status.DMAFinished = hwDmacSrcChain(ipu1ch, ptag->ID);
 
@@ -201,7 +201,7 @@ void IPU0dma()
 
 	if ((!(ipu0ch.chcr.STR) || (cpuRegs.interrupt & (1 << DMAC_FROM_IPU))) || (ipu0ch.qwc == 0))
 	{
-		DevCon.Warning("How??");
+		Log::Dev.warning("How??\n");
 		return;
 	}
 
@@ -222,22 +222,22 @@ void IPU0dma()
 	
 	if (dmacRegs.ctrl.STS == STS_fromIPU && ipu0ch.qwc == 0)   // STS == fromIPU
 	{
-		//DevCon.Warning("fromIPU Stall Control");
+		//Log::Dev.warning("fromIPU Stall Control\n");
 		dmacRegs.stadr.ADDR = ipu0ch.madr;
 		switch (dmacRegs.ctrl.STD)
 		{
 			case NO_STD:
 				break;
 			case STD_GIF: // GIF
-				//DevCon.Warning("GIFSTALL");
+				//Log::Dev.warning("GIFSTALL\n");
 				g_nDMATransfer.GIFSTALL = true;
 				break;
 			case STD_VIF1: // VIF
-				//DevCon.Warning("VIFSTALL");
+				//Log::Dev.warning("VIFSTALL\n");
 				g_nDMATransfer.VIFSTALL = true;
 				break;
 			case STD_SIF1:
-			//	DevCon.Warning("SIFSTALL");
+			//	Log::Dev.warning("SIFSTALL\n");
 				g_nDMATransfer.SIFSTALL = true;
 				break;
 		}
@@ -255,7 +255,7 @@ void IPU0dma()
 
 __fi void dmaIPU0() // fromIPU
 {
-	//if (dmacRegs.ctrl.STS == STS_fromIPU) DevCon.Warning("DMA Stall enabled on IPU0");
+	//if (dmacRegs.ctrl.STS == STS_fromIPU) Log::Dev.warning("DMA Stall enabled on IPU0\n");
 
 	if (dmacRegs.ctrl.STS == STS_fromIPU)   // STS == fromIPU - Initial settings
 		dmacRegs.stadr.ADDR = ipu0ch.madr;
@@ -326,7 +326,7 @@ void ipu0Interrupt()
 	if (g_nDMATransfer.GIFSTALL)
 	{
 		// gif
-		//DevCon.Warning("IPU GIF Stall");
+		//Log::Dev.warning("IPU GIF Stall\n");
 		g_nDMATransfer.GIFSTALL = false;
 		//if (gif->chcr.STR) GIFdma();
 	}
@@ -334,7 +334,7 @@ void ipu0Interrupt()
 	if (g_nDMATransfer.VIFSTALL)
 	{
 		// vif
-		//DevCon.Warning("IPU VIF Stall");
+		//Log::Dev.warning("IPU VIF Stall\n");
 		g_nDMATransfer.VIFSTALL = false;
 		//if (vif1ch.chcr.STR) dmaVIF1();
 	}
@@ -342,7 +342,7 @@ void ipu0Interrupt()
 	if (g_nDMATransfer.SIFSTALL)
 	{
 		// sif
-		//DevCon.Warning("IPU SIF Stall");
+		//Log::Dev.warning("IPU SIF Stall\n");
 		g_nDMATransfer.SIFSTALL = false;
 
 		// Not totally sure whether this needs to be done or not, so I'm

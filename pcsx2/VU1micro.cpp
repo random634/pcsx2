@@ -48,7 +48,7 @@ void vu1Finish(bool add_cycles) {
 		CpuVU1->Execute(vu1RunCycles);
 	}
 	if (VU0.VI[REG_VPU_STAT].UL & 0x100) {
-		DevCon.Warning("Force Stopping VU1, ran for too long");
+		Log::Dev.warning("Force Stopping VU1, ran for too long\n");
 		VU0.VI[REG_VPU_STAT].UL &= ~0x100;
 	}
 	if (add_cycles)

@@ -45,7 +45,7 @@ static __fi bool WriteFifoToEE()
 	ptag = sif0ch.getAddr(sif0ch.madr, DMAC_SIF0, true);
 	if (ptag == NULL)
 	{
-		DevCon.Warning("Write Fifo to EE: ptag == NULL");
+		Log::Dev.warning("Write Fifo to EE: ptag == NULL\n");
 		return false;
 	}
 
@@ -60,7 +60,7 @@ static __fi bool WriteFifoToEE()
 
 	if (sif0ch.qwc == 0 && dmacRegs.ctrl.STS == STS_SIF0)
 	{
-		//DevCon.Warning("SIF0 Stall Control");
+		//Log::Dev.warning("SIF0 Stall Control\n");
 		if ((sif0ch.chcr.MOD == NORMAL_MODE) || ((sif0ch.chcr.TAG >> 28) & 0x7) == TAG_CNTS)
 			dmacRegs.stadr.ADDR = sif0ch.madr;
 	}
@@ -142,7 +142,7 @@ static __fi bool ProcessIOPTag()
 
 	// We're only copying the first 24 bits.  Bits 30 and 31 (checked below) are Stop/IRQ bits.
 	hw_dma9.madr = sif0data & 0xFFFFFF;
-	if (sif0words > 0xFFFFF) DevCon.Warning("SIF0 Overrun %x", sif0words);
+	if (sif0words > 0xFFFFF) Log::Dev.warning("SIF0 Overrun {:x}\n", sif0words);
 	//Maximum transfer amount 1mb-16 also masking out top part which is a "Mode" cache stuff, we don't care :)
 	sif0.iop.counter = sif0words & 0xFFFFF;
 
@@ -179,7 +179,7 @@ static __fi void EndIOP()
 
 	if (sif0.iop.cycles == 0)
 	{
-		DevCon.Warning("SIF0 IOP: cycles = 0");
+		Log::Dev.warning("SIF0 IOP: cycles = 0\n");
 		sif0.iop.cycles = 1;
 	}
 	// iop is 1/8th the clock rate of the EE and psxcycles is in words (not quadwords)
@@ -193,7 +193,7 @@ static __fi void HandleEETransfer()
 {
 	if(!sif0ch.chcr.STR)
 	{
-		//DevCon.Warning("Replacement for irq prevention hack EE SIF0");
+		//Log::Dev.warning("Replacement for irq prevention hack EE SIF0\n");
 		sif0.ee.end = false;
 		sif0.ee.busy = false;
 		return;
@@ -202,7 +202,7 @@ static __fi void HandleEETransfer()
 	/*if (sif0ch.qwc == 0)
 		if (sif0ch.chcr.MOD == NORMAL_MODE)
 			if (!sif0.ee.end){
-				DevCon.Warning("sif0 irq prevented");
+				Log::Dev.warning("sif0 irq prevented\n");
 				done = true;
 				return;
 			}*/
@@ -357,7 +357,7 @@ __fi void dmaSIF0()
 		SIF_LOG("warning, sif0.fifoReadPos != sif0.fifoWritePos");
 	}
 
-	//if(sif0ch.chcr.MOD == CHAIN_MODE && sif0ch.qwc > 0) DevCon.Warning(L"SIF0 QWC on Chain CHCR " + sif0ch.chcr.desc());
+	//if(sif0ch.chcr.MOD == CHAIN_MODE && sif0ch.qwc > 0) Log::Dev.warning("SIF0 QWC on Chain CHCR {:s}\n", sif0ch.chcr.desc());
 	psHu32(SBUS_F240) |= 0x2000;
 	sif0.ee.busy = true;
 

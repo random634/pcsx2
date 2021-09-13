@@ -110,7 +110,7 @@ mem32_t __fastcall _hwRead32(u32 mem)
 					break;
 				case 0x80:					
 #if PSX_EXTRALOGS
-					DevCon.Warning("FIFO Size %x", sif2fifosize);
+					Log::Dev.warning("FIFO Size {:x}\n", sif2fifosize);
 #endif
 					ret = psHu32(mem) | (sif2fifosize << 16);
 					if (sif2.fifo.size > 0) ret |= 0x80000000;
@@ -130,7 +130,7 @@ mem32_t __fastcall _hwRead32(u32 mem)
 					break;
 				}
 #if PSX_EXTRALOGS
-				DevCon.Warning("SBUS read %x value sending %x", mem, ret);
+				Log::Dev.warning("SBUS read {:x} value sending {:x}\n", mem, ret);
 #endif
 				return ret;
 
@@ -138,7 +138,7 @@ mem32_t __fastcall _hwRead32(u32 mem)
 			}
 			/*if ((mem & 0x1000ff00) == 0x1000f200)
 			{
-				if((mem & 0xffff) != 0xf230)DevCon.Warning("SBUS read %x value sending %x", mem, psHu32(mem));
+				if((mem & 0xffff) != 0xf230)Log::Dev.warning("SBUS read {:x} value sending {:x}\n", mem, psHu32(mem));
 			}*/
 			switch( mem )
 			{
@@ -150,12 +150,12 @@ mem32_t __fastcall _hwRead32(u32 mem)
 
 				case SBUS_F240:
 #if PSX_EXTRALOGS
-					DevCon.Warning("Read  SBUS_F240  %x ", psHu32(SBUS_F240));
+					Log::Dev.warning("Read  SBUS_F240  {:x} \n", psHu32(SBUS_F240));
 #endif
 					return psHu32(SBUS_F240) | 0xF0000102;
 				case SBUS_F260:
 #if PSX_EXTRALOGS
-					DevCon.Warning("Read  SBUS_F260  %x ", psHu32(SBUS_F260));
+					Log::Dev.warning("Read  SBUS_F260  {:x} \n", psHu32(SBUS_F260));
 #endif
 					return psHu32(SBUS_F260);
 				case MCH_DRD:
@@ -303,7 +303,7 @@ static void _hwRead64(u32 mem, mem64_t* result )
 		case 0x0F:
 			if ((mem & 0xffffff00) == 0x1000f300)
 			{
-				DevCon.Warning("64bit read from %x wibble", mem);
+				Log::Dev.warning("64bit read from {:x} wibble\n", mem);
 				if (mem == 0x1000f3E0)
 				{
 
@@ -368,7 +368,7 @@ void __fastcall _hwRead128(u32 mem, mem128_t* result )
 			// It requires investigation of what to do.
 			if ((mem & 0xffffff00) == 0x1000f300)
 			{
-				DevCon.Warning("128bit read from %x wibble", mem);
+				Log::Dev.warning("128bit read from {:x} wibble\n", mem);
 				if (mem == 0x1000f3E0)
 				{
 					

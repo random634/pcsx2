@@ -479,7 +479,7 @@ void PGIFrQword(u32 addr, void* dat)
 void PGIFwQword(u32 addr, void* dat)
 {
 	u32* data = (u32*)dat;
-	DevCon.Warning("WARNING PGIF WRITE BY PS1DRV ! - NOT KNOWN TO EVER BE DONE!");
+	Log::Dev.warning("WARNING PGIF WRITE BY PS1DRV ! - NOT KNOWN TO EVER BE DONE!\n");
 	Log::Console.info("PGIF QW write  0x{:08X} = 0x{:08X} {:08X} {:08X} {:08X}\n", addr, data[0], data[1], data[2], data[3]);
 
 	if (addr == PGPU_CMD_FIFO)

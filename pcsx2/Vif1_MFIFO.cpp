@@ -54,7 +54,7 @@ static __fi bool mfifoVIF1rbTransfer()
 	bool ret;
 	
 	if (mfifoqwc == 0) {
-		DevCon.Warning("VIF MFIFO no QWC before transfer (in transfer function, bit late really)");
+		Log::Dev.warning("VIF MFIFO no QWC before transfer (in transfer function, bit late really)\n");
 		return true; //Cant do anything, lets forget it 
 	}
 
@@ -78,9 +78,9 @@ static __fi bool mfifoVIF1rbTransfer()
 
 		if (ret)
 		{
-			if(vif1.irqoffset.value != 0) DevCon.Warning("VIF1 MFIFO Offest != 0! vifoffset=%x", vif1.irqoffset.value);
+			if(vif1.irqoffset.value != 0) Log::Dev.warning("VIF1 MFIFO Offest != 0! vifoffset={:x}\n", vif1.irqoffset.value);
             /* and second copy 's2' bytes from 'maddr' to '&data[s1]' */
-			//DevCon.Warning("Loopyloop");
+			//Log::Dev.warning("Loopyloop\n");
 			vif1ch.tadr = qwctag(vif1ch.tadr);
 			vif1ch.madr = qwctag(vif1ch.madr);
 
@@ -117,7 +117,7 @@ static __fi void mfifo_VIF1chain()
 	if (vif1ch.madr >= dmacRegs.rbor.ADDR &&
 	        vif1ch.madr < (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK + 16u))
 	{
-		//if(vif1ch.madr == (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK + 16)) DevCon.Warning("Edge VIF1");
+		//if(vif1ch.madr == (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK + 16)) Log::Dev.warning("Edge VIF1\n");
 		if (QWCinVIFMFIFO(vif1ch.madr, vif1ch.qwc) == 0) {
 			VIF_LOG("VIF MFIFO Empty before transfer");
 			vif1.inprogress |= 0x10;
@@ -161,12 +161,12 @@ void mfifoVifMaskMem(int id)
 		case TAG_END:
 			if(vif1ch.madr < dmacRegs.rbor.ADDR) //probably not needed but we will check anyway.
 			{
-				//DevCon.Warning("VIF MFIFO MADR below bottom of ring buffer, wrapping VIF MADR = %x Ring Bottom %x", vif1ch.madr, dmacRegs.rbor.ADDR);
+				//Log::Dev.warning("VIF MFIFO MADR below bottom of ring buffer, wrapping VIF MADR = {:x} Ring Bottom {:x}\n", vif1ch.madr, dmacRegs.rbor.ADDR);
 				vif1ch.madr = qwctag(vif1ch.madr);
 			}
 			if(vif1ch.madr > (dmacRegs.rbor.ADDR + (u32)dmacRegs.rbsr.RMSK)) //Usual scenario is the tag is near the end (Front Mission 4)
 			{
-				//DevCon.Warning("VIF MFIFO MADR outside top of ring buffer, wrapping VIF MADR = %x Ring Top %x", vif1ch.madr, (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK)+16);
+				//Log::Dev.warning("VIF MFIFO MADR outside top of ring buffer, wrapping VIF MADR = {:x} Ring Top {:x}\n", vif1ch.madr, (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK)+16);
 				vif1ch.madr = qwctag(vif1ch.madr);
 			}
 			break;
@@ -257,7 +257,7 @@ void mfifoVIF1transfer()
 	}
 	else
 	{
-		DevCon.Warning("Vif MFIFO QWC not 0 on tag");
+		Log::Dev.warning("Vif MFIFO QWC not 0 on tag\n");
 	}
 	
 
@@ -294,7 +294,7 @@ void vifMFIFOInterrupt()
 	}
 	if(vif1.waitforvu)
 	{
-	//	DevCon.Warning("Waiting on VU1 MFIFO");
+	//	Log::Dev.warning("Waiting on VU1 MFIFO\n");
 		CPU_INT(VIF_VU1_FINISH, 16);
 		return;
 	}

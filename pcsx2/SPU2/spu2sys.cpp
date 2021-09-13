@@ -1354,7 +1354,7 @@ static void __fastcall RegWrite_Core(u16 value)
 					Spdif.Info &= ~(4 << thiscore.Index);
 				else
 					if ((thiscore.IRQA & 0xFFF00000) != 0)
-						DevCon.Warning("SPU2: Core %d IRQA Outside of SPU2 memory, Addr %x", thiscore.Index, thiscore.IRQA);
+						Log::Dev.warning("SPU2: Core {:d} IRQA Outside of SPU2 memory, Addr {:x}\n", thiscore.Index, thiscore.IRQA);
 			}
 		}
 		break;

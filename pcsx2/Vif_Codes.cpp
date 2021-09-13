@@ -176,9 +176,9 @@ __fi int _vifCode_Direct(int pass, const u8* data, bool isDirectHL)
 		vif1Regs.stat.VGW = false;
 
 		if (ret & 3)
-			DevCon.Warning("Vif %s: Ret wasn't a multiple of 4!", name); // Shouldn't happen
+			Log::Dev.warning("Vif {:s}: Ret wasn't a multiple of 4!\n", name); // Shouldn't happen
 		if (size == 0)
-			DevCon.Warning("Vif %s: No Data Transfer?", name); // Can this happen?
+			Log::Dev.warning("Vif {:s}: No Data Transfer?\n", name); // Can this happen?
 		if (size != ret)
 		{ // Stall if gif didn't process all the data (path2 queued)
 			GUNIT_WARN("Vif %s: Stall! [size=%d][ret=%d]", name, size, ret);
@@ -335,7 +335,7 @@ static __fi void _vifCode_MPG(int idx, u32 addr, const u32* data, int size)
 	// Don't forget the Unsigned designator for these checks
 	if ((addr + size * 4) > vuMemSize)
 	{
-		//DevCon.Warning("Handling split MPG");
+		//Log::Dev.warning("Handling split MPG\n");
 		if (!idx)
 			CpuVU0->Clear(addr, vuMemSize - addr);
 		else
@@ -388,7 +388,7 @@ vifOp(vifCode_MPG)
 		{ // Partial Transfer
 			if ((vifX.tag.addr + vifX.vifpacketsize * 4) > (idx ? 0x4000 : 0x1000))
 			{
-				//DevCon.Warning("Vif%d MPG Split Overflow", idx);
+				//Log::Dev.warning("Vif{:d} MPG Split Overflow\n", idx);
 			}
 			_vifCode_MPG(idx, vifX.tag.addr, data, vifX.vifpacketsize);
 			vifX.tag.size -= vifX.vifpacketsize; //We can do this first as its passed as a pointer
@@ -398,7 +398,7 @@ vifOp(vifCode_MPG)
 		{ // Full Transfer
 			if ((vifX.tag.addr + vifX.tag.size * 4) > (idx ? 0x4000 : 0x1000))
 			{
-				//DevCon.Warning("Vif%d MPG Split Overflow full %x", idx, vifX.tag.addr + vifX.tag.size*4);
+				//Log::Dev.warning("Vif{:d} MPG Split Overflow full {:x}\n", idx, vifX.tag.addr + vifX.tag.size*4);
 			}
 			_vifCode_MPG(idx, vifX.tag.addr, data, vifX.tag.size);
 			int ret = vifX.tag.size;

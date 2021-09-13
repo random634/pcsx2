@@ -31,9 +31,9 @@ static void __fastcall psxDmaGeneric(u32 madr, u32 bcr, u32 chcr, u32 spuCore)
 {
 	const char dmaNum = spuCore ? 7 : 4;
 
-	/*if (chcr & 0x400) DevCon.Status("SPU 2 DMA %c linked list chain mode! chcr = %x madr = %x bcr = %x\n", dmaNum, chcr, madr, bcr);
-	if (chcr & 0x40000000) DevCon.Warning("SPU 2 DMA %c Unusual bit set on 'to' direction chcr = %x madr = %x bcr = %x\n", dmaNum, chcr, madr, bcr);
-	if ((chcr & 0x1) == 0) DevCon.Status("SPU 2 DMA %c loading from spu2 memory chcr = %x madr = %x bcr = %x\n", dmaNum, chcr, madr, bcr);*/
+	/*if (chcr & 0x400) Log::Dev.info("SPU 2 DMA {:d} linked list chain mode! chcr = {:x} madr = {:x} bcr = {:x}\n", dmaNum, chcr, madr, bcr);
+	if (chcr & 0x40000000) Log::Dev.warning("SPU 2 DMA {:d} Unusual bit set on 'to' direction chcr = {:x} madr = {:x} bcr = {:x}\n", dmaNum, chcr, madr, bcr);
+	if ((chcr & 0x1) == 0) Log::Dev.info("SPU 2 DMA {:d} loading from spu2 memory chcr = {:x} madr = {:x} bcr = {:x}\n", dmaNum, chcr, madr, bcr);*/
 
 	const int size = (bcr >> 16) * (bcr & 0xFFFF);
 
@@ -52,7 +52,7 @@ static void __fastcall psxDmaGeneric(u32 madr, u32 bcr, u32 chcr, u32 spuCore)
 
 	if ((g_iopNextEventCycle - psxNextsCounter) > (u32)psxNextCounter)
 	{
-		//DevCon.Warning("SPU2async Setting new counter branch, old %x new %x ((%x - %x = %x) > %x delta)", g_iopNextEventCycle, psxNextsCounter + psxNextCounter, g_iopNextEventCycle, psxNextsCounter, (g_iopNextEventCycle - psxNextsCounter), psxNextCounter);
+		//Log::Dev.warning("SPU2async Setting new counter branch, old {:x} new {:x} (({:x} - {:x} = {:x}) > {:x} delta)\n", g_iopNextEventCycle, psxNextsCounter + psxNextCounter, g_iopNextEventCycle, psxNextsCounter, (g_iopNextEventCycle - psxNextsCounter), psxNextCounter);
 		g_iopNextEventCycle = psxNextsCounter + psxNextCounter;
 	}
 
@@ -141,7 +141,7 @@ void spu2DMA7Irq()
 #ifndef DISABLE_PSX_GPU_DMAS
 void psxDma2(u32 madr, u32 bcr, u32 chcr) // GPU
 {
-	//DevCon.Warning("SIF2 IOP CHCR = %x MADR = %x BCR = %x first 16bits %x", chcr, madr, bcr, iopMemRead16(madr));
+//	Log::Dev.warning("SIF2 IOP CHCR = {:x} MADR = {:x} BCR = {:x} first 16bits {:x}\n", chcr, madr, bcr, iopMemRead16(madr));
 	sif2.iop.busy = true;
 	sif2.iop.end = false;
 	//SIF2Dma();

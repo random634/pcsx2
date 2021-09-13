@@ -1648,7 +1648,7 @@ void condEvilBranch(mV, int JMPcc)
 	cJMP.SetTarget();
 	incPC(-2);
 	if (mVUlow.branch >= 9)
-		DevCon.Warning("Conditional in JALR/JR delay slot - If game broken report to PCSX2 Team");
+		Log::Dev.warning("Conditional in JALR/JR delay slot - If game broken report to PCSX2 Team\n");
 	incPC(2);
 }
 
@@ -1870,7 +1870,7 @@ mVUop(mVU_JALR)
 			incPC(-2);
 			if (mVUlow.branch >= 9) // Previous branch is a jump of some type so we need to take the branch address from the register it uses.
 			{
-				DevCon.Warning("Linking JALR from JALR/JR branch target! - If game broken report to PCSX2 Team");
+				Log::Dev.warning("Linking JALR from JALR/JR branch target! - If game broken report to PCSX2 Team\n");
 				mVUallocVIa(mVU, gprT1, _Is_);
 				xADD(gprT1, 8);
 				xSHR(gprT1, 3);

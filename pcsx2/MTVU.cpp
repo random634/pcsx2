@@ -357,7 +357,7 @@ void VU_Thread::Get_MTVUChanges()
 		{
 			GUNIT_WARN("Queue SIGNAL");
 			gifUnit.gsSIGNAL.queued = true;
-			//DevCon.Warning("Firing pending signal");
+			//Log::Dev.warning("Firing pending signal\n");
 			gifUnit.gsSIGNAL.data[0] = signalData;
 			gifUnit.gsSIGNAL.data[1] = signalMsk;
 		}
@@ -397,14 +397,14 @@ void VU_Thread::Get_MTVUChanges()
 		mtvuInterrupts.fetch_and(~InterruptFlagVUEBit, std::memory_order_relaxed);
 		
 		VU0.VI[REG_VPU_STAT].UL &= ~0x0100;
-		//DevCon.Warning("E-Bit registered %x", VU0.VI[REG_VPU_STAT].UL);
+		//Log::Dev.warning("E-Bit registered {:x}\n", VU0.VI[REG_VPU_STAT].UL);
 	}
 	if (interrupts & InterruptFlagVUTBit)
 	{
 		mtvuInterrupts.fetch_and(~InterruptFlagVUTBit, std::memory_order_relaxed);
 		VU0.VI[REG_VPU_STAT].UL &= ~0x0100;
 		VU0.VI[REG_VPU_STAT].UL |= 0x0400;
-		//DevCon.Warning("T-Bit registered %x", VU0.VI[REG_VPU_STAT].UL);
+		//Log::Dev.warning("T-Bit registered {:x}\n", VU0.VI[REG_VPU_STAT].UL);
 		hwIntcIrq(7);
 	}
 }

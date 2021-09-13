@@ -81,7 +81,7 @@ void vif1TransferToMemory()
 	//That said, I think this is pointless and a waste of cycles and could cause more problems than good. We will alert this situation below anyway.
 	/*if (vif1.GSLastDownloadSize < vif1ch.qwc) {
 		if (pMem < pMemEnd) {
-			DevCon.Warning("GS Transfer < VIF QWC, Clearing end of space GST %x QWC %x", vif1.GSLastDownloadSize, (u32)vif1ch.qwc);
+			Log::Dev.warning("GS Transfer < VIF QWC, Clearing end of space GST {:x} QWC {:x}\n", vif1.GSLastDownloadSize, (u32)vif1ch.qwc);
 
 			__m128 zeroreg = _mm_setzero_ps();
 			do {
@@ -102,7 +102,7 @@ void vif1TransferToMemory()
 		vif1ch.qwc -= vif1.GSLastDownloadSize;
 		vif1.GSLastDownloadSize = 0;
 		//This could be potentially bad and cause hangs. I guess we will find out.
-		DevCon.Warning("QWC left on VIF FIFO Reverse");
+		Log::Dev.warning("QWC left on VIF FIFO Reverse\n");
 	}
 
 	
@@ -166,7 +166,7 @@ __fi void vif1SetupTransfer()
 		// there are still bugs, need to also check if gif->madr +16*qwc >= stadr, if not, stall
 		if ((vif1ch.madr + vif1ch.qwc * 16) > dmacRegs.stadr.ADDR)
 		{
-			//DevCon.Warning("VIF1 DMA Stall");
+			//Log::Dev.warning("VIF1 DMA Stall\n");
 			// stalled
 			hwDmacIrq(DMAC_STALL_SIS);
 			return;
@@ -243,7 +243,7 @@ __fi void vif1VUFinish()
 	if (VU0.VI[REG_VPU_STAT].UL & 0x100)
 	{
 		u32 _cycles = VU1.cycle;
-		//DevCon.Warning("Finishing VU1");
+		//Log::Dev.warning("Finishing VU1\n");
 		vu1Finish(false);
 		CPU_INT(VIF_VU1_FINISH, VU1.cycle - _cycles);
 		return;
@@ -279,7 +279,7 @@ __fi void vif1VUFinish()
 		}
 	}
 	
-	//DevCon.Warning("VU1 state cleared");
+	//Log::Dev.warning("VU1 state cleared\n");
 }
 
 __fi void vif1Interrupt()
@@ -325,7 +325,7 @@ __fi void vif1Interrupt()
 	
 	if(vif1.waitforvu)
 	{
-		//DevCon.Warning("Waiting on VU1");
+		//Log::Dev.warning("Waiting on VU1\n");
 		//CPU_INT(DMAC_VIF1, 16);
 		CPU_INT(VIF_VU1_FINISH, 16);
 		return;
@@ -449,7 +449,7 @@ void dmaVIF1()
 		if(vif1ch.chcr.MOD == CHAIN_MODE && vif1ch.chcr.DIR) 
 		{
 			vif1.dmamode = VIF_CHAIN_MODE;
-			//DevCon.Warning(L"VIF1 QWC on Chain CHCR " + vif1ch.chcr.desc());
+			//Log::Dev.warning("VIF1 QWC on Chain CHCR {:s}\n", vif1ch.chcr.desc());
 			
 			if ((vif1ch.chcr.tag().ID == TAG_REFE) || (vif1ch.chcr.tag().ID == TAG_END) || (vif1ch.chcr.tag().IRQ && vif1ch.chcr.TIE))
 			{
@@ -470,7 +470,7 @@ void dmaVIF1()
 			else
 				vif1.dmamode = VIF_NORMAL_TO_MEM_MODE;
 
-			if(vif1.irqoffset.enabled && !vif1.done) DevCon.Warning("Warning! VIF1 starting a Normal transfer with vif offset set (Possible force stop?)");
+			if(vif1.irqoffset.enabled && !vif1.done) Log::Dev.warning("Warning! VIF1 starting a Normal transfer with vif offset set (Possible force stop?)\n");
 			vif1.done = true;
 		}
 

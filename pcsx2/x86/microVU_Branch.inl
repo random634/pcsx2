@@ -356,7 +356,7 @@ void normBranch(mV, microFlagCycles& mFC)
 	}
 	if (mVUup.mBit)
 	{
-		DevCon.Warning("M-Bit on normal branch, report if broken");
+		Log::Dev.warning("M-Bit on normal branch, report if broken\n");
 		u32 tempPC = iPC;
 		u32* cpS = (u32*)&mVUregs;
 		u32* lpS = (u32*)&mVU.prog.lpState;
@@ -375,7 +375,7 @@ void normBranch(mV, microFlagCycles& mFC)
 	if (mVUup.eBit)
 	{
 		if (mVUlow.badBranch)
-			DevCon.Warning("End on evil Unconditional branch! - Not implemented! - If game broken report to PCSX2 Team");
+			Log::Dev.warning("End on evil Unconditional branch! - Not implemented! - If game broken report to PCSX2 Team\n");
 
 		iPC = branchAddr(mVU) / 4;
 		mVUendProgram(mVU, &mFC, 1);
@@ -388,7 +388,7 @@ void normBranch(mV, microFlagCycles& mFC)
 		incPC(3);
 		if (mVUlow.branch == 2 || mVUlow.branch == 10) //Delay slot branch needs linking
 		{
-			DevCon.Warning("Found %s in delay slot, linking - If game broken report to PCSX2 Team", mVUlow.branch == 2 ? "BAL" : "JALR");
+			Log::Dev.warning("Found {:s} in delay slot, linking - If game broken report to PCSX2 Team\n", mVUlow.branch == 2 ? "BAL" : "JALR");
 			xMOV(gprT3, badBranchAddr);
 			xSHR(gprT3, 3);
 			mVUallocVIb(mVU, gprT3, _It_);
@@ -447,7 +447,7 @@ void condBranch(mV, microFlagCycles& mFC, int JMPcc)
 
 	if (mVUup.tBit)
 	{
-		DevCon.Warning("T-Bit on branch, please report if broken");
+		Log::Dev.warning("T-Bit on branch, please report if broken\n");
 		u32 tempPC = iPC;
 		xTEST(ptr32[&VU0.VI[REG_FBRST].UL], (isVU1 ? 0x800 : 0x8));
 		xForwardJump32 eJMP(Jcc_Zero);
@@ -523,7 +523,7 @@ void condBranch(mV, microFlagCycles& mFC, int JMPcc)
 	if (mVUup.eBit) // Conditional Branch With E-Bit Set
 	{
 		if (mVUlow.evilBranch)
-			DevCon.Warning("End on evil branch! - Not implemented! - If game broken report to PCSX2 Team");
+			Log::Dev.warning("End on evil branch! - Not implemented! - If game broken report to PCSX2 Team\n");
 
 		mVUendProgram(mVU, &mFC, 2);
 		xCMP(ptr16[&mVU.branch], 0);
@@ -590,7 +590,7 @@ void normJump(mV, microFlagCycles& mFC)
 {
 	if (mVUup.mBit)
 	{
-		DevCon.Warning("M-Bit on Jump! Please report if broken");
+		Log::Dev.warning("M-Bit on Jump! Please report if broken\n");
 	}
 	if (mVUlow.constJump.isValid) // Jump Address is Constant
 	{
@@ -610,7 +610,7 @@ void normJump(mV, microFlagCycles& mFC)
 		incPC(3);
 		if (mVUlow.branch == 2 || mVUlow.branch == 10) //Delay slot BAL needs linking, only need to do BAL here, JALR done earlier
 		{
-			DevCon.Warning("Found %x in delay slot, linking - If game broken report to PCSX2 Team", mVUlow.branch == 2 ? "BAL" : "JALR");
+			Log::Dev.warning("Found {:x} in delay slot, linking - If game broken report to PCSX2 Team\n", mVUlow.branch == 2 ? "BAL" : "JALR");
 			incPC(-2);
 			mVUallocVIa(mVU, gprT1, _Is_);
 			xADD(gprT1, 8);

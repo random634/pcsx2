@@ -1909,7 +1909,7 @@ s32 _branchAddr(VURegs * VU) {
 static __fi void _setBranch(VURegs * VU, u32 bpc) {
 	if(VU->branch == 1) 
 	{		
-		//DevCon.Warning("Branch in Branch Delay slot!");
+		//Log::Dev.warning("Branch in Branch Delay slot!\n");
 		VU->delaybranchpc = bpc;
 		VU->takedelaybranch = true;
 	}

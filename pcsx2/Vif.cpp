@@ -81,7 +81,7 @@ __fi void vif0FBRST(u32 value)
 		u128 SaveCol;
 		u128 SaveRow;
 
-		//	if(vif0ch.chcr.STR) DevCon.Warning("FBRST While Vif0 active");
+		//	if(vif0ch.chcr.STR) Log::Dev.warning("FBRST While Vif0 active\n");
 		//Must Preserve Row/Col registers! (Downhill Domination for testing)
 		SaveCol._u64[0] = vif0.MaskCol._u64[0];
 		SaveCol._u64[1] = vif0.MaskCol._u64[1];
@@ -155,7 +155,7 @@ __fi void vif1FBRST(u32 value)
 	{
 		u128 SaveCol;
 		u128 SaveRow;
-		//if(vif1ch.chcr.STR) DevCon.Warning("FBRST While Vif1 active");
+		//if(vif1ch.chcr.STR) Log::Dev.warning("FBRST While Vif1 active\n");
 		//Must Preserve Row/Col registers! (Downhill Domination for testing) - Really shouldnt be part of the vifstruct.
 		SaveCol._u64[0] = vif1.MaskCol._u64[0];
 		SaveCol._u64[1] = vif1.MaskCol._u64[1];
@@ -206,7 +206,7 @@ __fi void vif1FBRST(u32 value)
 	if (FBRST(value).STC) // Cancel Vif Stall.
 	{
 		bool cancel = false;
-		//DevCon.Warning("Cancel stall. Stat = %x", vif1Regs.stat._u32);
+		//Log::Dev.warning("Cancel stall. Stat = {:x}\n", vif1Regs.stat._u32);
 		/* Cancel stall, first check if there is a stall to cancel, and then clear VIF1_STAT VSS|VFS|VIS|INT|ER0|ER1 bits */
 		if (vif1Regs.stat.test(VIF1_STAT_VSS | VIF1_STAT_VIS | VIF1_STAT_VFS))
 		{

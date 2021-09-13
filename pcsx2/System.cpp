@@ -639,7 +639,7 @@ u8* SysMmapEx(uptr base, u32 size, uptr bounds, const char *caller)
 
 		if( (bounds != 0) && (((uptr)Mem + size) > bounds) )
 		{
-			DevCon.Warning( "Second try failed allocating %s, block ptr 0x%x does not meet required criteria.", caller, Mem );
+			Log::Dev.warning("Second try failed allocating {:s}, block ptr 0x{:x} does not meet required criteria.\n", caller, Mem );
 			SafeSysMunmap( Mem, size );
 
 			// returns NULL, caller should throw an exception.

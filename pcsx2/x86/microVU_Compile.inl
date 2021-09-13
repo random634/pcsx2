@@ -240,7 +240,7 @@ __fi void mVUcheckBadOp(mV)
 	{
 
 		mVUinfo.isEOB = true;
-		DevCon.Warning("microVU Warning: Block contains an illegal opcode...");
+		Log::Dev.warning("microVU Warning: Block contains an illegal opcode...\n");
 	}
 }
 
@@ -265,7 +265,7 @@ __ri void branchWarning(mV)
 	if (mVUup.eBit && mVUbranch)
 	{
 		incPC(2);
-		DevCon.Warning("microVU%d Warning: Branch in E-bit delay slot! [%04x]", mVU.index, xPC);
+		Log::Dev.warning("microVU{:d} Warning: Branch in E-bit delay slot! [{:04x}]\n", mVU.index, xPC);
 		mVUlow.isNOP = true;
 	}
 	else
@@ -299,7 +299,7 @@ __ri void eBitWarning(mV)
 	incPC(2);
 	if (curI & _Ebit_)
 	{
-		DevCon.Warning("microVU%d: E-bit in Branch delay slot! [%04x]", mVU.index, xPC);
+		Log::Dev.warning("microVU{:d}: E-bit in Branch delay slot! [{:04x}]\n", mVU.index, xPC);
 		mVUregs.blockType = 1;
 	}
 	incPC(-2);
@@ -567,7 +567,7 @@ void* mVUcompileSingleInstruction(microVU& mVU, u32 startPC, uptr pState, microF
 	if (curI & _Ebit_)
 	{
 		eBitPass1(mVU, g_branch);
-		DevCon.Warning("E Bit on single instruction");
+		Log::Dev.warning("E Bit on single instruction\n");
 	}
 	if (curI & _Dbit_)
 	{
@@ -580,13 +580,13 @@ void* mVUcompileSingleInstruction(microVU& mVU, u32 startPC, uptr pState, microF
 	if (curI & _Mbit_)
 	{
 		mVUup.mBit = true;
-		DevCon.Warning("M Bit on single instruction");
+		Log::Dev.warning("M Bit on single instruction\n");
 	}
 	if (curI & _Ibit_)
 	{
 		mVUlow.isNOP = true;
 		mVUup.iBit = true;
-		DevCon.Warning("I Bit on single instruction");
+		Log::Dev.warning("I Bit on single instruction\n");
 	}
 	else
 	{

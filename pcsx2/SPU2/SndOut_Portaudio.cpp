@@ -300,7 +300,7 @@ public:
 
 			if (err == paInvalidSampleRate && SampleRate == 48000)
 			{
-				DevCon.Warning("Failed to create device at 48khz, trying 96khz");
+				Log::Dev.warning("Failed to create device at 48khz, trying 96khz\n");
 				SampleRate = 96000;
 				err = Pa_OpenStream(&stream,
 					nullptr, &outParams, SampleRate,

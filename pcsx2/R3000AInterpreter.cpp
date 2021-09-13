@@ -251,7 +251,7 @@ static __fi void execI()
 
 static void doBranch(s32 tar) {
 	if (tar == 0x0)
-		DevCon.Warning("[R3000 Interpreter] Warning: Branch to 0x0!");
+		Log::Dev.warning("[R3000 Interpreter] Warning: Branch to 0x0!\n");
 
 	branch2 = iopIsDelaySlot = true;
 	branchPC = tar;

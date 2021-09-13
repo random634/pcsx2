@@ -161,7 +161,7 @@ intra:
 			macroblock_modes = GETBITS(1);
 			//I suspect (as this is actually a 2 bit command) that this should be getbits(2)
 			//additionally, we arent dumping any bits here when i think we should be, need a game to test. (Refraction)
-			DevCon.Warning(" Rare MPEG command! ");
+			Log::Dev.warning(" Rare MPEG command! \n");
 			if (macroblock_modes == 0) return 0;   // error
 			return (MACROBLOCK_INTRA | (1 << 16));
 

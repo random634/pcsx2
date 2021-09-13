@@ -83,7 +83,7 @@ void mVUreset(microVU& mVU, bool resetReserve)
 
 	if (THREAD_VU1)
 	{
-		DevCon.Warning("mVU Reset");
+		Log::Dev.warning("mVU Reset\n");
 		// If MTVU is toggled on during gameplay we need to flush the running VU1 program, else it gets in a mess
 		if (VU0.VI[REG_VPU_STAT].UL & 0x100)
 		{

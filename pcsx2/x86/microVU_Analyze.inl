@@ -502,7 +502,7 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 		return;
 	if (mVUstall) // I assume a stall on branch means the vi reg is not modified directly b4 the branch...
 	{
-		DevCon.Warning("microVU%d: %d cycle stall on branch instruction [%04x]", getIndex, mVUstall, xPC);
+		Log::Dev.warning("microVU{:d}: {:d} cycle stall on branch instruction [{:04x}]\n", getIndex, mVUstall, xPC);
 		return;
 	}
 	int i, j = 0;
@@ -514,7 +514,7 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 	{
 		if (i && mVUstall)
 		{
-			DevCon.Warning("microVU%d: Branch VI-Delay with %d cycle stall (%d) [%04x]", getIndex, mVUstall, i, xPC);
+			Log::Dev.warning("microVU{:d}: Branch VI-Delay with {:d} cycle stall ({:d}) [{:04x}]\n", getIndex, mVUstall, i, xPC);
 		}
 		if (i == (int)mVUcount)
 		{
@@ -535,7 +535,7 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 				i++;
 			}
 			if (warn)
-				DevCon.Warning("microVU%d: Branch VI-Delay with small block (%d) [%04x]", getIndex, i, xPC);
+				Log::Dev.warning("microVU{:d}: Branch VI-Delay with small block ({:d}) [{:04x}]\n", getIndex, i, xPC);
 			break; // if (warn), we don't have enough information to always guarantee the correct result.
 		}
 		if ((mVUlow.VI_write.reg == xReg) && mVUlow.VI_write.used)
@@ -543,7 +543,7 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 			if (mVUlow.readFlags)
 			{
 				if (i)
-					DevCon.Warning("microVU%d: Branch VI-Delay with Read Flags Set (%d) [%04x]", getIndex, i, xPC);
+					Log::Dev.warning("microVU{:d}: Branch VI-Delay with Read Flags Set ({:d}) [{:04x}]\n", getIndex, i, xPC);
 				break; // Not sure if on the above "if (i)" case, if we need to "continue" or if we should "break"
 			}
 			j = i;
@@ -660,7 +660,7 @@ __ri int mVUbranchCheck(mV)
 
 			mVUregs.needExactMatch |= 7; // This might not be necessary, but w/e...
 			mVUregs.flagInfo = 0;
-			DevCon.Warning("microVU%d: %s in %s delay slot! [%04x]  - If game broken report to PCSX2 Team", mVU.index,
+			Log::Dev.warning("microVU{:d}: {:s} in {:s} delay slot! [{:04x}]  - If game broken report to PCSX2 Team\n", mVU.index,
 				branchSTR[mVUlow.branch & 0xf], branchSTR[branchType & 0xf], xPC);
 			return 1;
 		}
@@ -668,7 +668,7 @@ __ri int mVUbranchCheck(mV)
 		{
 			incPC(2);
 			mVUlow.isNOP = true;
-			DevCon.Warning("microVU%d: %s in %s delay slot! [%04x]", mVU.index,
+			Log::Dev.warning("microVU{:d}: {:s} in {:s} delay slot! [{:04x}]\n", mVU.index,
 				branchSTR[mVUlow.branch & 0xf], branchSTR[branchType & 0xf], xPC);
 			return 0;
 		}

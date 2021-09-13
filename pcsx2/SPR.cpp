@@ -46,7 +46,7 @@ static void TestClearVUs(u32 madr, u32 qwc, bool isWrite)
 
 			if(((madr & 0xff0) + (qwc * 16)) > 0x1000 )
 			{
-				DevCon.Warning("Warning! SPR%d Crossing in to VU0 Micro Mirror address! Start MADR = %x, End MADR = %x", isWrite ? 0 : 1, madr, madr + (qwc * 16));
+				Log::Dev.warning("Warning! SPR{:d} Crossing in to VU0 Micro Mirror address! Start MADR = {:x}, End MADR = {:x}\n", isWrite ? 0 : 1, madr, madr + (qwc * 16));
 			}
 		}
 		else if (madr >= 0x11008000 && madr < 0x1100c000)
@@ -63,7 +63,7 @@ static void TestClearVUs(u32 madr, u32 qwc, bool isWrite)
 			// SPR trying to write to to VU0 Mem mirror address.
 			if(((madr & 0xff0) + (qwc * 16)) > 0x1000)
 			{
-				DevCon.Warning("Warning! SPR%d Crossing in to VU0 Mem Mirror address! Start MADR = %x, End MADR = %x", isWrite ? 0 : 1, madr, madr + (qwc * 16));
+				Log::Dev.warning("Warning! SPR{:d} Crossing in to VU0 Mem Mirror address! Start MADR = {:x}, End MADR = {:x}\n", isWrite ? 0 : 1, madr, madr + (qwc * 16));
 			}
 		}
 	}
@@ -156,7 +156,7 @@ int  _SPR0chain()
 	{
 		if (spr0ch.chcr.MOD == NORMAL_MODE || ((spr0ch.chcr.TAG >> 28) & 0x7) == TAG_CNTS)
 		{
-			//DevCon.Warning("SPR0 %s Stall Control", spr0ch.chcr.MOD == NORMAL_MODE ? "Normal" : "Chain");
+			//Log::Dev.warning("SPR0 {:s} Stall Control\n", spr0ch.chcr.MOD == NORMAL_MODE ? "Normal" : "Chain");
 			dmacRegs.stadr.ADDR = spr0ch.madr; // Copy MADR to DMAC_STADR stall addr register
 		}
 	}
@@ -191,7 +191,7 @@ void _SPR0interleave()
 		pMem = SPRdmaGetAddr(spr0ch.madr, true);
 
 		if(spr0ch.qwc > (0x400 - ((spr0ch.sadr & 0x3fff) >> 4)))
-			DevCon.Warning("Warning! Interleave on SPR0 going outside of SPR memory!");
+			Log::Dev.warning("Warning! Interleave on SPR0 going outside of SPR memory!\n");
 
 		switch (dmacRegs.ctrl.MFD)
  		{
@@ -214,7 +214,7 @@ void _SPR0interleave()
 	}
 	if (dmacRegs.ctrl.STS == STS_fromSPR)
 	{
-		//DevCon.Warning("SPR0 Interleave Stall Control");
+		//Log::Dev.warning("SPR0 Interleave Stall Control\n");
 		dmacRegs.stadr.ADDR = spr0ch.madr; // Copy MADR to DMAC_STADR stall addr register
 	}
 	spr0ch.qwc = 0;
@@ -347,7 +347,7 @@ void dmaSPR0()   // fromSPR
 
 	if(spr0ch.chcr.MOD == CHAIN_MODE && spr0ch.qwc > 0)
 	{
-		//DevCon.Warning(L"SPR0 QWC on Chain " + spr0ch.chcr.desc());
+		//Log::Dev.warning("SPR0 QWC on Chain {:s}\n", spr0ch.chcr.desc());
 		if (spr0ch.chcr.tag().ID == TAG_END) // But not TAG_REFE?
 		{									 // correct not REFE, Destination Chain doesnt have REFE!
 			spr0finished = true;
@@ -506,7 +506,7 @@ void dmaSPR1()   // toSPR
 
 	if(spr1ch.chcr.MOD == CHAIN_MODE && spr1ch.qwc > 0)
 	{
-		//DevCon.Warning(L"SPR1 QWC on Chain " + spr1ch.chcr.desc());
+		//Log::Dev.warning("SPR1 QWC on Chain {:s}\n", spr1ch.chcr.desc());
 		if ((spr1ch.chcr.tag().ID == TAG_END) || (spr1ch.chcr.tag().ID == TAG_REFE) || (spr1ch.chcr.tag().IRQ && spr1ch.chcr.TIE))
 		{
 			spr1finished = true;

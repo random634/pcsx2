@@ -169,14 +169,14 @@ static bool __fastcall _rcntFireInterrupt(int i, bool isOverflow)
 
 	if (psxCounters[i].mode & 0x400)
 	{ //IRQ fired
-		//DevCon.Warning("Counter %d %s IRQ Fired count %x", i, isOverflow ? "Overflow" : "Target", psxCounters[i].count);
+		//Log::Dev.warning("Counter {:d} {:s} IRQ Fired count {:x}\n", i, isOverflow ? "Overflow" : "Target", psxCounters[i].count);
 		psxHu32(0x1070) |= psxCounters[i].interrupt;
 		iopTestIntc();
 		ret = true;
 	}
 	else
 	{
-		//DevCon.Warning("Counter %d IRQ not fired count %x", i, psxCounters[i].count);
+		//Log::Dev.warning("Counter {:d} IRQ not fired count {:x}\n", i, psxCounters[i].count);
 		ret = false;
 		if (!(psxCounters[i].mode & 0x40)) //One shot
 		{
@@ -540,7 +540,7 @@ void psxRcntWcount16(int index, u16 value)
 	u32 change;
 
 	pxAssert(index < 3);
-	//DevCon.Warning("16bit IOP Counter[%d] writeCount16 = %x", index, value);
+	//Log::Dev.warning("16bit IOP Counter[{:d}] writeCount16 = {:x}\n", index, value);
 
 	if (psxCounters[index].rate != PSXHBLANK)
 	{
@@ -558,7 +558,7 @@ void psxRcntWcount16(int index, u16 value)
 	}
 	if (value > psxCounters[index].target)
 	{   //Count already higher than Target
-		//	DevCon.Warning("16bit Count already higher than target");
+		//	Log::Dev.warning("16bit Count already higher than target\n");
 		psxCounters[index].target |= IOPCNT_FUTURE_TARGET;
 	}
 	_rcntSet(index);
@@ -589,7 +589,7 @@ void psxRcntWcount32(int index, u32 value)
 	}
 	if (value > psxCounters[index].target)
 	{ //Count already higher than Target
-		//DevCon.Warning("32bit Count already higher than target");
+		//Log::Dev.warning("32bit Count already higher than target\n");
 		psxCounters[index].target |= IOPCNT_FUTURE_TARGET;
 	}
 	_rcntSet(index);
@@ -775,7 +775,7 @@ __fi void psxRcntWmode32(int index, u32 value)
 void psxRcntWtarget16(int index, u32 value)
 {
 	pxAssert(index < 3);
-	//DevCon.Warning("IOP Counter[%d] writeTarget16 = %lx", index, value);
+	//Log::Dev.warning("IOP Counter[{:d}] writeTarget16 = {:x}\n", index, value);
 	psxCounters[index].target = value & 0xffff;
 
 	// protect the target from an early arrival.
@@ -791,7 +791,7 @@ void psxRcntWtarget16(int index, u32 value)
 void psxRcntWtarget32(int index, u32 value)
 {
 	pxAssert(index >= 3 && index < 6);
-	//DevCon.Warning("IOP Counter[%d] writeTarget32 = %lx mode %x", index, value, psxCounters[index].mode);
+	//Log::Dev.warning("IOP Counter[{:d}] writeTarget32 = {:x} mode {:x}\n", index, value, psxCounters[index].mode);
 
 	psxCounters[index].target = value;
 	if (!(psxCounters[index].mode & 0x80))

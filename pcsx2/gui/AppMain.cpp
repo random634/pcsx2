@@ -460,7 +460,7 @@ void Pcsx2App::LogicalVsync()
 
 	if (g_Conf->GSWindow.FMVAspectRatioSwitch != FMV_AspectRatio_Switch_Off) {
 		if (EnableFMV) {
-			DevCon.Warning("FMV on");
+			Log::Dev.warning("FMV on\n");
 			GSSetFMVSwitch(true);
 			EnableFMV = false;
 		}
@@ -468,7 +468,7 @@ void Pcsx2App::LogicalVsync()
 		if (FMVstarted) {
 			int diff = cpuRegs.cycle - eecount_on_last_vdec;
 			if (diff > 60000000 ) {
-				DevCon.Warning("FMV off");
+				Log::Dev.warning("FMV off\n");
 				GSSetFMVSwitch(false);
 				FMVstarted = false;
 			}

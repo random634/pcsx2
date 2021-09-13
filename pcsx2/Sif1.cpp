@@ -46,7 +46,7 @@ static __fi bool WriteEEtoFifo()
 	ptag = sif1ch.getAddr(sif1ch.madr, DMAC_SIF1, false);
 	if (ptag == NULL)
 	{
-		DevCon.Warning("Write EE to Fifo: ptag == NULL");
+		Log::Dev.warning("Write EE to Fifo: ptag == NULL\n");
 		return false;
 	}
 
@@ -183,7 +183,7 @@ static __fi void HandleEETransfer()
 {
 	if(!sif1ch.chcr.STR)
 	{
-		//DevCon.Warning("Replacement for irq prevention hack EE SIF1");
+		//Log::Dev.warning("Replacement for irq prevention hack EE SIF1\n");
 		sif1.ee.end = false;
 		sif1.ee.busy = false;
 		return;
@@ -192,7 +192,7 @@ static __fi void HandleEETransfer()
 	/*if (sif1ch.qwc == 0)
 		if (sif1ch.chcr.MOD == NORMAL_MODE)
 			if (!sif1.ee.end){
-				DevCon.Warning("sif1 irq prevented CHCR %x QWC %x", sif1ch.chcr, sif1ch.qwc);
+				Log::Dev.warning("sif1 irq prevented CHCR {:x} QWC {:x}\n", sif1ch.chcr, sif1ch.qwc);
 				done = true;
 				return;
 			}*/
@@ -218,7 +218,7 @@ static __fi void HandleEETransfer()
 		{
 			if ((sif1ch.chcr.MOD == NORMAL_MODE) || ((sif1ch.chcr.TAG >> 28) & 0x7) == TAG_REFS)
 			{
-				//DevCon.Warning("SIF1 Stall Control");
+				//Log::Dev.warning("SIF1 Stall Control\n");
 				const int writeSize = std::min((s32)sif1ch.qwc, sif1.fifo.sif_free() >> 2);
 				if ((sif1ch.madr + (writeSize * 16)) > dmacRegs.stadr.ADDR)
 				{
@@ -227,7 +227,7 @@ static __fi void HandleEETransfer()
 					return;
 				}
 			}
-				//DevCon.Warning("SIF1 stall control Not Implemented"); // STD == fromSIF1
+				//Log::Dev.warning("SIF1 stall control Not Implemented\n"); // STD == fromSIF1
 		}
 		if (sif1.fifo.sif_free() > 0)
 		{

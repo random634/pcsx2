@@ -266,11 +266,11 @@ __fi u64 ipuRead64(u32 mem)
 		}
 
 		ipucase(IPU_CTRL):
-			DevCon.Warning("reading 64bit IPU ctrl");
+			Log::Dev.warning("reading 64bit IPU ctrl\n");
 			break;
 
 		ipucase(IPU_BP):
-			DevCon.Warning("reading 64bit IPU top");
+			Log::Dev.warning("reading 64bit IPU top\n");
 			break;
 
 		ipucase(IPU_TOP): // IPU_TOP

@@ -181,7 +181,7 @@ void _flushConstReg(int reg)
 		xMOV(ptr32[&cpuRegs.GPR.r[reg].UL[1]], g_cpuConstRegs[reg].UL[1]);
 		g_cpuFlushedConstReg |= (1 << reg);
 		if (reg == 0)
-			DevCon.Warning("Flushing r0!");
+			Log::Dev.warning("Flushing r0!\n");
 	}
 }
 

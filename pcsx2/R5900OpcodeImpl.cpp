@@ -185,7 +185,7 @@ static int __Deci2Call(int call, u32 *addr)
 			else
 			{
 				deci2handler = 0;
-				DevCon.Warning( "Deci2Call.Open > NULL address ignored." );
+				Log::Dev.warning("Deci2Call.Open > NULL address ignored.\n");
 			}
 			return 1;
 
@@ -941,7 +941,7 @@ void SYSCALL()
 							DevCon.Error("Mode %x is not supported. Report me upstream", cpuRegs.GPR.n.a1.UC[0]);
 							gsSetVideoMode(GS_VideoMode::Unknown);
 					}
-					DevCon.Warning("Set GS CRTC configuration. %s %s (%s)",mode.c_str(), inter, field);
+					Log::Dev.warning("Set GS CRTC configuration. {:s} {:s} ({:s})\n",mode.c_str(), inter, field);
 				}
 				break;
 		case Syscall::GetOsdConfigParam:

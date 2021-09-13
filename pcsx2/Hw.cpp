@@ -84,12 +84,12 @@ void hwReset()
 __fi uint intcInterrupt()
 {
 	if ((psHu32(INTC_STAT)) == 0) {
-		//DevCon.Warning("*PCSX2*: intcInterrupt already cleared");
+		//Log::Dev.warning("*PCSX2*: intcInterrupt already cleared\n");
 		return 0;
 	}
 	if ((psHu32(INTC_STAT) & psHu32(INTC_MASK)) == 0) 
 	{
-		//DevCon.Warning("*PCSX2*: No valid interrupt INTC_MASK: %x INTC_STAT: %x", psHu32(INTC_MASK), psHu32(INTC_STAT));
+		//Log::Dev.warning("*PCSX2*: No valid interrupt INTC_MASK: {:x} INTC_STAT: {:x}\n", psHu32(INTC_MASK), psHu32(INTC_STAT));
 		return 0;
 	}
 
@@ -108,13 +108,13 @@ __fi uint dmacInterrupt()
 	if( ((psHu16(DMAC_STAT + 2) & psHu16(DMAC_STAT)) == 0 ) &&
 		( psHu16(DMAC_STAT) & 0x8000) == 0 ) 
 	{
-		//DevCon.Warning("No valid DMAC interrupt MASK %x STAT %x", psHu16(DMAC_STAT+2), psHu16(DMAC_STAT));
+		//Log::Dev.warning("No valid DMAC interrupt MASK {:x} STAT {:x}\n", psHu16(DMAC_STAT+2), psHu16(DMAC_STAT));
 		return 0;
 	}
 
 	if (!dmacRegs.ctrl.DMAE || psHu8(DMAC_ENABLER+2) == 1) 
 	{
-		//DevCon.Warning("DMAC Suspended or Disabled on interrupt");
+		//Log::Dev.warning("DMAC Suspended or Disabled on interrupt\n");
 		return 0;
 	}
 
@@ -155,7 +155,7 @@ __ri bool hwMFIFOWrite(u32 addr, const u128* data, uint qwc)
 	pxAssert((dmacRegs.rbor.ADDR & 15) == 0);
 	pxAssert((addr & 15) == 0);
 
-	if(qwc > ((dmacRegs.rbsr.RMSK + 16u) >> 4u)) DevCon.Warning("MFIFO Write bigger than MFIFO! QWC=%x FifoSize=%x", qwc, ((dmacRegs.rbsr.RMSK + 16) >> 4));
+	if(qwc > ((dmacRegs.rbsr.RMSK + 16u) >> 4u)) Log::Dev.warning("MFIFO Write bigger than MFIFO! QWC={:x} FifoSize={:x}\n", qwc, ((dmacRegs.rbsr.RMSK + 16) >> 4));
 	// DMAC Address resolution:  FIFO can be placed anywhere in the *physical* memory map
 	// for the PS2.  Its probably a serious error for a PS2 app to have the buffer cross
 	// valid/invalid page areas of ram, so realistically we only need to test the base address

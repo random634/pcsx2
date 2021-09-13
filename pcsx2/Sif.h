@@ -52,7 +52,7 @@ struct sifFifo
 		if (words > 0)
 		{
 			if ((FIFO_SIF_W - size) < words)
-				DevCon.Warning("Not enough space in SIF0 FIFO!\n");
+				Log::Dev.warning("Not enough space in SIF0 FIFO\n");
 
 			if (size < 4)
 			{
@@ -77,7 +77,7 @@ struct sifFifo
 		if (words > 0)
 		{
 			if ((FIFO_SIF_W - size) < words)
-				DevCon.Warning("Not enough Junk space in SIF0 FIFO!\n");
+				Log::Dev.warning("Not enough Junk space in SIF0 FIFO!\n");
 			const int wP0 = std::min((FIFO_SIF_W - writePos), words);
 			const int wP1 = words - wP0;
 

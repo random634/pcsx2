@@ -164,7 +164,7 @@ SIO_WRITE sioWriteStart(u8 data)
 	u16 size2 = (sioreg >> 18) & 0x1FF;
 
 	//if(size1 != size2)
-	//	DevCon.Warning("SIO: Bad command length [%02X] (%02X|%02X)", data, size1, size2);
+	//	Log::Dev.warning("SIO: Bad command length [{:02X}] ({:02X}|{:02X})\n", data, size1, size2);
 	
 	// On mismatch, sio2.cmdlength (size1) is smaller than what it should (Persona 3)
 	// while size2 is the proper length. -KrossX
@@ -181,7 +181,7 @@ SIO_WRITE sioWriteStart(u8 data)
 	case 0x81: siomode = SIO_MEMCARD; break;
 
 	default:
-		DevCon.Warning("%s cmd: %02X??", __FUNCTION__, data);
+		Log::Dev.warning("{:s} cmd: {:02X}??\n", __FUNCTION__, data);
 		DEVICE_UNPLUGGED();
 		siomode = SIO_DUMMY;
 		break;
@@ -277,7 +277,7 @@ SIO_WRITE sioWriteMultitap(u8 data)
 			break;
 
 		default:
-			DevCon.Warning("%s cmd: %02X??", __FUNCTION__, data);
+			Log::Dev.warning("{:s} cmd: {:02X}??\n", __FUNCTION__, data);
 			sio.buf[3] = 0x00;
 			sio.buf[4] = 0x00;
 			sio.buf[5] = 0x00;
@@ -384,7 +384,7 @@ SIO_WRITE memcardErase(u8 data)
 				break;
 
 			default:
-				DevCon.Warning("%s cmd: %02X??", __FUNCTION__, data);
+				Log::Dev.warning("{:s} cmd: {:02X}??\n", __FUNCTION__, data);
 				sio.bufCount = -1;
 				//sio.bufSize = 3;
 				//sio.bufCount = 4;
@@ -446,7 +446,7 @@ SIO_WRITE memcardWrite(u8 data)
 				[[fallthrough]];
 
 			default:
-				DevCon.Warning("%s cmd: %02X??", __FUNCTION__, data);
+				Log::Dev.warning("{:s} cmd: {:02X}??\n", __FUNCTION__, data);
 				sio.bufCount = -1;
 				//sio.bufSize = 3;
 				//sio.bufCount = 4;
@@ -537,7 +537,7 @@ SIO_WRITE memcardRead(u8 data)
 				[[fallthrough]];
 
 			default:
-				DevCon.Warning("%s cmd: %02X??", __FUNCTION__, data);
+				Log::Dev.warning("{:s} cmd: {:02X}??\n", __FUNCTION__, data);
 				sio.bufCount = -1;
 				//sio.bufSize = 3;
 				//sio.bufCount = 4;
@@ -626,7 +626,7 @@ SIO_WRITE memcardInit()
 			wxTimeSpan delta = wxDateTime::UNow().Subtract(mcd->ForceEjection_Timestamp);
 			if(delta.GetMilliseconds() >= FORCED_MCD_EJECTION_MAX_MS_AFTER_MIN_TRIES)
 			{
-				DevCon.Warning( L"[%s] Auto-eject: Timeout reached after mcd was accessed %d times [port:%d, slot:%d]", WX_STR(GetTimeMsStr()), numTimesAccessed, sio.GetPort(), sio.GetSlot());
+				Log::Dev.warning("[{:s}] Auto-eject: Timeout reached after mcd was accessed {:d} times [port:{:d}, slot:{:d}]\n", WX_STR(GetTimeMsStr()), numTimesAccessed, sio.GetPort(), sio.GetSlot());
 				mcd->ForceEjection_Timeout = 0;	//Done. on next sio access the card will be seen as inserted.
 			}
 		}
@@ -728,7 +728,7 @@ SIO_WRITE sioWriteMemcard(u8 data)
 			break;
 
 		default:
-			DevCon.Warning("%s cmd: %02X??", __FUNCTION__, data);
+			Log::Dev.warning("{:s} cmd: {:02X}??\n", __FUNCTION__, data);
 			siomode = SIO_DUMMY;
 			break;
 		}

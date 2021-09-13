@@ -563,7 +563,7 @@ struct Gif_Unit
 			incTag(offset, curSize, 16 + gifTag.len); // Tag + Data length
 			if (pathIdx == GIF_PATH_1 && curSize >= 0x4000)
 			{
-				DevCon.Warning("Gif Unit - GS packet size exceeded VU memory size!");
+				Log::Dev.warning("Gif Unit - GS packet size exceeded VU memory size!\n");
 				return 0; // Bios does this... (Fixed if you delay vu1's xgkick by 103 vu cycles)
 			}
 			if (curSize >= size)
@@ -613,7 +613,7 @@ struct Gif_Unit
 		if (tranType == GIF_TRANS_FIFO)
 		{
 			if (!CanDoPath3())
-				DevCon.Warning("Gif Unit - Path 3 FIFO transfer while !CanDoPath3()");
+				Log::Dev.warning("Gif Unit - Path 3 FIFO transfer while !CanDoPath3()\n");
 		}
 		if (tranType == GIF_TRANS_DMA)
 		{
