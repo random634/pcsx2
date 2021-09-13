@@ -388,10 +388,10 @@ u32 UpdateVSyncRate()
 		vSyncInfoCalc(&vSyncInfo, frames_per_second, total_scanlines);
 
 		if (video_mode_initialized)
-			Console.WriteLn(Color_Green, "(UpdateVSyncRate) Mode Changed to %s.", ReportVideoMode());
+			Log::Console.info(LogStyle::CompatibilityGreen, "(UpdateVSyncRate) Mode Changed to {:s}.\n", ReportVideoMode());
 		
 		if (custom && video_mode_initialized)
-			Console.Indent().WriteLn(Color_StrongGreen, "... with user configured refresh rate: %.02f Hz", vertical_frequency);
+			Log::Console.info(LogStyle::CompatibilityStrongGreen, "    ... with user configured refresh rate: {:.02f} Hz\n", vertical_frequency);
 
 		hsyncCounter.CycleT = vSyncInfo.hRender; // Amount of cycles before the counter will be updated
 		vsyncCounter.CycleT = vSyncInfo.Render;  // Amount of cycles before the counter will be updated

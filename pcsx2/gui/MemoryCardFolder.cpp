@@ -133,7 +133,7 @@ void FolderMemoryCard::Open(const wxString& fullPath, const AppConfig::McdOption
 		return;
 	}
 
-	Console.WriteLn(disabled ? Color_Gray : Color_Green, L"McdSlot %u: [Folder] " + str, m_slot);
+	Log::Console.info(disabled ? LogStyle::CompatibilityGray : LogStyle::CompatibilityGreen, "McdSlot {:d}: [Folder] {:s}\n", m_slot, str);
 	if (disabled)
 		return;
 
@@ -207,11 +207,11 @@ void FolderMemoryCard::LoadMemoryCardData(const u32 sizeInClusters, const bool e
 	{
 		if (enableFiltering)
 		{
-			Console.WriteLn(Color_Green, L"(FolderMcd) Indexing slot %u with filter \"%s\".", m_slot, WX_STR(filter));
+			Log::Console.info(LogStyle::CompatibilityGreen, "(FolderMcd) Indexing slot {:d} with filter \"{:s}\".\n", m_slot, filter);
 		}
 		else
 		{
-			Console.WriteLn(Color_Green, L"(FolderMcd) Indexing slot %u without filter.", m_slot);
+			Log::Console.info(LogStyle::CompatibilityGreen, "(FolderMcd) Indexing slot {:d} without filter.\n", m_slot);
 		}
 
 		CreateFat();
@@ -447,7 +447,7 @@ bool FolderMemoryCard::AddFolder(MemoryCardFileEntry* const dirEntry, const wxSt
 				const u32 newNeededClusters = CalculateRequiredClustersOfDirectory(dirPath + L"/" + file.m_fileName) + ((dirEntry->entry.data.length % 2) == 0 ? 1 : 0);
 				if (newNeededClusters > GetAmountFreeDataClusters())
 				{
-					Console.Warning(GetCardFullMessage(file.m_fileName));
+					Log::Console.warning("{:s}\n", GetCardFullMessage(file.m_fileName));
 					continue;
 				}
 
@@ -529,7 +529,7 @@ bool FolderMemoryCard::AddFile(MemoryCardFileEntry* const dirEntry, const wxStri
 		const u32 newNeededClusters = (dirEntry->entry.data.length % 2) == 0 ? countClusters + 1 : countClusters;
 		if (newNeededClusters > GetAmountFreeDataClusters())
 		{
-			Console.Warning(GetCardFullMessage(relativeFilePath.GetFullPath()));
+			Log::Console.warning("{:s}\n", GetCardFullMessage(relativeFilePath.GetFullPath()));
 			return false;
 		}
 

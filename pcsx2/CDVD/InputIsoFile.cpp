@@ -47,7 +47,7 @@ int InputIsoFile::ReadSync(u8* dst, uint lsn)
 		msg.Write("isoFile error: Block index is past the end of file! (%u >= %u).", lsn, m_blocks);
 
 		pxAssertDev(false, msg);
-		Console.Error(msg.c_str());
+		Log::Console.error("{:s}\n", msg);
 		return -1;
 	}
 
@@ -270,16 +270,16 @@ bool InputIsoFile::Open(const wxString& srcfile, bool testOnly)
 
 	m_blocks = m_reader->GetBlockCount();
 
-	Console.WriteLn(Color_StrongBlue, L"isoFile open ok: %s", WX_STR(m_filename));
+	Log::Console.info(LogStyle::Header, "isoFile open ok: {:s}\n", m_filename);
 
-	ConsoleIndentScope indent;
+	ScopedLogIndent indent(Log::Console);
 
 	Log::Console.info("Image type  = {:s}\n", nameFromType(m_type));
 	//Log::Console.info("Fileparts   = {:d}\n", m_numparts); // Pointless print, it's 1 unless it says otherwise above
-	DevCon.WriteLn("blocks      = %u", m_blocks);
-	DevCon.WriteLn("offset      = %d", m_offset);
-	DevCon.WriteLn("blocksize   = %u", m_blocksize);
-	DevCon.WriteLn("blockoffset = %d", m_blockofs);
+	Log::Console.debug("blocks      = {:d}\n", m_blocks);
+	Log::Console.debug("offset      = {:d}\n", m_offset);
+	Log::Console.debug("blocksize   = {:d}\n", m_blocksize);
+	Log::Console.debug("blockoffset = {:d}\n", m_blockofs);
 
 	return true;
 }

@@ -66,7 +66,7 @@ static void _SaveLoadStuff(bool enabled)
 		if (slot.menu_update || slot.invalid_cache)
 		{
 			#ifdef SAVESLOT_LOGS
-			Console.WriteLn("Updating slot %i.", slot.slot_num);
+			Log::Console.info("Updating slot {:d}.\n", slot.slot_num);
 			if (slot.menu_update) Log::Console.info("Menu update needed.\n");
 			if (slot.invalid_cache) Log::Console.info("Invalid cache. (CRC different or just initialized.)\n");
 			#endif

@@ -610,7 +610,7 @@ SIO_WRITE memcardInit()
 	if(mcd->ForceEjection_Timeout)
 	{
 		if(mcd->ForceEjection_Timeout == FORCED_MCD_EJECTION_MAX_TRIES && mcd->IsPresent())
-			Console.WriteLn( Color_Green,  L"[%s] Auto-ejecting memcard [port:%d, slot:%d]", WX_STR(GetTimeMsStr()), sio.GetPort(), sio.GetSlot());
+			Log::Console.info(LogStyle::CompatibilityGreen, "[{:s}] Auto-ejecting memcard [port:{:d}, slot:{:d}]\n", GetTimeMsStr(), sio.GetPort(), sio.GetSlot());
 
 		mcd->ForceEjection_Timeout--;
 		forceEject = true;
@@ -632,7 +632,7 @@ SIO_WRITE memcardInit()
 		}
 
 		if(mcd->ForceEjection_Timeout == 0 && mcd->IsPresent())
-			Console.WriteLn( Color_Green,  L"[%s] Re-inserting auto-ejected memcard [port:%d, slot:%d]", WX_STR(GetTimeMsStr()), sio.GetPort(), sio.GetSlot());
+			Log::Console.info(LogStyle::CompatibilityGreen, "[{:s}] Re-inserting auto-ejected memcard [port:{:d}, slot:{:d}]\n", GetTimeMsStr(), sio.GetPort(), sio.GetSlot());
 	}
 			
 	if(!forceEject && mcd->IsPresent())

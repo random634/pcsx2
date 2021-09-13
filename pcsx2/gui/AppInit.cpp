@@ -120,7 +120,7 @@ void Pcsx2App::OpenProgramLog()
 		if (const wxLanguageInfo* info = wxLocale::GetLanguageInfo( li ))
 		{			
 			if (i18n_IsLegacyLanguageId((wxLanguage)info->Language)) continue;			
-			Console.WriteLn( L"|| %-30s || %-8s ||", info->Description.c_str(), info->CanonicalName.c_str() );
+			Log::Console.info("|| {:^30s} || {:^8s} ||\n", info->Description, info->CanonicalName);
 		}
 	}
 	*/
@@ -505,7 +505,7 @@ bool Pcsx2App::OnInit()
 	// ----------------------------------------------------------------------------
 	catch (Exception::StartupAborted& ex) // user-aborted, no popups needed.
 	{
-		Console.Warning(ex.FormatDiagnosticMessage());
+		Log::Console.warning("{:s}\n", ex.FormatDiagnosticMessage());
 		CleanupOnExit();
 		return false;
 	}
@@ -522,7 +522,7 @@ bool Pcsx2App::OnInit()
 	//
 	catch (Exception::RuntimeError& ex)
 	{
-		Console.Error(ex.FormatDiagnosticMessage());
+		Log::Console.error("{:s}\n", ex.FormatDiagnosticMessage());
 		Msgbox::Alert(ex.FormatDisplayMessage() + L"\n\n" + AddAppName(_("Press OK to close %s.")),
 					  AddAppName(_("%s Critical Error")), wxICON_ERROR);
 		CleanupOnExit();
@@ -614,8 +614,7 @@ void Pcsx2App::CleanupOnExit()
 		// that we just don't care about by now, and just want to "get 'er done!" so
 		// we can exit the app. ;)
 
-		Log::Console.error("Runtime exception handled during CleanupOnExit:\n");
-		Console.Indent().Error(ex.FormatDiagnosticMessage());
+		Log::Console.error("Runtime exception handled during CleanupOnExit:\n    {:s}\n", ex.FormatDiagnosticMessage());
 	}
 
 	// FIXME: performing a wxYield() here may fix that problem. -- air

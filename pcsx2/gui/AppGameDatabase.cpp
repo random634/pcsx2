@@ -71,8 +71,8 @@ AppGameDatabase& AppGameDatabase::LoadFromFile(const wxString& _file)
 
 	const u64 qpc_end = GetCPUTicks();
 
-	Console.WriteLn(fmt::format("[GameDB] {} games on record (loaded in {}ms)", this->numGames(),
-								(u32)(((qpc_end - qpc_Start) * 1000) / GetTickFrequency())));
+	Log::Console.info("[GameDB] {} games on record (loaded in {}ms)\n",
+		this->numGames(), (u32)(((qpc_end - qpc_Start) * 1000) / GetTickFrequency()));
 
 	return *this;
 }

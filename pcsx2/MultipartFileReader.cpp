@@ -37,7 +37,7 @@ AsyncFileReader* MultipartFileReader::DetectMultipart(AsyncFileReader* reader)
 	multi->FindParts();
 	if (multi->m_numparts > 1)
 	{
-		Console.WriteLn( Color_Blue, "isoFile: multi-part ISO detected.  %u parts found.", multi->m_numparts);
+		Log::Console.info(LogStyle::CompatibilityBlue, "isoFile: multi-part ISO detected.  {:d} parts found.\n", multi->m_numparts);
 
 		return multi;
 	}

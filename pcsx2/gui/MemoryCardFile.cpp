@@ -302,7 +302,7 @@ void FileMemoryCard::Open()
 			cont = true;
 		}
 
-		Console.WriteLn(cont ? Color_Gray : Color_Green, L"McdSlot %u [File]: " + str, slot);
+		Log::Console.info(cont ? LogStyle::CompatibilityGray : LogStyle::CompatibilityGreen, "McdSlot {:d} [File]: {:s}\n", slot, str);
 		if (cont)
 			continue;
 

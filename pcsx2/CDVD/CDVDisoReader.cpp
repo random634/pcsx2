@@ -56,7 +56,7 @@ s32 CALLBACK ISOopen(const char* pTitle)
 	}
 	catch (BaseException& ex)
 	{
-		Console.Error(ex.FormatDiagnosticMessage());
+		Log::Console.error("{:s}\n", ex.FormatDiagnosticMessage());
 		return -1;
 	}
 
@@ -170,7 +170,7 @@ static void FindLayer1Start()
 			return;
 		}
 		layer1start = blockresult;
-		Console.WriteLn(Color_Blue, "isoFile: second layer found at sector 0x%08x", layer1start);
+		Log::Console.info(LogStyle::CompatibilityBlue, "isoFile: second layer found at sector 0x{:08x}\n", layer1start);
 	}
 }
 

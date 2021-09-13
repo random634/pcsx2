@@ -327,7 +327,7 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 	}
 	
 	Log::Console.info("Loading language translation databases for '{:s}' [{:s}]\n",
-		WX_STR(i18n_GetBetterLanguageName(info)), WX_STR(locale->GetCanonicalName())
+		i18n_GetBetterLanguageName(info), locale->GetCanonicalName()
 	);
 
 	static const wxChar* dictFiles[] =
@@ -342,7 +342,7 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 		if (!dictFiles[i]) continue;
 
 		if (!locale->AddCatalog(dictFiles[i]))
-			Console.Indent().WriteLn(Color_StrongYellow, "%ls not found -- translation dictionary may be incomplete.", dictFiles[i]);
+			Log::Console.warning("    {:s} not found -- translation dictionary may be incomplete.\n", wxString(dictFiles[i]));
 		else
 			foundone = true;
 	}

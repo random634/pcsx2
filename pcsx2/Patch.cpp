@@ -175,7 +175,7 @@ static int _LoadPatchFiles(const wxDirName& folderName, wxString& fileSpec, cons
 
 	if (!folderName.Exists())
 	{
-		Console.WriteLn(Color_Red, L"The %s folder ('%s') is inaccessible. Skipping...", WX_STR(friendlyName), WX_STR(folderName.ToString()));
+		Log::Console.error("The {:s} folder ('{:s}') is inaccessible. Skipping...\n", friendlyName, folderName.ToString());
 		return 0;
 	}
 	wxDir dir(folderName.ToString());
@@ -343,8 +343,7 @@ namespace PatchFunc
 		}
 		catch (wxString& exmsg)
 		{
-			Log::Console.error("(Patch) Error Parsing: {:s}={:s}\n", cmd, param);
-			Console.Indent().Error(exmsg);
+			Log::Console.error("(Patch) Error Parsing: {:s}={:s}\n    {:s}\n", cmd, param, exmsg);
 		}
 	}
 	void patch(const wxString& cmd, const wxString& param) { patchHelper(cmd, param); }

@@ -236,7 +236,7 @@ wxWindowID SwapOrReset_Iso(wxWindow* owner, IScopedCoreThread& core_control, con
 	}
 	else
 	{
-		Console.Indent().WriteLn("HotSwapping to new ISO src image!");
+		Log::Console.info("    HotSwapping to new ISO src image!\n");
 		//g_Conf->CdvdSource = CDVDsrc_Iso;
 		//CoreThread.ChangeCdvdSource();
 		core_control.AllowResume();
@@ -295,7 +295,7 @@ wxWindowID SwapOrReset_Disc(wxWindow* owner, IScopedCoreThread& core, const wxSt
 	}
 	else
 	{
-		Console.Indent().WriteLn("Hot swapping to new disc!");
+		Log::Console.info("    Hot swapping to new disc!\n");
 		core.AllowResume();
 	}
 
@@ -346,9 +346,8 @@ wxWindowID SwapOrReset_CdvdSrc(wxWindow* owner, CDVD_SourceType newsrc)
 
 	if (result != wxID_RESET)
 	{
-		Console.Indent().WriteLn(L"(CdvdSource) HotSwapping CDVD source types from %s to %s.",
-								 WX_STR(wxString(CDVD_SourceLabels[enum_cast(oldsrc)])),
-								 WX_STR(wxString(CDVD_SourceLabels[enum_cast(newsrc)])));
+		Log::Console.info("(CdvdSource) HotSwapping CDVD source types from {:s} to {:s}.\n",
+			wxString(CDVD_SourceLabels[enum_cast(oldsrc)]), wxString(CDVD_SourceLabels[enum_cast(newsrc)]));
 		//CoreThread.ChangeCdvdSource();
 		sMainFrame.UpdateCdvdSrcSelection();
 		core.AllowResume();

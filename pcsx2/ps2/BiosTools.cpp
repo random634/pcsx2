@@ -200,7 +200,7 @@ static void LoadExtraRom( const wxChar* ext, u8 (&dest)[_size] )
 			Bios1 = Path::ReplaceExtension( Bios, ext );
 			if( (filesize=Path::GetFileSize( Bios1 ) ) <= 0 )
 			{
-				Console.WriteLn( Color_Gray, L"BIOS %s module not found, skipping...", ext );
+				Log::Console.info(LogStyle::CompatibilityGray, "BIOS {:s} module not found, skipping...\n", wxString(ext));
 				return;
 			}
 		}
@@ -240,8 +240,10 @@ static void LoadIrx( const wxString& filename, u8* dest )
 	}
 	catch (Exception::BadStream& ex)
 	{
-		Log::Console.warning("IRX Warning: {:s} could not be read\n", filename);
-		Console.Indent().WriteLn(L"Details: %s", WX_STR(ex.FormatDiagnosticMessage()));
+		Log::Console.warning(
+			"IRX Warning: {:s} could not be read\n"
+			"    Details: {:s}\n",
+			filename, ex.FormatDiagnosticMessage());
 	}
 }
 

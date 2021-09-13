@@ -478,7 +478,7 @@ static void _ApplySettings(const Pcsx2Config& src, Pcsx2Config& fixup)
 	//Till the end of this function, entry CRC will be 00000000
 	if (!GameInfo::gameCRC.Length())
 	{
-		Console.WriteLn(Color_Gray, "Patches: No CRC found, using 00000000 instead.");
+		Log::Console.info(LogStyle::CompatibilityGray, "Patches: No CRC found, using 00000000 instead.\n");
 		GameInfo::gameCRC = L"00000000";
 	}
 
@@ -492,7 +492,7 @@ static void _ApplySettings(const Pcsx2Config& src, Pcsx2Config& fixup)
 		if (int numberLoadedWideScreenPatches = LoadPatchesFromDir(GameInfo::gameCRC, GetCheatsWsFolder(), L"Widescreen hacks"))
 		{
 			gameWsHacks.Printf(L" [%d widescreen hacks]", numberLoadedWideScreenPatches);
-			Console.WriteLn(Color_Gray, "Found widescreen patches in the cheats_ws folder --> skipping cheats_ws.zip");
+			Log::Console.info(LogStyle::CompatibilityGray, "Found widescreen patches in the cheats_ws folder --> skipping cheats_ws.zip\n");
 		}
 		else
 		{
@@ -654,7 +654,7 @@ void AppCoreThread::DoCpuExecute()
 	}
 	catch (BaseR5900Exception& ex)
 	{
-		Console.Error(ex.FormatMessage());
+		Log::Console.error("{:s}\n", ex.FormatMessage());
 
 		// [TODO] : Debugger Hook!
 

@@ -52,14 +52,14 @@ SocketIPC::SocketIPC(SysCoreThread* vm, unsigned int slot)
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		Console.WriteLn(Color_Red, "IPC: Cannot initialize winsock! Shutting down...");
+		Log::Console.error("IPC: Cannot initialize winsock! Shutting down...\n");
 		return;
 	}
 
 	m_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if ((m_sock == INVALID_SOCKET) || slot > 65536)
 	{
-		Console.WriteLn(Color_Red, "IPC: Cannot open socket! Shutting down...");
+		Log::Console.error("IPC: Cannot open socket! Shutting down...\n");
 		return;
 	}
 
@@ -71,7 +71,7 @@ SocketIPC::SocketIPC(SysCoreThread* vm, unsigned int slot)
 
 	if (bind(m_sock, (struct sockaddr*)&server, sizeof(server)) == SOCKET_ERROR)
 	{
-		Console.WriteLn(Color_Red, "IPC: Error while binding to socket! Shutting down...");
+		Log::Console.error("IPC: Error while binding to socket! Shutting down...\n");
 		return;
 	}
 
@@ -100,7 +100,7 @@ SocketIPC::SocketIPC(SysCoreThread* vm, unsigned int slot)
 	m_sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (m_sock < 0)
 	{
-		Console.WriteLn(Color_Red, "IPC: Cannot open socket! Shutting down...");
+		Log::Console.error("IPC: Cannot open socket! Shutting down...\n");
 		return;
 	}
 	server.sun_family = AF_UNIX;
@@ -111,7 +111,7 @@ SocketIPC::SocketIPC(SysCoreThread* vm, unsigned int slot)
 	unlink(m_socket_name.c_str());
 	if (bind(m_sock, (struct sockaddr*)&server, sizeof(struct sockaddr_un)))
 	{
-		Console.WriteLn(Color_Red, "IPC: Error while binding to socket! Shutting down...");
+		Log::Console.error("IPC: Error while binding to socket! Shutting down...\n");
 		return;
 	}
 #endif
@@ -160,7 +160,7 @@ int SocketIPC::StartSocket()
 		if (!(errno == ECONNABORTED || errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK))
 		{
 #endif
-			fprintf(stderr, "IPC: An unrecoverable error happened! Shutting down...\n");
+			Log::Console.error("IPC: An unrecoverable error happened! Shutting down...\n");
 			m_end = true;
 			return -1;
 		}

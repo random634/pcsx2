@@ -134,12 +134,12 @@ SaveStateBase& SaveStateBase::FreezeBios()
 
 	if (bioscheck != BiosChecksum)
 	{
-		Console.Newline();
-		Console.Indent(1).Error( "Warning: BIOS Version Mismatch, savestate may be unstable!" );
-		Console.Indent(2).Error(
-			"Current BIOS:   %ls (crc=0x%08x)\n"
-			"Savestate BIOS: %s (crc=0x%08x)\n",
-			BiosDescription.wx_str(), BiosChecksum,
+		Log::Console.error(
+			"\n"
+			"    Warning: BIOS Version Mismatch, savestate may be unstable!\n"
+			"        Current BIOS:   {:s} (crc=0x{:08x})\n"
+			"        Savestate BIOS: {:s} (crc=0x{:08x})\n",
+			BiosDescription, BiosChecksum,
 			biosdesc, bioscheck
 		);
 	}

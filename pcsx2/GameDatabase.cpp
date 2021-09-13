@@ -46,10 +46,10 @@ std::string GameDatabaseSchema::GameEntry::memcardFiltersAsString() const
 bool GameDatabaseSchema::GameEntry::findPatch(const std::string crc, Patch& patch) const
 {
 	std::string crcLower = strToLower(crc);
-	Console.WriteLn(fmt::format("[GameDB] Searching for patch with CRC '{}'", crc));
+	Log::Console.info("[GameDB] Searching for patch with CRC '{}'\n", crc);
 	if (patches.count(crcLower) == 1)
 	{
-		Console.WriteLn(fmt::format("[GameDB] Found patch with CRC '{}'", crc));
+		Log::Console.info("[GameDB] Found patch with CRC '{}'\n", crc);
 		patch = patches.at(crcLower);
 		return true;
 	}
@@ -116,7 +116,7 @@ GameDatabaseSchema::GameEntry YamlGameDatabaseImpl::entryFromYaml(const std::str
 			}
 			else
 			{
-				Console.Error(fmt::format("[GameDB] Invalid gamefix: '{}', specified for serial: '{}'. Dropping!", fix, serial));
+				Log::Console.error("[GameDB] Invalid gamefix: '{}', specified for serial: '{}'. Dropping!\n", fix, serial);
 			}
 		}
 
@@ -142,7 +142,7 @@ GameDatabaseSchema::GameEntry YamlGameDatabaseImpl::entryFromYaml(const std::str
 				}
 				else
 				{
-					Console.Error(fmt::format("[GameDB] Invalid speedhack: '{}', specified for serial: '{}'. Dropping!", speedHack, serial));
+					Log::Console.error("[GameDB] Invalid speedhack: '{}', specified for serial: '{}'. Dropping!\n", speedHack, serial);
 				}
 			}
 		}
@@ -156,7 +156,7 @@ GameDatabaseSchema::GameEntry YamlGameDatabaseImpl::entryFromYaml(const std::str
 				std::string crc = strToLower(entry.first.as<std::string>());
 				if (gameEntry.patches.count(crc) == 1)
 				{
-					Console.Error(fmt::format("[GameDB] Duplicate CRC '{}' found for serial: '{}'. Skipping, CRCs are case-insensitive!", crc, serial));
+					Log::Console.error("[GameDB] Duplicate CRC '{}' found for serial: '{}'. Skipping, CRCs are case-insensitive!\n", crc, serial);
 					continue;
 				}
 				YAML::Node patchNode = entry.second;
@@ -171,12 +171,12 @@ GameDatabaseSchema::GameEntry YamlGameDatabaseImpl::entryFromYaml(const std::str
 	}
 	catch (const YAML::RepresentationException& e)
 	{
-		Console.Error(fmt::format("[GameDB] Invalid GameDB syntax detected on serial: '{}'. Error Details - {}", serial, e.msg));
+		Log::Console.error("[GameDB] Invalid GameDB syntax detected on serial: '{}'. Error Details - {}\n", serial, e.msg);
 		gameEntry.isValid = false;
 	}
 	catch (const std::exception& e)
 	{
-		Console.Error(fmt::format("[GameDB] Unexpected error occurred when reading serial: '{}'. Error Details - {}", serial, e.what()));
+		Log::Console.error("[GameDB] Unexpected error occurred when reading serial: '{}'. Error Details - {}\n", serial, e.what());
 		gameEntry.isValid = false;
 	}
 	return gameEntry;
@@ -185,14 +185,14 @@ GameDatabaseSchema::GameEntry YamlGameDatabaseImpl::entryFromYaml(const std::str
 GameDatabaseSchema::GameEntry YamlGameDatabaseImpl::findGame(const std::string serial)
 {
 	std::string serialLower = strToLower(serial);
-	Console.WriteLn(fmt::format("[GameDB] Searching for '{}' in GameDB", serialLower));
+	Log::Console.info("[GameDB] Searching for '{}' in GameDB\n", serialLower);
 	if (gameDb.count(serialLower) == 1)
 	{
-		Console.WriteLn(fmt::format("[GameDB] Found '{}' in GameDB", serialLower));
+		Log::Console.info("[GameDB] Found '{}' in GameDB\n", serialLower);
 		return gameDb[serialLower];
 	}
 
-	Console.Error(fmt::format("[GameDB] Could not find '{}' in GameDB", serialLower));
+	Log::Console.error("[GameDB] Could not find '{}' in GameDB\n", serialLower);
 	GameDatabaseSchema::GameEntry entry;
 	entry.isValid = false;
 	return entry;
@@ -228,20 +228,20 @@ bool YamlGameDatabaseImpl::initDatabase(std::ifstream& stream)
 				std::string serial = strToLower(entry.first.as<std::string>());
 				if (gameDb.count(serial) == 1)
 				{
-					Console.Error(fmt::format("[GameDB] Duplicate serial '{}' found in GameDB. Skipping, Serials are case-insensitive!", serial));
+					Log::Console.error("[GameDB] Duplicate serial '{}' found in GameDB. Skipping, Serials are case-insensitive!\n", serial);
 					continue;
 				}
 				gameDb[serial] = entryFromYaml(serial, entry.second);
 			}
 			catch (const YAML::RepresentationException& e)
 			{
-				Console.Error(fmt::format("[GameDB] Invalid GameDB syntax detected. Error Details - {}", e.msg));
+				Log::Console.error("[GameDB] Invalid GameDB syntax detected. Error Details - {}\n", e.msg);
 			}
 		}
 	}
 	catch (const std::exception& e)
 	{
-		Console.Error(fmt::format("[GameDB] Error occured when initializing GameDB: {}", e.what()));
+		Log::Console.error("[GameDB] Error occured when initializing GameDB: {}\n", e.what());
 		return false;
 	}
 

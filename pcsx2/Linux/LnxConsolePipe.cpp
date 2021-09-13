@@ -30,7 +30,7 @@ class LinuxPipeThread : public pxThread
 protected:
 	FILE* m_stdstream;
 	FILE* m_fp;
-	const ConsoleColors m_color;
+	const LogStyle m_color;
 	int m_pipe_fd[2];
 
 	void ExecuteTaskInThread();
@@ -43,7 +43,7 @@ LinuxPipeThread::LinuxPipeThread(FILE* stdstream)
 	: pxThread(stdstream == stderr? L"Redirect_Stderr" : L"Redirect_Stdout")
 	, m_stdstream(stdstream)
 	, m_fp(nullptr)
-	, m_color(stdstream == stderr? Color_Red : Color_Black)
+	, m_color(stdstream == stderr? LogStyle::Error : LogStyle::General)
 	, m_pipe_fd{-1, -1}
 {
 	const wxChar* stream_name = stdstream == stderr? L"stderr" : L"stdout";
@@ -88,13 +88,12 @@ LinuxPipeThread::~LinuxPipeThread()
 
 void LinuxPipeThread::ExecuteTaskInThread()
 {
-	const wxChar* stream_name = m_stdstream == stderr? L"stderr" : L"stdout";
+	const char* stream_name = m_stdstream == stderr? "stderr" : "stdout";
 
 	// Redirect stdout/stderr
 	int stdstream_fd = fileno(m_stdstream);
 	if (dup2(m_pipe_fd[1], stdstream_fd) != stdstream_fd) {
-		Console.Error(wxString::Format(L"Redirect %s failed: dup2: %s",
-			stream_name, strerror(errno)));
+		Log::Console.error("Redirect {:s} failed: dup2: {:s}\n", stream_name, strerror(errno));
 		return;
 	}
 
@@ -113,8 +112,7 @@ void LinuxPipeThread::ExecuteTaskInThread()
 				continue;
 			} else {
 				// Should never happen.
-				Console.Error(wxString::Format(L"Redirect %s failed: read: %s",
-					stream_name, strerror(errno)));
+				Log::Console.error("Redirect {:s} failed: read: {:s}\n", stream_name, strerror(errno));
 				break;
 			}
 		}
@@ -122,8 +120,8 @@ void LinuxPipeThread::ExecuteTaskInThread()
 		buffer[bytes_read] = 0;
 
 		{
-			ConsoleColorScope cs(m_color);
-			Console.WriteRaw(fromUTF8(buffer));
+			// TODO: Dedicated log source
+			Log::Console.info(m_color, "{:s}\n", buffer);
 		}
 	}
 }
@@ -159,7 +157,7 @@ PipeRedirectionBase* NewPipeRedir(FILE* stdstream)
 	try {
 		return new LinuxPipeRedirection(stdstream);
 	} catch (Exception::RuntimeError& ex) {
-		Console.Error(ex.FormatDiagnosticMessage());
+		Log::Console.error("{:s}\n", ex.FormatDiagnosticMessage());
 	}
 
 	return nullptr;

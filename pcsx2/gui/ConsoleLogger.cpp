@@ -1350,8 +1350,8 @@ void OSDlog(ConsoleColors color, bool console, const std::string& str)
 {
 	GSosdLog(str.c_str(), wxGetApp().GetProgramLog()->GetRGBA(color));
 
-	if (console)
-		Console.WriteLn(color, str.c_str());
+	// TODO: deal with color
+	Log::Console.info("{:s}\n", str);
 }
 
 void OSDmonitor(ConsoleColors color, const std::string key, const std::string value) {

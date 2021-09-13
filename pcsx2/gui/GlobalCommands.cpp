@@ -409,7 +409,7 @@ namespace Implementations
 		// FIXME: Some of the trace logs will require recompiler resets to be activated properly.
 #ifdef PCSX2_DEVBUILD
 		SetTraceConfig().Enabled = !EmuConfig.Trace.Enabled;
-		Console.WriteLn(EmuConfig.Trace.Enabled ? "Logging Enabled." : "Logging Disabled.");
+		Log::Console.info(EmuConfig.Trace.Enabled ? "Logging Enabled.\n" : "Logging Disabled.\n");
 #endif
 	}
 
@@ -955,9 +955,8 @@ void AcceleratorDictionary::Map(const KeyAcceleratorCode& _acode, const char* se
 
 				if (_acode.val32 != acode.val32)
 				{ // overriding default
-					Console.WriteLn(Color_Green, L"Sys_TakeSnapshot: automatically mapping also %s and %s",
-									WX_STR(shifted.ToString()),
-									WX_STR(controlledShifted.ToString()));
+					Log::Console.info(LogStyle::CompatibilityGreen, "Sys_TakeSnapshot: automatically mapping also {:s} and {:s}\n",
+						shifted.ToString(), controlledShifted.ToString());
 				}
 			}
 		}

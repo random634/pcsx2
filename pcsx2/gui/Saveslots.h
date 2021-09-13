@@ -98,18 +98,18 @@ public:
 
 	void ConsoleDump()
 	{
-		Console.WriteLn("Slot %i information:", slot_num);
-		Console.WriteLn("Internal CRC = %i; Current CRC = %i.", crc, ElfCRC);
+		Log::Console.info("Slot {:d} information:\n", slot_num);
+		Log::Console.info("Internal CRC = {:d}; Current CRC = {:d}.\n", crc, ElfCRC);
 		if (empty)
 			Log::Console.info("Slot cache says it is empty.\n");
 		else
 			Log::Console.info("Slot cache says it is used.\n");
 
 		if (updated != wxInvalidDateTime)
-			Console.WriteLn(wxsFormat(_("Write time is %s %s."), updated.FormatDate(), updated.FormatTime()));
+			Log::Console.info("Write time is {:s} {:s}.\n", updated.FormatDate(), updated.FormatTime());
 
 		//if (isUsed())
-		//	Console.WriteLn(wxsFormat(_("The disk has a file on it dated %s %s."), GetTimestamp().FormatDate(), GetTimestamp().FormatTime()));
+		//	Log::Console.info("The disk has a file on it dated {:s} {:s}.\n"), GetTimestamp().FormatDate(), GetTimestamp().FormatTime());
 	}
 
 	void Used()

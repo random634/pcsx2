@@ -121,7 +121,7 @@ static void cdvdGetMechaVer(u8* ver)
 
 	size_t ret = fp.Read(ver, 4);
 	if (ret != 4)
-		Console.Error(L"Failed to read from %s. Did only %zu/4 bytes", WX_STR(fname), ret);
+		Log::Console.error("Failed to read from {:s}. Did only {:d}/4 bytes\n", fname, ret);
 }
 
 NVMLayout* getNvmLayout()
@@ -218,8 +218,9 @@ static void cdvdNVM(u8* buffer, int offset, size_t bytes, bool read)
 		ret = fp.Write(buffer, bytes);
 
 	if (ret != bytes)
-		Console.Error(L"Failed to %s %s. Did only %zu/%zu bytes",
-					  read ? L"read from" : L"write to", WX_STR(fname), ret, bytes);
+		Log::Console.error(
+			"Failed to {:s} {:s}. Did only {:d}/{:d} bytes\n",
+			read ? "read from" : "write to", fname, ret, bytes);
 }
 
 static void cdvdReadNVM(u8* dst, int offset, int bytes)
@@ -387,7 +388,7 @@ static __fi ElfObject* loadElf(const wxString filename)
 	const wxString fixedname(wxStringTokenizer(filename, L';').GetNextToken() + L";1");
 
 	if (fixedname != filename)
-		Console.WriteLn(Color_Blue, "(LoadELF) Non-conforming version suffix detected and replaced.");
+		Log::Console.info(LogStyle::CompatibilityBlue, "(LoadELF) Non-conforming version suffix detected and replaced.\n");
 
 	IsoFSCDVD isofs;
 	IsoFile file(isofs, fixedname);
@@ -417,7 +418,8 @@ static __fi void _reloadElfInfo(wxString elfpath)
 	ElfCRC = elfptr->getCRC();
 	ElfEntry = elfptr->header.e_entry;
 	ElfTextRange = elfptr->getTextRange();
-	Console.WriteLn(Color_StrongBlue, L"ELF (%s) Game CRC = 0x%08X, EntryPoint = 0x%08X", WX_STR(elfpath), ElfCRC, ElfEntry);
+	Log::Console.info(LogStyle::CompatibilityStrongBlue,
+		"ELF ({:s}) Game CRC = 0x{:08X}, EntryPoint = 0x{:08X}", elfpath, ElfCRC, ElfEntry);
 
 	// Note: Do not load game database info here.  This code is generic and called from
 	// BIOS key encryption as well as eeloadReplaceOSDSYS.  The first is actually still executing
@@ -1329,8 +1331,9 @@ static void cdvdWrite04(u8 rt)
 					 cdvd.Sector, cdvd.SeekToSector, cdvd.nSectors, cdvd.RetryCnt, cdvd.Speed, cdvd.Param[9], cdvd.ReadMode, cdvd.Param[10], psxHu32(0x1074));
 
 			if (EmuConfig.CdvdVerboseReads)
-				Console.WriteLn(Color_Gray, L"CdRead: Reading Sector %07d (%03d Blocks of Size %d) at Speed=%dx",
-								cdvd.SeekToSector, cdvd.nSectors, cdvd.BlockSize, cdvd.Speed);
+				Log::Console.info(LogStyle::CompatibilityGray,
+					"CdRead: Reading Sector {:07d} ({:03d} Blocks of Size {:d}) at Speed={:d}x\n",
+					cdvd.SeekToSector, cdvd.nSectors, cdvd.BlockSize, cdvd.Speed);
 
 			cdvd.ReadTime = cdvdBlockReadTime(MODE_CDROM);
 			CDVDREAD_INT(cdvdStartSeek(cdvd.SeekToSector, MODE_CDROM));
@@ -1365,8 +1368,9 @@ static void cdvdWrite04(u8 rt)
 					 cdvd.Sector, cdvd.SeekToSector, cdvd.nSectors, cdvd.RetryCnt, cdvd.Speed, cdvd.Param[9], cdvd.ReadMode, cdvd.Param[10], psxHu32(0x1074));
 
 			if (EmuConfig.CdvdVerboseReads)
-				Console.WriteLn(Color_Gray, L"DvdRead: Reading Sector %07d (%03d Blocks of Size %d) at Speed=%dx",
-								cdvd.SeekToSector, cdvd.nSectors, cdvd.BlockSize, cdvd.Speed);
+				Log::Console.info(LogStyle::CompatibilityGray,
+					"DvdRead: Reading Sector {:07d} ({:03d} Blocks of Size {:d}) at Speed={:d}x",
+					cdvd.SeekToSector, cdvd.nSectors, cdvd.BlockSize, cdvd.Speed);
 
 			cdvd.ReadTime = cdvdBlockReadTime(MODE_DVDROM);
 			CDVDREAD_INT(cdvdStartSeek(cdvd.SeekToSector, MODE_DVDROM));
@@ -1609,10 +1613,10 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				cdvd.Result[5] = itob(cdvd.RTC.day);    //Day
 				cdvd.Result[6] = itob(cdvd.RTC.month);  //Month
 				cdvd.Result[7] = itob(cdvd.RTC.year);   //Year
-				/*Console.WriteLn("RTC Read Sec %x Min %x Hr %x Day %x Month %x Year %x", cdvd.Result[1], cdvd.Result[2],
-				  cdvd.Result[3], cdvd.Result[5], cdvd.Result[6], cdvd.Result[7]);
-				  Console.WriteLn("RTC Read Real Sec %d Min %d Hr %d Day %d Month %d Year %d", cdvd.RTC.second, cdvd.RTC.minute,
-				  cdvd.RTC.hour, cdvd.RTC.day, cdvd.RTC.month, cdvd.RTC.year);*/
+				/*Log::Console.info("RTC Read Sec {:x} Min {:x} Hr {:x} Day {:x} Month {:x} Year {:x}\n",
+					cdvd.Result[1], cdvd.Result[2], cdvd.Result[3], cdvd.Result[5], cdvd.Result[6], cdvd.Result[7]);
+				Log::Console.info("RTC Read Real Sec {:d} Min {:d} Hr {:d} Day {:d} Month {:d} Year {:d}\n",
+					cdvd.RTC.second, cdvd.RTC.minute, cdvd.RTC.hour, cdvd.RTC.day, cdvd.RTC.month, cdvd.RTC.year);*/
 				break;
 
 			case 0x09: // sceCdWriteRTC (7:1)
@@ -1626,10 +1630,11 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				cdvd.RTC.day = btoi(cdvd.Param[cdvd.ParamP - 3]);
 				cdvd.RTC.month = btoi(cdvd.Param[cdvd.ParamP - 2] & 0x7f);
 				cdvd.RTC.year = btoi(cdvd.Param[cdvd.ParamP - 1]);
-				/*Console.WriteLn("RTC write incomming Sec %x Min %x Hr %x Day %x Month %x Year %x", cdvd.Param[cdvd.ParamP-7], cdvd.Param[cdvd.ParamP-6],
-				  cdvd.Param[cdvd.ParamP-5], cdvd.Param[cdvd.ParamP-3], cdvd.Param[cdvd.ParamP-2], cdvd.Param[cdvd.ParamP-1]);
-				  Console.WriteLn("RTC Write Sec %d Min %d Hr %d Day %d Month %d Year %d", cdvd.RTC.second, cdvd.RTC.minute,
-				  cdvd.RTC.hour, cdvd.RTC.day, cdvd.RTC.month, cdvd.RTC.year);*/
+				/*Log::Console.info("RTC write incomming Sec {:x} Min {:x} Hr {:x} Day {:x} Month {:x} Year {:x}\n",
+					cdvd.Param[cdvd.ParamP-7], cdvd.Param[cdvd.ParamP-6], cdvd.Param[cdvd.ParamP-5],
+					cdvd.Param[cdvd.ParamP-3], cdvd.Param[cdvd.ParamP-2], cdvd.Param[cdvd.ParamP-1]);
+				Log::Console.info("RTC Write Sec {:d} Min {:d} Hr {:d} Day {:d} Month {:d} Year {:d}\n",
+					cdvd.RTC.second, cdvd.RTC.minute, cdvd.RTC.hour, cdvd.RTC.day, cdvd.RTC.month, cdvd.RTC.year);*/
 				//memcpy((u8*)&cdvd.RTC, cdvd.Param, 7);
 				break;
 
@@ -2032,10 +2037,9 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 							zoneStr += mg_zones[i];
 					}
 
-					Console.WriteLn("[MG] ELF_size=0x%X Hdr_size=0x%X unk=0x%X flags=0x%X count=%d zones=%s",
-									*(u32*)&cdvd.mg_buffer[0x10], *(u16*)&cdvd.mg_buffer[0x14], *(u16*)&cdvd.mg_buffer[0x16],
-									*(u16*)&cdvd.mg_buffer[0x18], *(u16*)&cdvd.mg_buffer[0x1A],
-									zoneStr.c_str());
+					Log::Console.info("[MG] ELF_size=0x{:X} Hdr_size=0x{:X} unk=0x{:X} flags=0x{:X} count={:d} zones={:s}\n",
+						*(u32*)&cdvd.mg_buffer[0x10], *(u16*)&cdvd.mg_buffer[0x14], *(u16*)&cdvd.mg_buffer[0x16],
+						*(u16*)&cdvd.mg_buffer[0x18], *(u16*)&cdvd.mg_buffer[0x1A], zoneStr);
 
 					bit_ofs = mg_BIToffset(cdvd.mg_buffer);
 
@@ -2066,7 +2070,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 				cdvd.mg_size = 0;
 				cdvd.mg_datatype = 1; //header data
 				Log::Console.info("[MG] hcode={:d} cnum={:d} a2={:d} length=0x{:X}\n",
-								cdvd.Param[0], cdvd.Param[3], cdvd.Param[4], cdvd.mg_maxsize = cdvd.Param[1] | (((int)cdvd.Param[2]) << 8));
+					cdvd.Param[0], cdvd.Param[3], cdvd.Param[4], cdvd.mg_maxsize = cdvd.Param[1] | (((int)cdvd.Param[2]) << 8));
 
 				cdvd.Result[0] = 0; // 0 complete ; 1 busy ; 0x80 error
 				break;

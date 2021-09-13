@@ -108,7 +108,7 @@ static void WriteIndexToFile(Access* index, const wxString filename)
 	}
 	else
 	{
-		Console.WriteLn(Color_Green, L"OK: Gzip quick access index file saved to disk: '%s'", WX_STR(filename));
+		Log::Console.info(LogStyle::CompatibilityGreen, "OK: Gzip quick access index file saved to disk: '{:s}'\n", filename);
 	}
 }
 
@@ -172,9 +172,8 @@ static void TestTemplate(const wxDirName &base, const wxString &fname, bool canE
 
 	for (int i = 0; ins[i]; i++) {
 		wxString tem(wxString::From8BitData(ins[i]));
-		Console.WriteLn(Color_Green, L"test: '%s' -> '%s'",
-		                WX_STR(tem),
-		                WX_STR(ApplyTemplate(L"test", base, tem, fname, canEndWithKey)));
+		Log::Console.info(LogStyle::CompatibilityGreen, "test: '{:s}' -> '{:s}'\n",
+			tem, ApplyTemplate(L"test", base, tem, fname, canEndWithKey));
 	}
 }
 */
@@ -313,13 +312,14 @@ bool GzippedFileReader::OkIndex()
 
 	if (wxFileName::FileExists(indexfile) && (m_pIndex = ReadIndexFromFile(indexfile)))
 	{
-		Console.WriteLn(Color_Green, L"OK: Gzip quick access index read from disk: '%s'", WX_STR(indexfile));
+		Log::Console.info(LogStyle::CompatibilityGreen, "OK: Gzip quick access index read from disk: '{:s}'\n", indexfile);
 		if (m_pIndex->span != GZFILE_SPAN_DEFAULT)
 		{
-			Console.Warning(L"Note: This index has %1.1f MB intervals, while the current default for new indexes is %1.1f MB.",
-							(float)m_pIndex->span / 1024 / 1024, (float)GZFILE_SPAN_DEFAULT / 1024 / 1024);
-			Log::Console.warning("It will work fine, but if you want to generate a new index with default intervals, delete this index file.\n");
-			Log::Console.warning("(smaller intervals mean bigger index file and quicker but more frequent decompressions)\n");
+			Log::Console.warning(
+				"Note: This index has {:.1f} MB intervals, while the current default for new indexes is {:.1f} MB.\n"
+				"It will work fine, but if you want to generate a new index with default intervals, delete this index file.\n"
+				"(smaller intervals mean bigger index file and quicker but more frequent decompressions)\n",
+				(float)m_pIndex->span / 1024 / 1024, (float)GZFILE_SPAN_DEFAULT / 1024 / 1024);
 		}
 		InitZstates();
 		return true;
@@ -490,11 +490,11 @@ int GzippedFileReader::_ReadSync(void* pBuffer, PX_off_t offset, uint bytesToRea
 
 	int duration = NOW() - s;
 	if (duration > 10)
-		Console.WriteLn(Color_Gray, L"gunzip: chunk #%5d-%2d : %1.2f MB - %d ms",
-						(int)(offset / 4 / 1024 / 1024),
-						(int)(offset % (4 * 1024 * 1024) / GZFILE_READ_CHUNK_SIZE),
-						(float)size / 1024 / 1024,
-						duration);
+		Log::Console.info(LogStyle::CompatibilityGray, "gunzip: chunk #{:>5d}-{:>2d} : {:.2f} MB - {:d} ms\n",
+			(int)(offset / 4 / 1024 / 1024),
+			(int)(offset % (4 * 1024 * 1024) / GZFILE_READ_CHUNK_SIZE),
+			(float)size / 1024 / 1024,
+			duration);
 
 	return copied;
 }

@@ -135,10 +135,10 @@ bool EnumerateMemoryCard(McdSlotItem& dest, const wxFileName& filename, const wx
 static int EnumerateMemoryCards( McdList& dest, const wxArrayString& files )
 {
 	int pushed = 0;
-	Console.WriteLn( Color_StrongBlue, "Enumerating memory cards..." );
+	Log::Console.info(LogStyle::Header, "Enumerating memory cards...");
 	for( size_t i=0; i<files.GetCount(); ++i )
 	{
-		ConsoleIndentScope con_indent;
+		ScopedLogIndent indent(Log::Console);
 		McdSlotItem mcdItem;
 		if( EnumerateMemoryCard(mcdItem, files[i]) )
 		{
@@ -147,9 +147,9 @@ static int EnumerateMemoryCards( McdList& dest, const wxArrayString& files )
 		}
 	}
 	if( pushed > 0 )
-		Console.WriteLn( Color_StrongBlue, "Memory card Enumeration Complete." );
+		Log::Console.info(LogStyle::Header, "Memory card Enumeration Complete.");
 	else
-		Console.WriteLn( Color_StrongBlue, "No valid memory card found." );
+		Log::Console.info(LogStyle::Header, "No valid memory card found." );
 
 	return pushed;
 }

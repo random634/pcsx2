@@ -56,7 +56,7 @@ bool Gif_HandlerAD(u8* pMem)
 					bpp = 8;
 					break;
 				default: // 4 is 4 bit but this is forbidden
-					Console.Error("Illegal format for GS upload: SPSM=0%02o", vif1.BITBLTBUF.SPSM);
+					Log::Console.error("Illegal format for GS upload: SPSM=0{:02o}\n", vif1.BITBLTBUF.SPSM);
 					break;
 			}
 			// qwords, rounded down; any extra bits are lost

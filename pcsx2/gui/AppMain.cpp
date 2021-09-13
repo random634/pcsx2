@@ -235,7 +235,7 @@ void Pcsx2App::PadKeyDispatch( const keyEvent& ev )
 		if (strFromCode.EndsWith(L"\\"))
 			strFromCode += L"\\"; // If copied into PCSX2_keys.ini, \ needs escaping
 
-		Console.WriteLn(wxString(L"> Key: %s (Code: %ld)"),	WX_STR(strFromCode), m_kevt.m_keyCode);
+		Log::Console.info("> Key: {:s} (Code: {:d})\n", strFromCode, m_kevt.m_keyCode);
 	}
 
 	if( m_kevt.GetEventType() == wxEVT_KEY_DOWN )
@@ -545,7 +545,7 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 	// ----------------------------------------------------------------------------
 	catch( Exception::StartupAborted& ex )		// user-aborted, no popups needed.
 	{
-		Console.Warning( ex.FormatDiagnosticMessage() );
+		Log::Console.warning("{:s}\n", ex.FormatDiagnosticMessage());
 		Exit();
 	}
 	// ----------------------------------------------------------------------------
@@ -556,7 +556,7 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 		GSFrame* gsframe = wxGetApp().GetGsFramePtr();
 		gsframe->Close();
 
-		Console.Error(ex.FormatDiagnosticMessage());
+		Log::Console.error("{:s}\n", ex.FormatDiagnosticMessage());
 
 		if (wxGetApp().HasGUI())
 			AddIdleEvent(BIOSLoadErrorEvent(ex));
@@ -566,7 +566,7 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 	{
 		// Saved state load failed prior to the system getting corrupted (ie, file not found
 		// or some zipfile error) -- so log it and resume emulation.
-		Console.Warning( ex.FormatDiagnosticMessage() );
+		Log::Console.warning("{:s}\n", ex.FormatDiagnosticMessage());
 #ifndef DISABLE_RECORDING
 		if (g_InputRecording.IsInitialLoad())
 			g_InputRecording.FailedSavestate();
@@ -582,7 +582,7 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 		// if the thread starts responding while we're waiting (not hard in fact, but I'm getting
 		// a little tired, so maybe later!)  --air
 	
-		Console.Warning( ex.FormatDiagnosticMessage() );
+		Log::Console.warning("{:s}\n", ex.FormatDiagnosticMessage());
 		wxDialogWithHelpers dialog( NULL, _("PCSX2 Unresponsive Thread"), wxVERTICAL );
 		
 		dialog += dialog.Heading( ex.FormatDisplayMessage() + L"\n\n" +
@@ -612,7 +612,7 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 	// ----------------------------------------------------------------------------
 	catch( Exception::CancelEvent& ex )
 	{
-		Console.Warning( ex.FormatDiagnosticMessage() );
+		Log::Console.warning("{:s}\n", ex.FormatDiagnosticMessage());
 	}
 	catch( Exception::RuntimeError& ex )
 	{
@@ -624,7 +624,7 @@ void Pcsx2App::HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent&
 		if (GSFrame* gsframe = wxGetApp().GetGsFramePtr())
 			gsframe->Close();
 
-		Console.Error( ex.FormatDiagnosticMessage() );
+		Log::Console.error("{:s}\n", ex.FormatDiagnosticMessage());
 		// I should probably figure out how to have the error message as well.
 		if (wxGetApp().HasGUI())
 			Msgbox::Alert( ex.FormatDisplayMessage() );
@@ -1053,7 +1053,7 @@ __fi bool SysHasValidState()
 void SysStatus( const wxString& text )
 {
 	// mirror output to the console!
-	Console.WriteLn( WX_STR(text) );
+	Log::Console.info("{:s}\n", text);
 	sMainFrame.SetStatusText( text );
 }
 

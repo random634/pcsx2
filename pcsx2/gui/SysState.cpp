@@ -74,7 +74,7 @@ void SysState_ComponentFreezeOutRoot(void* dest, SysState_Component comp)
 	if (!fP.size)
 		return;
 
-	Console.Indent().WriteLn("Saving %s", comp.name);
+	Log::Console.info("    Saving {:s}\n", comp.name);
 
 	if (comp.freeze(FreezeAction::Save, &fP) != 0)
 		throw std::runtime_error(std::string(" * ") + comp.name + std::string(": Error saving state!\n"));
@@ -86,14 +86,14 @@ void SysState_ComponentFreezeIn(pxInputStream& infp, SysState_Component comp)
 	if (comp.freeze(FreezeAction::Size, &fP) != 0)
 		fP.size = 0;
 
-	Console.Indent().WriteLn("Loading %s", comp.name);
+	Log::Console.info("    Loading {:s}\n", comp.name);
 
 	if (!infp.IsOk() || !infp.Length())
 	{
 		// no state data to read, but component expects some state data?
 		// Issue a warning to console...
 		if (fP.size != 0)
-			Console.Indent().Warning("Warning: No data for %s found. Status may be unpredictable.", comp.name);
+			Log::Console.warning("    Warning: No data for {:s} found. Status may be unpredictable.\n", comp.name);
 
 		return;
 	}
@@ -159,8 +159,8 @@ void MemorySavestateEntry::FreezeIn(pxInputStream& reader) const
 
 	if (entrySize < expectedSize)
 	{
-		Console.WriteLn(Color_Yellow, " '%s' is incomplete (expected 0x%x bytes, loading only 0x%x bytes)",
-						WX_STR(GetFilename()), expectedSize, entrySize);
+		Log::Console.warning("'{:s}' is incomplete (expected 0x{:x} bytes, loading only 0x{:x} bytes)\n",
+			GetFilename(), expectedSize, entrySize);
 	}
 
 	uint copylen = std::min(entrySize, expectedSize);
@@ -667,7 +667,7 @@ protected:
 			if (SavestateEntries[i]->IsRequired())
 			{
 				throwIt = true;
-				Console.WriteLn(Color_Red, " ... not found '%s'!", WX_STR(SavestateEntries[i]->GetFilename()));
+				Log::Console.error("... not found '{:s}'!\n", SavestateEntries[i]->GetFilename());
 			}
 		}
 
@@ -742,12 +742,12 @@ void StateCopy_SaveToSlot(uint num)
 	{
 		const wxString copy(SaveStateBase::GetFilename(num) + pxsFmt(L".backup"));
 
-		Console.Indent().WriteLn(Color_StrongGreen, L"Backing up existing state in slot %d.", num);
+		Log::Console.info(LogStyle::CompatibilityStrongGreen, "Backing up existing state in slot {:d}.\n", num);
 		wxRenameFile(file, copy);
 	}
 
 	OSDlog(Color_StrongGreen, true, "Saving savestate to slot %d...", num);
-	Console.Indent().WriteLn(Color_StrongGreen, L"filename: %s", WX_STR(file));
+	Log::Console.info(LogStyle::CompatibilityStrongGreen, "    filename: {:s}\n", file);
 
 	StateCopy_SaveToFile(file);
 #ifdef USE_NEW_SAVESLOTS_UI
@@ -766,7 +766,7 @@ void StateCopy_LoadFromSlot(uint slot, bool isFromBackup)
 	}
 
 	OSDlog(Color_StrongGreen, true, "Loading savestate from slot %d...%s", slot, isFromBackup ? " (backup)" : "");
-	Console.Indent().WriteLn(Color_StrongGreen, L"filename: %s", WX_STR(file));
+	Log::Console.info(LogStyle::CompatibilityStrongGreen, "    filename: {:s}\n", file);
 
 	StateCopy_LoadFromFile(file);
 #ifdef USE_NEW_SAVESLOTS_UI

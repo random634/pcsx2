@@ -1546,7 +1546,7 @@ static void rpsxBASIC() { rpsxCP2BSC[_Rs_](); }
 
 static void rpsxNULL()
 {
-	Console.WriteLn("psxUNK: %8.8x", psxRegs.code);
+	Log::Console.info("psxUNK: %{:08x}\n", psxRegs.code);
 }
 
 void (*rpsxBSC[64])() = {

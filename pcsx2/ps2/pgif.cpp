@@ -398,7 +398,7 @@ void PGIFw(int addr, u32 data)
 			break;
 		case PGPU_DAT_FIFO:
 			ringBufPut(&rb_gp0, &data);
-			// 	Console.WriteLn( "\n\r PGIF REVERSE !!! DATA write 0x%08X = 0x%08X  IF_CTRL= %08X   PGPU_STAT= %08X  CmdCnt 0x%X \n\r",  addr, data,  getUpdPgifCtrlReg(),  getUpdPgpuStatReg(), rb_gp1.count);
+			// Log::Console.info("PGIF REVERSE !!! DATA write 0x{:08X} = 0x{:08X}  IF_CTRL= {:08X}   PGPU_STAT= {:08X}  CmdCnt 0x{:X} \n", addr, data,  getUpdPgifCtrlReg(), getUpdPgpuStatReg(), rb_gp1.count);
 			drainPgpuDmaNrToIop();
 			break;
 		default:
@@ -480,7 +480,7 @@ void PGIFwQword(u32 addr, void* dat)
 {
 	u32* data = (u32*)dat;
 	DevCon.Warning("WARNING PGIF WRITE BY PS1DRV ! - NOT KNOWN TO EVER BE DONE!");
-	Console.WriteLn("PGIF QW write  0x%08X = 0x%08X %08X %08X %08X ", addr, *(u32*)(data + 0), *(u32*)(data + 1), *(u32*)(data + 2), *(u32*)(data + 3));
+	Log::Console.info("PGIF QW write  0x{:08X} = 0x{:08X} {:08X} {:08X} {:08X}\n", addr, data[0], data[1], data[2], data[3]);
 
 	if (addr == PGPU_CMD_FIFO)
 	{

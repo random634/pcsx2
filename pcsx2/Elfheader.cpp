@@ -324,30 +324,29 @@ int GetPS2ElfName( wxString& name )
 			if( parts.lvalue.IsEmpty() && parts.rvalue.IsEmpty() ) continue;
 			if( parts.rvalue.IsEmpty() && file.getLength() != file.getSeekPos() )
 			{ // Some games have a character on the last line of the file, don't print the error in those cases.
-				Log::Console.warning("(SYSTEM.CNF) Unusual or malformed entry in SYSTEM.CNF ignored:\n");
-				Console.Indent().WriteLn( original );
+				Log::Console.warning("(SYSTEM.CNF) Unusual or malformed entry in SYSTEM.CNF ignored:\n    {:s}\n", original);
 				continue;
 			}
 
 			if( parts.lvalue == L"BOOT2" )
 			{
 				name = parts.rvalue;
-				Console.WriteLn( Color_StrongBlue, L"(SYSTEM.CNF) Detected PS2 Disc = " + name );
+				Log::Console.info(LogStyle::CompatibilityStrongBlue, "(SYSTEM.CNF) Detected PS2 Disc = {:s}\n", name);
 				retype = 2;
 			}
 			else if( parts.lvalue == L"BOOT" )
 			{
 				name = parts.rvalue;
-				Console.WriteLn( Color_StrongBlue, L"(SYSTEM.CNF) Detected PSX/PSone Disc = " + name );
+				Log::Console.info(LogStyle::CompatibilityStrongBlue, "(SYSTEM.CNF) Detected PSX/PSone Disc = {:s}\n", name );
 				retype = 1;
 			}
 			else if( parts.lvalue == L"VMODE" )
 			{
-				Console.WriteLn( Color_Blue, L"(SYSTEM.CNF) Disc region type = " + parts.rvalue );
+				Log::Console.info(LogStyle::CompatibilityBlue, "(SYSTEM.CNF) Disc region type = {:s}\n", parts.rvalue);
 			}
 			else if( parts.lvalue == L"VER" )
 			{
-				Console.WriteLn( Color_Blue, L"(SYSTEM.CNF) Software version = " + parts.rvalue );
+				Log::Console.info(LogStyle::CompatibilityBlue, "(SYSTEM.CNF) Software version = {:s}\n", parts.rvalue );
 				GameInfo::gameVersion = parts.rvalue;
 			}
 		}
@@ -360,12 +359,12 @@ int GetPS2ElfName( wxString& name )
 	}
 	catch( Exception::FileNotFound& )
 	{
-		//Console.Warning(ex.FormatDiagnosticMessage());
+		//Log::Console.warning("{:s}\n", ex.FormatDiagnosticMessage());
 		return 0;		// no SYSTEM.CNF, not a PS1/PS2 disc.
 	}
 	catch (Exception::BadStream& ex)
 	{
-		Console.Error(ex.FormatDiagnosticMessage());
+		Log::Console.error("{:s}\n", ex.FormatDiagnosticMessage());
 		return 0;		// ISO error
 	}
 

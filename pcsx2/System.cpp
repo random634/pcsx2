@@ -459,8 +459,8 @@ void SysMainMemory::DecommitAll()
 {
 	if (!m_ee.IsCommitted() && !m_iop.IsCommitted() && !m_vu.IsCommitted()) return;
 
-	Console.WriteLn( Color_Blue, "Decommitting host memory for virtual systems..." );
-	ConsoleIndentScope indent(1);
+	Log::Console.info(LogStyle::CompatibilityBlue, "Decommitting host memory for virtual systems...\n");
+	ScopedLogIndent indent(Log::Console);
 
 	// On linux, the MTVU isn't empty and the thread still uses the m_ee/m_vu memory
 	vu1Thread.WaitVU();
@@ -503,8 +503,8 @@ void SysMainMemory::ReleaseAll()
 // --------------------------------------------------------------------------------------
 SysCpuProviderPack::SysCpuProviderPack()
 {
-	Console.WriteLn( Color_StrongBlue, "Reserving memory for recompilers..." );
-	ConsoleIndentScope indent(1);
+	Log::Console.info(LogStyle::Header, "Reserving memory for recompilers...\n");
+	ScopedLogIndent indent(Log::Console);
 
 	CpuProviders = std::make_unique<CpuInitializerSet>();
 

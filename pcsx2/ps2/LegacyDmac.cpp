@@ -154,7 +154,7 @@ __fi tDMA_TAG* SPRdmaGetAddr(u32 addr, bool write)
 	}
 	else
 	{
-		Console.Error( "*PCSX2*: DMA error: %8.8x", addr);
+		Log::Console.error("*PCSX2*: DMA error: {:08x}\n", addr);
 		return NULL;
 	}
 }
@@ -184,7 +184,7 @@ __ri tDMA_TAG *dmaGetAddr(u32 addr, bool write)
 	}
 	else
 	{
-		Console.Error( "*PCSX2*: DMA error: %8.8x", addr);
+		Log::Console.error("*PCSX2*: DMA error: {:08x}\n", addr);
 		return NULL;
 	}
 }
