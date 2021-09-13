@@ -163,7 +163,7 @@ _mVUt void mVUcleanUp()
 
 	if ((xGetPtr() < mVU.prog.x86start) || (xGetPtr() >= mVU.prog.x86end))
 	{
-		Log::Console.logStyle(LogLevel::Info, vuIndex ? LogStyle::CompatibilityOrange : LogStyle::CompatibilityMagenta,
+		Log::Console.info(vuIndex ? LogStyle::CompatibilityOrange : LogStyle::CompatibilityMagenta,
 			"microVU{:d}: Program cache limit reached.\n", mVU.index);
 		mVUreset(mVU, false);
 	}

@@ -884,7 +884,7 @@ void AcceleratorDictionary::Map(const KeyAcceleratorCode& _acode, const char* se
 			}
 			if (_acode.ToString() != acode.ToString())
 			{
-				Log::Console.logStyle(LogLevel::Info, LogStyle::Special,
+				Log::Console.info(LogStyle::Special,
 					"Overriding '{:s}': assigning {:s} (instead of {:s})",
 					searchfor, acode.ToString(), _acode.ToString());
 			}

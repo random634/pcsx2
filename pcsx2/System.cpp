@@ -191,7 +191,7 @@ void SysLogMachineCaps()
 {
 	if ( !PCSX2_isReleaseVersion )
 	{
-		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "\nPCSX2 {:d}.{:d}.{:d}-{:d} {:s}"
+		Log::PCSX2.info(LogStyle::Special, "\nPCSX2 {:d}.{:d}.{:d}-{:d} {:s}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
@@ -202,7 +202,7 @@ void SysLogMachineCaps()
 	}
 	else // shorter release version string
 	{
-		Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Special, "PCSX2 {:d}.{:d}.{:d}-{:d}"
+		Log::PCSX2.info(LogStyle::Special, "PCSX2 {:d}.{:d}.{:d}-{:d}"
 #ifndef DISABLE_BUILD_DATE
 			"- compiled on " __DATE__
 #endif
@@ -214,7 +214,7 @@ void SysLogMachineCaps()
 
 	Log::PCSX2.info("Savestate version: 0x{:x}\n", g_SaveVersion);
 
-	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "Host Machine Init:\n");
+	Log::PCSX2.info(LogStyle::Header, "Host Machine Init:\n");
 	Log::PCSX2.info(
 		"    Operating System =  {:s}\n"
 		"    Physical RAM     =  {:d} MB\n",
@@ -253,7 +253,7 @@ void SysLogMachineCaps()
 
 	if( x86caps.hasStreamingSIMD4ExtensionsA )		features[1].Add( L"SSE4a " );
 
-	Log::PCSX2.logStyle(LogLevel::Info, LogStyle::Header, "x86 Features Detected:\n");
+	Log::PCSX2.info(LogStyle::Header, "x86 Features Detected:\n");
 	Log::PCSX2.info("    {:s}\n", JoinString(features[0], L".. "));
 	if (!features[1].IsEmpty())
 		Log::PCSX2.info("    {:s}\n", JoinString(features[1], L".. "));
@@ -482,7 +482,7 @@ void SysMainMemory::ReleaseAll()
 {
 	DecommitAll();
 
-	Log::Console.logStyle(LogLevel::Info, LogStyle::Header, "Releasing host memory maps for virtual systems...\n");
+	Log::Console.info(LogStyle::Header, "Releasing host memory maps for virtual systems...\n");
 	ScopedLogIndent indent(Log::Console);
 
 	vtlb_Core_Free();		// Just to be sure... (calling order could result in it getting missed during Decommit).

@@ -621,7 +621,7 @@ int recCommutativeOp(int info, int regd, int op)
 			}
 			break;
 		default:
-			Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityMagenta, "FPU: recCommutativeOp case 4\n");
+			Log::Console.info(LogStyle::CompatibilityMagenta, "FPU: recCommutativeOp case 4\n");
 			xMOVSSZX(xRegisterSSE(regd), ptr[&fpuRegs.fpr[_Fs_]]);
 			xMOVSSZX(xRegisterSSE(t0reg), ptr[&fpuRegs.fpr[_Ft_]]);
 			if (CHECK_FPU_EXTRA_OVERFLOW || (op >= 2))
@@ -753,7 +753,7 @@ void recC_EQ_xmm(int info)
 			xUCOMI.SS(xRegisterSSE(EEREC_S), xRegisterSSE(EEREC_T));
 			break;
 		default:
-			Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityMagenta, "recC_EQ_xmm: Default\n");
+			Log::Console.info(LogStyle::CompatibilityMagenta, "recC_EQ_xmm: Default\n");
 			tempReg = _allocX86reg(xEmptyReg, X86TYPE_TEMP, 0, 0);
 			xMOV(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Fs_]]);
 			xCMP(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Ft_]]);
@@ -840,7 +840,7 @@ void recC_LE_xmm(int info)
 			xUCOMI.SS(xRegisterSSE(EEREC_S), xRegisterSSE(EEREC_T));
 			break;
 		default: // Untested and incorrect, but this case is never reached AFAIK (cottonvibes)
-			Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityMagenta, "recC_LE_xmm: Default\n");
+			Log::Console.info(LogStyle::CompatibilityMagenta, "recC_LE_xmm: Default\n");
 			tempReg = _allocX86reg(xEmptyReg, X86TYPE_TEMP, 0, 0);
 			xMOV(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Fs_]]);
 			xCMP(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Ft_]]);
@@ -922,7 +922,7 @@ void recC_LT_xmm(int info)
 			xUCOMI.SS(xRegisterSSE(EEREC_S), xRegisterSSE(EEREC_T));
 			break;
 		default:
-			Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityMagenta, "recC_LT_xmm: Default\n");
+			Log::Console.info(LogStyle::CompatibilityMagenta, "recC_LT_xmm: Default\n");
 			tempReg = _allocX86reg(xEmptyReg, X86TYPE_TEMP, 0, 0);
 			xMOV(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Fs_]]);
 			xCMP(xRegister32(tempReg), ptr[&fpuRegs.fpr[_Ft_]]);

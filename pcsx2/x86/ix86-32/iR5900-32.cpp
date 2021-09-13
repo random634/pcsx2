@@ -626,7 +626,7 @@ static void recResetRaw()
 		return;
 	eeRecNeedsReset = false;
 
-	Log::Console.logStyle(LogLevel::Info, LogStyle::CompatibilityStrongBlack, "EE/iR5900-32 Recompiler Reset\n");
+	Log::Console.info(LogStyle::CompatibilityStrongBlack, "EE/iR5900-32 Recompiler Reset\n");
 
 	recMem->Reset();
 	ClearRecLUT((BASEBLOCK*)recLutReserve_RAM, recLutSize);
@@ -1776,7 +1776,7 @@ bool skipMPEG_By_Pattern(u32 sPC)
 		iBranchTest();
 		g_branch = 1;
 		pc = s_nEndBlock;
-		Log::Console.logStyle(LogLevel::Info, LogStyle::Special, "sceMpegIsEnd pattern found! Recompiling skip video fix...\n");
+		Log::Console.info(LogStyle::Special, "sceMpegIsEnd pattern found! Recompiling skip video fix...\n");
 		return 1;
 	}
 	return 0;
