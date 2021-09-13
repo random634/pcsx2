@@ -242,7 +242,7 @@ void iopTestIntc()
 
 		cpuSetNextEventDelta( 16 );
 		iopEventAction = true;
-		//Log::Console.error("** IOP Needs an EE EventText, kthx **  {:d}\n", iopCycleEE );
+		//Log::Console.error("** IOP Needs an EE EventText, kthx **  {:d}\n", iopCycleEE);
 
 		// Note: No need to set the iop's branch delta here, since the EE
 		// will run an IOP branch test regardless.

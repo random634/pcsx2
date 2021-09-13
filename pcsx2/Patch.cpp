@@ -343,7 +343,7 @@ namespace PatchFunc
 		}
 		catch (wxString& exmsg)
 		{
-			Console.Error(L"(Patch) Error Parsing: %s=%s", WX_STR(cmd), WX_STR(param));
+			Log::Console.error("(Patch) Error Parsing: {:s}={:s}\n", cmd, param);
 			Console.Indent().Error(exmsg);
 		}
 	}

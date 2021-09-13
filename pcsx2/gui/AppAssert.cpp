@@ -133,8 +133,8 @@ bool AppDoAssert( const DiagnosticOrigin& origin, const wxChar *msg )
 
 	wxMessageOutputDebug().Printf( L"%s", WX_STR(dbgmsg) );
 
-	Console.Error( L"%s", WX_STR(dbgmsg) );
-	Console.WriteLn( L"%s", WX_STR(trace) );
+	Log::Console.error("{:s}\n", dbgmsg);
+	Log::Console.info("{:s}\n", trace);
 
 	wxString windowmsg( L"Assertion failed: " );
 	if( msg != NULL )

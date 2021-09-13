@@ -50,12 +50,12 @@ bool ChdFileReader::Open2(const wxString& fileName)
 	{
 		if (chd_depth >= static_cast<int>(ArraySize(chds) - 1))
 		{
-			Console.Error(L"CDVD: chd_open hit recursion limit searching for parents");
+			Log::Console.error("CDVD: chd_open hit recursion limit searching for parents\n");
 			return false;
 		}
 		if (chd_read_header(chds[chd_depth].c_str(), &header) != CHDERR_NONE)
 		{
-			Console.Error(L"CDVD: chd_open chd_read_header error: %s: %s", chd_error_string(error), WX_STR(chds[chd_depth]));
+			Log::Console.error("CDVD: chd_open chd_read_header error: {:s}: {:s}\n", chd_error_string(error), chds[chd_depth]);
 			return false;
 		}
 		bool found_parent = false;
@@ -80,14 +80,14 @@ bool ChdFileReader::Open2(const wxString& fileName)
 		}
 		if (!found_parent)
 		{
-			Console.Error(L"CDVD: chd_open no parent for: %s", WX_STR(chds[chd_depth]));
+			Log::Console.error("CDVD: chd_open no parent for: {:s}\n", chds[chd_depth]);
 			break;
 		}
 	}
 
 	if (error != CHDERR_NONE)
 	{
-		Console.Error(L"CDVD: chd_open return error: %s", chd_error_string(error));
+		Log::Console.error("CDVD: chd_open return error: {:s}\n", chd_error_string(error));
 		return false;
 	}
 
@@ -98,7 +98,7 @@ bool ChdFileReader::Open2(const wxString& fileName)
 		error = chd_open(chds[d].c_str(), CHD_OPEN_READ, parent, &child);
 		if (error != CHDERR_NONE)
 		{
-			Console.Error(L"CDVD: chd_open return error: %s", chd_error_string(error));
+			Log::Console.error("CDVD: chd_open return error: {:s}\n", chd_error_string(error));
 			if (parent)
 				chd_close(parent);
 			return false;
@@ -107,7 +107,7 @@ bool ChdFileReader::Open2(const wxString& fileName)
 	ChdFile = child;
 	if (chd_read_header(chds[0].c_str(), &header) != CHDERR_NONE)
 	{
-		Console.Error(L"CDVD: chd_open chd_read_header error: %s: %s", chd_error_string(error), WX_STR(chds[0]));
+		Log::Console.error("CDVD: chd_open chd_read_header error: {:s}: {:s}\n", chd_error_string(error), chds[0]);
 		return false;
 	}
 
@@ -144,7 +144,7 @@ int ChdFileReader::ReadChunk(void *dst, s64 chunkID)
 	chd_error error = chd_read(ChdFile, chunkID, dst);
 	if (error != CHDERR_NONE)
 	{
-		Console.Error(L"CDVD: chd_read returned error: %s", chd_error_string(error));
+		Log::Console.error("CDVD: chd_read returned error: {:s}\n", chd_error_string(error));
 		return 0;
 	}
 

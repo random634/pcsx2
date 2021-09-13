@@ -49,7 +49,7 @@ static Access* ReadIndexFromFile(const wxString& filename)
 	s64 size = fsize(filename);
 	if (size <= 0)
 	{
-		Console.Error(L"Error: Can't open index file: '%s'", WX_STR(filename));
+		Log::Console.error("Error: Can't open index file: '{:s}'\n", filename);
 		return 0;
 	}
 	std::ifstream infile(PX_wfilename(filename), std::ifstream::binary);
@@ -58,7 +58,7 @@ static Access* ReadIndexFromFile(const wxString& filename)
 	infile.read(fileId, GZIP_ID_LEN);
 	if (wxString::From8BitData(GZIP_ID) != wxString::From8BitData(fileId))
 	{
-		Console.Error(L"Error: Incompatible gzip index, please delete it manually: '%s'", WX_STR(filename));
+		Log::Console.error("Error: Incompatible gzip index, please delete it manually: '{:s}'\n", filename);
 		infile.close();
 		return 0;
 	}
@@ -69,7 +69,7 @@ static Access* ReadIndexFromFile(const wxString& filename)
 	s64 datasize = size - GZIP_ID_LEN - sizeof(Access);
 	if (datasize != (s64)index->have * sizeof(Point))
 	{
-		Console.Error(L"Error: unexpected size of gzip index, please delete it manually: '%s'.", WX_STR(filename));
+		Log::Console.error("Error: unexpected size of gzip index, please delete it manually: '{:s}'.\n", filename);
 		infile.close();
 		free(index);
 		return 0;
@@ -86,7 +86,7 @@ static void WriteIndexToFile(Access* index, const wxString filename)
 {
 	if (wxFileName::FileExists(filename))
 	{
-		Console.Warning(L"WARNING: Won't write index - file name exists (please delete it manually): '%s'", WX_STR(filename));
+		Log::Console.warning("WARNING: Won't write index - file name exists (please delete it manually): '{:s}'\n", filename);
 		return;
 	}
 
@@ -104,7 +104,7 @@ static void WriteIndexToFile(Access* index, const wxString filename)
 	// Verify
 	if (fsize(filename) != (s64)GZIP_ID_LEN + sizeof(Access) + sizeof(Point) * index->have)
 	{
-		Console.Warning(L"Warning: Can't write index file to disk: '%s'", WX_STR(filename));
+		Log::Console.warning("Warning: Can't write index file to disk: '{:s}'\n", filename);
 	}
 	else
 	{
@@ -135,9 +135,9 @@ static wxString ApplyTemplate(const wxString& name, const wxDirName& base,
 		|| first != tem.rfind(key) // more than one instance
 		|| !canEndWithKey && first == tem.length() - key.length())
 	{
-		Console.Error(L"Invalid %s template '%s'.\n"
-					  L"Template must contain exactly one '%s' and must not end with it. Abotring.",
-					  WX_STR(name), WX_STR(tem), WX_STR(key));
+		Log::Console.error("Invalid {:s} template '{:s}'.\n"
+		                   "Template must contain exactly one '{:s}' and must not end with it. Aborting.\n",
+		                   name, tem, key);
 		return L"";
 	}
 
@@ -262,7 +262,7 @@ void GzippedFileReader::AsyncPrefetchChunk(PX_off_t start)
 {
 	if (hOverlappedFile == INVALID_HANDLE_VALUE || asyncInProgress)
 	{
-		Console.Warning(L"Unexpected file handle or progress state. Aborting prefetch.");
+		Log::Console.warning("Unexpected file handle or progress state. Aborting prefetch.\n");
 		return;
 	}
 
@@ -318,15 +318,15 @@ bool GzippedFileReader::OkIndex()
 		{
 			Console.Warning(L"Note: This index has %1.1f MB intervals, while the current default for new indexes is %1.1f MB.",
 							(float)m_pIndex->span / 1024 / 1024, (float)GZFILE_SPAN_DEFAULT / 1024 / 1024);
-			Console.Warning(L"It will work fine, but if you want to generate a new index with default intervals, delete this index file.");
-			Console.Warning(L"(smaller intervals mean bigger index file and quicker but more frequent decompressions)");
+			Log::Console.warning("It will work fine, but if you want to generate a new index with default intervals, delete this index file.\n");
+			Log::Console.warning("(smaller intervals mean bigger index file and quicker but more frequent decompressions)\n");
 		}
 		InitZstates();
 		return true;
 	}
 
 	// No valid index file. Generate an index
-	Console.Warning(L"This may take a while (but only once). Scanning compressed file to generate a quick access index...");
+	Log::Console.warning("This may take a while (but only once). Scanning compressed file to generate a quick access index...\n");
 
 	Access* index;
 	FILE* infile = PX_fopen_rb(m_filename);
@@ -341,7 +341,7 @@ bool GzippedFileReader::OkIndex()
 	}
 	else
 	{
-		Console.Error(L"ERROR (%d): index could not be generated for file '%s'", len, WX_STR(m_filename));
+		Log::Console.error("ERROR ({:d}): index could not be generated for file '{:s}'\n", len, m_filename);
 		free_index(index);
 		InitZstates();
 		return false;
@@ -388,7 +388,7 @@ int GzippedFileReader::ReadSync(void* pBuffer, uint sector, uint count)
 	int bytesToRead = count * m_blocksize;
 	int res = _ReadSync(pBuffer, offset, bytesToRead);
 	if (res < 0)
-		Console.Error(L"Error: iso-gzip read unsuccessful.");
+		Log::Console.error("Error: iso-gzip read unsuccessful.\n");
 	return res;
 }
 

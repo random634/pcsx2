@@ -596,7 +596,7 @@ bool FolderMemoryCard::AddFile(MemoryCardFileEntry* const dirEntry, const wxStri
 	}
 	else
 	{
-		Console.WriteLn(L"(FolderMcd) Could not open file: %s", WX_STR(relativeFilePath.GetFullPath()));
+		Log::Console.info("(FolderMcd) Could not open file: {:s}\n", relativeFilePath.GetFullPath());
 		return false;
 	}
 }
@@ -1049,7 +1049,7 @@ void FolderMemoryCard::Flush()
 	WriteToFile(m_folderName.GetFullPath().RemoveLast() + L"-debug_" + wxDateTime::Now().Format(L"%Y-%m-%d-%H-%M-%S") + L"_pre-flush.ps2");
 #endif
 
-	Console.WriteLn(L"(FolderMcd) Writing data for slot %u to file system...", m_slot);
+	Log::Console.info("(FolderMcd) Writing data for slot {:u} to file system...\n", m_slot);
 	const u64 timeFlushStart = wxGetLocalTimeMillis().GetValue();
 
 	// Keep a copy of the old file entries so we can figure out which files and directories, if any, have been deleted from the memory card.
@@ -1071,7 +1071,7 @@ void FolderMemoryCard::Flush()
 	FlushBlock(m_superBlock.data.backup_block2);
 	if (m_backupBlock2.programmedBlock != 0xFFFFFFFFu)
 	{
-		Console.Warning(L"(FolderMcd) Aborting flush of slot %u, emulation was interrupted during save process!", m_slot);
+		Log::Console.warning("(FolderMcd) Aborting flush of slot {:u}, emulation was interrupted during save process!\n", m_slot);
 		return;
 	}
 
@@ -1118,7 +1118,7 @@ void FolderMemoryCard::Flush()
 	m_oldDataCache.clear();
 
 	const u64 timeFlushEnd = wxGetLocalTimeMillis().GetValue();
-	Console.WriteLn(L"(FolderMcd) Done! Took %u ms.", timeFlushEnd - timeFlushStart);
+	Log::Console.info("(FolderMcd) Done! Took {:u} ms.\n", timeFlushEnd - timeFlushStart);
 
 #ifdef DEBUG_WRITE_FOLDER_CARD_IN_MEMORY_TO_FILE_ON_CHANGE
 	WriteToFile(m_folderName.GetFullPath().RemoveLast() + L"-debug_" + wxDateTime::Now().Format(L"%Y-%m-%d-%H-%M-%S") + L"_post-flush.ps2");

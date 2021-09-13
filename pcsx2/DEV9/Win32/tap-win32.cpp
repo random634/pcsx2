@@ -366,7 +366,7 @@ bool TAPGetWin32Adapter(const char* name, PIP_ADAPTER_ADDRESSES adapter, std::un
 
 	//We must be bridged
 	Log::Console.info("DEV9: Current adapter is probably bridged\n");
-	Console.WriteLn(L"DEV9: Adapter Display name: %s", pAdapterInfo->FriendlyName);
+	Log::Console.info("DEV9: Adapter Display name: {:s}\n", pAdapterInfo->FriendlyName);
 
 	//We will need to find the bridge adapter that out adapter is
 	//as the IP information of the tap adapter is null
@@ -418,7 +418,7 @@ bool TAPGetWin32Adapter(const char* name, PIP_ADAPTER_ADDRESSES adapter, std::un
 				PIP_ADAPTER_ADDRESSES potentialAdapter = FindAdapterViaIndex(AdapterInfoReduced.get(), row.HigherLayerInterfaceIndex);
 				if (potentialAdapter != nullptr)
 				{
-					Console.WriteLn(L"DEV9: %s is possible bridge (Check 1 passed)", potentialAdapter->Description);
+					Log::Console.info("DEV9: {:s} is possible bridge (Check 1 passed)\n", potentialAdapter->Description);
 					potentialBridges.push_back(row.HigherLayerInterfaceIndex);
 				}
 				else
@@ -505,7 +505,7 @@ bool TAPGetWin32Adapter(const char* name, PIP_ADAPTER_ADDRESSES adapter, std::un
 									CComHeapPtr<WCHAR> dispName;
 									hr = component->GetDisplayName(&dispName);
 									if (SUCCEEDED(hr))
-										Console.WriteLn(L"DEV9: %s is possible bridge (Check 2 passed)", dispName);
+										Log::Console.info("DEV9: {:s} is possible bridge (Check 2 passed)\n", dispName);
 
 									//Check if adapter has the ms_bridge component bound to it.
 									CComPtr<INetCfgComponentBindings> bindings;
@@ -520,7 +520,7 @@ bool TAPGetWin32Adapter(const char* name, PIP_ADAPTER_ADDRESSES adapter, std::un
 									dispName.Free();
 									hr = component->GetDisplayName(&dispName);
 									if (SUCCEEDED(hr))
-										Console.WriteLn(L"DEV9: %s is bridge (Check 3 passed)", dispName);
+										Log::Console.info("DEV9: {:s} is bridge (Check 3 passed)\n", dispName);
 
 									bridgeAdapter = cAdapterInfo;
 									break;

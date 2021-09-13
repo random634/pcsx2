@@ -116,10 +116,10 @@ bool Dialogs::CreateMemoryCardDialog::CreateIt( const wxString& mcdFile, uint si
 
 	// Since isPSX will have a default false state, it makes more sense to check "not PSX" first
 	if (!isPSX) {
-		Console.WriteLn(L"(FileMcd) Creating new PS2 %uMB memory card: '%s'", sizeInMB, WX_STR(mcdFile));
+		Log::Console.info("(FileMcd) Creating new PS2 {:u}MB memory card: '{:s}'\n", sizeInMB, mcdFile);
 	}
 	else {
-		Console.WriteLn(L"(FileMcd) Creating new PSX 128 KiB memory card: '%s'", WX_STR(mcdFile));
+		Log::Console.info("(FileMcd) Creating new PSX 128 KiB memory card: '{:s}'\n", mcdFile);
 	}
 
 	wxFFile fp( mcdFile, L"wb" );

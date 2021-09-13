@@ -189,7 +189,7 @@ namespace usb_eyetoy
 					Log::Console.warning("Camera: Read name err : {:x}\n", hr);
 					goto freeVar;
 				}
-				Console.Warning("Camera: '%ls'", var.bstrVal);
+				Log::Console.warning("Camera: '{:s}'\n", var.bstrVal);
 				if (!selectedDevice.empty() && selectedDevice != var.bstrVal)
 				{
 					goto freeVar;
@@ -491,7 +491,7 @@ namespace usb_eyetoy
 			int ret = InitializeDevice(selectedDevice);
 			if (ret < 0)
 			{
-				Console.Warning("Camera: cannot find '%ls'", selectedDevice.c_str());
+				Log::Console.warning("Camera: cannot find '{:s}'\n", selectedDevice);
 				return -1;
 			}
 

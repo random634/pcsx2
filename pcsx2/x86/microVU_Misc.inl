@@ -206,13 +206,13 @@ _mVUt void __fc mVUprintRegs()
 	microVU& mVU = mVUx;
 	for (int i = 0; i < 8; i++)
 	{
-		Console.WriteLn("xmm%d = [0x%08x,0x%08x,0x%08x,0x%08x]", i,
+		Log::Console.info("xmm{:d} = [0x{:08x},0x{:08x},0x{:08x},0x{:08x}]\n", i,
 			mVU.xmmBackup[i][0], mVU.xmmBackup[i][1],
 			mVU.xmmBackup[i][2], mVU.xmmBackup[i][3]);
 	}
 	for (int i = 0; i < 8; i++)
 	{
-		Console.WriteLn("xmm%d = [%f,%f,%f,%f]", i,
+		Log::Console.info("xmm{:d} = [{:f},{:f},{:f},{:f}]\n", i,
 			(float&)mVU.xmmBackup[i][0], (float&)mVU.xmmBackup[i][1],
 			(float&)mVU.xmmBackup[i][2], (float&)mVU.xmmBackup[i][3]);
 	}

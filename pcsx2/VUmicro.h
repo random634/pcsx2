@@ -66,7 +66,7 @@ public:
 	{
 		try {
 			if( m_Reserved != 0 )
-				Log::Console.warning("Cleanup miscount detected on CPU provider.  Count={:d}\n", m_Reserved.load() );
+				Log::Console.warning("Cleanup miscount detected on CPU provider.  Count={:d}\n", m_Reserved.load());
 		}
 		DESTRUCTOR_CATCHALL
 	}

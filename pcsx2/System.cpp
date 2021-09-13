@@ -304,13 +304,13 @@ CpuInitializer< CpuType >::CpuInitializer()
 	}
 	catch( Exception::RuntimeError& ex )
 	{
-		Console.Error( L"CPU provider error:\n\t" + ex.FormatDiagnosticMessage() );
+		Log::Console.error("CPU provider error:\n    {:s}\n", ex.FormatDiagnosticMessage());
 		MyCpu = nullptr;
 		ExThrown = ScopedExcept(ex.Clone());
 	}
 	catch( std::runtime_error& ex )
 	{
-		Console.Error( L"CPU provider error (STL Exception)\n\tDetails:" + fromUTF8( ex.what() ) );
+		Log::Console.error("CPU provider error (STL Exception)\n    Details: {:s}\n", ex.what());
 		MyCpu = nullptr;
 		ExThrown = ScopedExcept(new Exception::RuntimeError(ex));
 	}
@@ -514,7 +514,7 @@ SysCpuProviderPack::SysCpuProviderPack()
 	catch( Exception::RuntimeError& ex )
 	{
 		m_RecExceptionEE = ScopedExcept(ex.Clone());
-		Console.Error( L"EE Recompiler Reservation Failed:\n" + ex.FormatDiagnosticMessage() );
+		Log::Console.error("EE Recompiler Reservation Failed: {:s}\n", ex.FormatDiagnosticMessage());
 		recCpu.Shutdown();
 	}
 
@@ -524,7 +524,7 @@ SysCpuProviderPack::SysCpuProviderPack()
 	catch( Exception::RuntimeError& ex )
 	{
 		m_RecExceptionIOP = ScopedExcept(ex.Clone());
-		Console.Error( L"IOP Recompiler Reservation Failed:\n" + ex.FormatDiagnosticMessage() );
+		Log::Console.error("IOP Recompiler Reservation Failed: {:s}\n", ex.FormatDiagnosticMessage());
 		psxRec.Shutdown();
 	}
 

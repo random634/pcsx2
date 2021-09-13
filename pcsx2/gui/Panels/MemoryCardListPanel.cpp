@@ -543,7 +543,7 @@ void Panels::MemoryCardListPanel_Simple::Apply()
 	_parent::Apply();
 
 	int used = 0;
-	Console.WriteLn(L"Apply memory cards:");
+	Log::Console.info("Apply memory cards:\n");
 	for (uint slot = 0; slot < 8; ++slot)
 	{
 		g_Conf->Mcd[slot].Type = m_Cards[slot].Type;
@@ -556,11 +556,11 @@ void Panels::MemoryCardListPanel_Simple::Apply()
 		if (g_Conf->Mcd[slot].Enabled)
 		{
 			used++;
-			Console.WriteLn(L"slot[%d]='%s'", slot, WX_STR(g_Conf->Mcd[slot].Filename.GetFullName()));
+			Log::Console.info("slot[{:d}]='{:s}'\n", slot, g_Conf->Mcd[slot].Filename.GetFullName());
 		}
 	}
 	if (!used)
-		Console.WriteLn(L"No active slots.");
+		Log::Console.info("No active slots.\n");
 
 	SetForceMcdEjectTimeoutNow();
 }
@@ -581,16 +581,16 @@ void Panels::MemoryCardListPanel_Simple::AppStatusEvent_OnSettingsApplied()
 			{
 				if (!Dialogs::CreateMemoryCardDialog::CreateIt(targetFile, 8, false))
 				{
-					Console.Error(L"Automatic creation of memory card '%s' failed. Hope for the best...", WX_STR(targetFile));
+					Log::Console.error("Automatic creation of memory card '{:s}' failed. Hope for the best...\n", targetFile);
 				}
 				else
 				{
-					Console.WriteLn(L"Memory card created: '%s'.", WX_STR(targetFile));
+					Log::Console.info("Memory card created: '{:s}'.\n", targetFile);
 				}
 			}
 			else
 			{
-				Console.Error(L"Memory card was enabled, but it had an invalid file name. Aborting automatic creation. Hope for the best... (%s)", WX_STR(errMsg));
+				Log::Console.error("Memory card was enabled, but it had an invalid file name. Aborting automatic creation. Hope for the best... ({:s})\n", errMsg);
 			}
 		}
 
@@ -673,11 +673,11 @@ void Panels::MemoryCardListPanel_Simple::UiCreateNewCard(McdSlotItem& card)
 		card.IsPresent = true;
 		if (card.Slot >= 0)
 		{
-			Console.WriteLn(L"Setting new memory card to slot %u: '%s'", card.Slot, WX_STR(card.Filename.GetFullName()));
+			Log::Console.info("Setting new memory card to slot {:u}: '{:s}'\n", card.Slot, card.Filename.GetFullName());
 		}
 		else
 		{
-			Console.WriteLn(L"Created a new unassigned memory card file: '%s'", WX_STR(card.Filename.GetFullName()));
+			Log::Console.info("Created a new unassigned memory card file: '{:s}'\n", card.Filename.GetFullName());
 		}
 	}
 	else

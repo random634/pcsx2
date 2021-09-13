@@ -474,7 +474,7 @@ static __fi s32 StrToS32(const wxString& str, int base = 10)
 	long l;
 	if (!str.ToLong(&l, base))
 	{
-		Console.Error(L"StrToS32: fail to translate '%s' as long", WX_STR(str));
+		Log::Console.error("StrToS32: fail to translate '{:s}' as long\n", str);
 		return 0;
 	}
 
@@ -759,7 +759,7 @@ int cdvdReadSector()
 
 	//if( (HW_DMA3_CHCR & 0x01000000) == 0 ) {
 	//	// DMA3 problem?
-	//	Console.Warning( "CDVD READ - DMA3 transfer off (try again)\n" );
+	//	Log::Console.warning("CDVD READ - DMA3 transfer off (try again)\n");
 	//}
 
 	// DMAs use physical addresses (air)
@@ -1579,12 +1579,12 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 
 				if (cdvd.Status == CDVD_STATUS_TRAY_OPEN)
 				{
-					//Console.Warning( "reporting Open status" );
+					//Log::Console.warning("reporting Open status\n");
 					cdvd.Result[0] = 1;
 				}
 				else
 				{
-					//Console.Warning( "reporting Close status" );
+					//Log::Console.warning("reporting Close status\n");
 					cdvd.Result[0] = 0; // old behaviour was always this
 				}
 

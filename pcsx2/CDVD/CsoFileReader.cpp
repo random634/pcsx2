@@ -67,17 +67,17 @@ bool CsoFileReader::ValidateHeader(const CsoHeader& hdr)
 	}
 	if (hdr.ver > 1)
 	{
-		Console.Error(L"Only CSOv1 files are supported.");
+		Log::Console.error("Only CSOv1 files are supported.\n");
 		return false;
 	}
 	if ((hdr.frame_size & (hdr.frame_size - 1)) != 0)
 	{
-		Console.Error(L"CSO frame size must be a power of two.");
+		Log::Console.error("CSO frame size must be a power of two.\n");
 		return false;
 	}
 	if (hdr.frame_size < 2048)
 	{
-		Console.Error(L"CSO frame size must be at least one sector.");
+		Log::Console.error("CSO frame size must be at least one sector.\n");
 		return false;
 	}
 
@@ -112,13 +112,13 @@ bool CsoFileReader::ReadFileHeader()
 	PX_fseeko(m_src, m_dataoffset, SEEK_SET);
 	if (fread(&hdr, 1, sizeof(hdr), m_src) != sizeof(hdr))
 	{
-		Console.Error(L"Failed to read CSO file header.");
+		Log::Console.error("Failed to read CSO file header.\n");
 		return false;
 	}
 
 	if (!ValidateHeader(hdr))
 	{
-		Console.Error(L"CSO has invalid header.");
+		Log::Console.error("CSO has invalid header.\n");
 		return false;
 	}
 
@@ -156,7 +156,7 @@ bool CsoFileReader::InitializeBuffers()
 	m_index = new u32[indexSize];
 	if (fread(m_index, sizeof(u32), indexSize, m_src) != indexSize)
 	{
-		Console.Error(L"Unable to read index data from CSO.");
+		Log::Console.error("Unable to read index data from CSO.\n");
 		return false;
 	}
 

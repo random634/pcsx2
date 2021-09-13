@@ -82,7 +82,7 @@ wxString DMACh::cmqt_to_str() const
 
 __fi void throwBusError(const char *s)
 {
-    Console.Error("%s BUSERR", s);
+    Log::Console.error("{:s} BUSERR\n", s);
     dmacRegs.stat.BEIS = true;
 }
 

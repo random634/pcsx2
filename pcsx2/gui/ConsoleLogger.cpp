@@ -68,15 +68,15 @@ void pxLogConsole::DoLogRecord(wxLogLevel level, const wxString &message, const 
 			// fallthrough!
 
 		case wxLOG_Message:
-			Console.WriteLn( L"[wx] %s", WX_STR(message));
+			Log::Console.info("[wx] {:s}\n", message);
 		break;
 
 		case wxLOG_Error:
-			Console.Error(L"[wx] %s", WX_STR(message));
+			Log::Console.error("[wx] {:s}\n", message);
 		break;
 
 		case wxLOG_Warning:
-			Console.Warning(L"[wx] %s", WX_STR(message));
+			Log::Console.warning("[wx] {:s}\n", message);
 		break;
 	}
 }
@@ -91,8 +91,8 @@ void ConsoleTestThread::ExecuteTaskInThread()
 	{
 		// Two lines, both formatted, and varied colors.  This makes for a fairly realistic
 		// worst case scenario (without being entirely unrealistic).
-		Console.WriteLn( L"This is a threaded logging test. Something bad could happen... %d", ++numtrack );
-		Console.Warning( L"Testing high stress loads %s", L"(multi-color)" );
+		Log::Console.info("This is a threaded logging test. Something bad could happen... {:d}\n", ++numtrack);
+		Log::Console.warning("Testing high stress loads {:s}\n", "(multi-color)");
 		Yield( 0 );
 	}
 }
@@ -721,7 +721,7 @@ void ConsoleLogFrame::OnMoveAround( wxMoveEvent& evt )
 		wxRect snapzone( topright - wxSize( 8,8 ), wxSize( 16,16 ) );
 
 		m_conf.AutoDock = snapzone.Contains( GetPosition() );
-		//Log::Console.info("DockCheck: {:d}\n", g_Conf->ConLogBox.AutoDock );
+		//Log::Console.info("DockCheck: {:d}\n", g_Conf->ConLogBox.AutoDock);
 		if( m_conf.AutoDock )
 		{
 			SetPosition( topright + wxSize( 1,0 ) );

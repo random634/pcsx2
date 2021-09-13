@@ -658,7 +658,7 @@ void usb_packet_copy(USBPacket* p, void* ptr, size_t bytes)
 			iov_from_buf(iov->iov, iov->niov, p->actual_length, ptr, bytes);
 			break;
 		default:
-			Console.Warning("%s: invalid pid: %x\n", __func__, p->pid);
+			Log::Console.warning("{:s}: invalid pid: {:x}\n", __func__, p->pid);
 			abort();
 	}
 	p->actual_length += bytes;

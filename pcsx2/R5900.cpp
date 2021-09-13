@@ -451,7 +451,7 @@ __fi void _cpuEventTest_Shared()
 		// IOP extra timeslices in short order.
 
 		cpuSetNextEventDelta( 48 );
-		//Log::Console.warning("EE ahead of the IOP -- Rapid Event!  {:d}\n", EEsCycle );
+		//Log::Console.warning("EE ahead of the IOP -- Rapid Event!  {:d}\n", EEsCycle);
 	}
 
 	// The IOP could be running ahead/behind of us, so adjust the iop's next branch by its

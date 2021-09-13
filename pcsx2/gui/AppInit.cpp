@@ -250,13 +250,13 @@ bool Pcsx2App::ParseOverrides(wxCmdLineParser& parser)
 
 	if (parser.Found(L"cfgpath", &dest) && !dest.IsEmpty())
 	{
-		Console.Warning(L"Config path override: " + dest);
+		Log::Console.warning("Config path override: {:s}\n", dest);
 		Overrides.SettingsFolder = dest;
 	}
 
 	if (parser.Found(L"cfg", &dest) && !dest.IsEmpty())
 	{
-		Console.Warning(L"Config file override: " + dest);
+		Log::Console.warning("Config file override: {:s}\n", dest);
 		Overrides.VmSettingsFile = dest;
 	}
 
@@ -614,7 +614,7 @@ void Pcsx2App::CleanupOnExit()
 		// that we just don't care about by now, and just want to "get 'er done!" so
 		// we can exit the app. ;)
 
-		Console.Error(L"Runtime exception handled during CleanupOnExit:\n");
+		Log::Console.error("Runtime exception handled during CleanupOnExit:\n");
 		Console.Indent().Error(ex.FormatDiagnosticMessage());
 	}
 

@@ -884,14 +884,16 @@ void AcceleratorDictionary::Map(const KeyAcceleratorCode& _acode, const char* se
 			}
 			if (_acode.ToString() != acode.ToString())
 			{
-				Console.WriteLn(Color_StrongGreen, L"Overriding '%s': assigning %s (instead of %s)",
-								WX_STR(fromUTF8(searchfor)), WX_STR(acode.ToString()), WX_STR(_acode.ToString()));
+				Log::Console.logStyle(LogLevel::Info, LogStyle::Special,
+					"Overriding '{:s}': assigning {:s} (instead of {:s})",
+					searchfor, acode.ToString(), _acode.ToString());
 			}
 		}
 		else
 		{
-			Console.Error(L"Error overriding KB shortcut for '%s': can't understand '%s'",
-						  WX_STR(fromUTF8(searchfor)), WX_STR(overrideStr));
+			Log::Console.error(
+				"Error overriding KB shortcut for '{:s}': can't understand '{:s}'\n",
+				searchfor, overrideStr);
 		}
 	}
 	// End of overrides section
@@ -904,10 +906,10 @@ void AcceleratorDictionary::Map(const KeyAcceleratorCode& _acode, const char* se
 
 	if (result != NULL)
 	{
-		Console.Warning(
-			L"Kbd Accelerator '%s' is mapped multiple times.\n"
-			L"\t'Command %s' is being replaced by '%s'",
-			WX_STR(acode.ToString()), WX_STR(fromUTF8(result->Id)), WX_STR(fromUTF8(searchfor)));
+		Log::Console.warning(
+			"Kbd Accelerator '{:s}' is mapped multiple times.\n"
+			"    'Command {:s}' is being replaced by '{:s}'\n",
+			acode.ToString(), result->Id, searchfor);
 	}
 
 	std::unordered_map<std::string, const GlobalCommandDescriptor*>::const_iterator acceleratorIter(wxGetApp().GlobalCommands->find(searchfor));
@@ -917,8 +919,9 @@ void AcceleratorDictionary::Map(const KeyAcceleratorCode& _acode, const char* se
 
 	if (result == NULL)
 	{
-		Console.Warning(L"Kbd Accelerator '%s' is mapped to unknown command '%s'",
-						WX_STR(acode.ToString()), WX_STR(fromUTF8(searchfor)));
+		Log::Console.warning(
+			"Kbd Accelerator '{:s}' is mapped to unknown command '{:s}'\n",
+			acode.ToString(), searchfor);
 	}
 	else
 	{
@@ -936,8 +939,9 @@ void AcceleratorDictionary::Map(const KeyAcceleratorCode& _acode, const char* se
 			// ctrl-shift to the base shortcut.
 			if (acode.cmd || acode.shift)
 			{
-				Console.Error(L"Cannot map %s to Sys_TakeSnapshot - must not include Shift or Ctrl - these modifiers will be added automatically.",
-							  WX_STR(acode.ToString()));
+				Log::Console.error(
+					"Cannot map {:s} to Sys_TakeSnapshot - must not include Shift or Ctrl - these modifiers will be added automatically.\n",
+					acode.ToString());
 			}
 			else
 			{

@@ -255,7 +255,7 @@ static void vSyncInfoCalc(vSyncTimingInfo* info, double framesPerSecond, u32 sca
 		u32 hSyncCycles = ((info->hRender + info->hBlank) * scansPerFrame) / 2;
 		u32 vSyncCycles = (info->Render + info->Blank);
 		info->hSyncError = vSyncCycles - hSyncCycles;
-		//Console.Warning("%d",info->hSyncError);
+		//Log::Console.warning("{:d}\n",info->hSyncError);
 	}
 	else info->hSyncError = 0;
 	// Note: In NTSC modes there is some small rounding error in the vsync too,

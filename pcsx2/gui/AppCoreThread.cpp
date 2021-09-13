@@ -428,7 +428,7 @@ static void _ApplySettings(const Pcsx2Config& src, Pcsx2Config& fixup)
 
 	const wxString newGameKey(ingame ? SysGetDiscID() : SysGetBiosDiscID());
 	const bool verbose(newGameKey != curGameKey && ingame);
-	//Console.WriteLn(L"------> patches verbose: %d   prev: '%s'   new: '%s'", (int)verbose, WX_STR(curGameKey), WX_STR(newGameKey));
+	//Log::Console.info("------> patches verbose: {:d}   prev: '{:s}'   new: '{:s}'\n", (int)verbose, curGameKey, newGameKey);
 	SetupPatchesCon(verbose);
 
 	curGameKey = newGameKey;

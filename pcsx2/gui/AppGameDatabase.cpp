@@ -56,7 +56,7 @@ AppGameDatabase& AppGameDatabase::LoadFromFile(const wxString& _file)
 
 	if (!wxFileExists(file))
 	{
-		Console.Error(L"[GameDB] Database Not Found! [%s]", WX_STR(file));
+		Log::Console.error("[GameDB] Database Not Found! [{:s}]\n", file);
 		return *this;
 	}
 
@@ -65,7 +65,7 @@ AppGameDatabase& AppGameDatabase::LoadFromFile(const wxString& _file)
 	std::ifstream fileStream = getFileAsStream(file);
 	if (!this->initDatabase(fileStream))
 	{
-		Console.Error(L"[GameDB] Database could not be loaded successfully");
+		Log::Console.error("[GameDB] Database could not be loaded successfully\n");
 		return *this;
 	}
 

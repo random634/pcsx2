@@ -116,9 +116,9 @@ wxConfigBase* Pcsx2App::TestForPortableInstall()
 	{
 		wxString FilenameStr = portableIniFile.GetFullPath();
 		if (Startup.PortableMode)
-			Console.WriteLn( L"(UserMode) Portable mode requested via commandline switch!" );
+			Log::Console.info("(UserMode) Portable mode requested via commandline switch!\n");
 		else
-			Console.WriteLn( L"(UserMode) Found portable install ini @ %s", WX_STR(FilenameStr) );
+			Log::Console.info("(UserMode) Found portable install ini @ {:s}\n", FilenameStr);
 
 		// Just because the portable ini file exists doesn't mean we can actually run in portable
 		// mode.  In order to determine our read/write permissions to the PCSX2, we must try to
@@ -237,7 +237,7 @@ wxConfigBase* Pcsx2App::OpenInstallSettingsFile()
 	//wxDirName usrlocaldir( wxStandardPaths::Get().GetDataDir() );
 	if( !usrlocaldir.Exists() )
 	{
-		Console.WriteLn( L"Creating UserLocalData folder: " + usrlocaldir.ToString() );
+		Log::Console.info("Creating UserLocalData folder: {:s}\n", usrlocaldir.ToString());
 		usrlocaldir.Mkdir();
 	}
 

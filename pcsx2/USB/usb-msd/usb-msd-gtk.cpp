@@ -52,7 +52,7 @@ namespace usb_msd
 			char* filename;
 
 			filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-			Console.Warning("%s\n", filename);
+			Log::Console.warning("{:s}\n", filename);
 			gtk_entry_set_text(GTK_ENTRY(entry), filename);
 			g_free(filename);
 		}

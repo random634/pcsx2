@@ -333,7 +333,7 @@ void FileMemoryCard::Open()
 			wxString newname = str + "x";
 			if (!ConvertNoECCtoRAW(str, newname))
 			{
-				Console.Error(L"Could convert memory card: " + str);
+				Log::Console.error("Could convert memory card: {:s}\n", str);
 				wxRemoveFile(newname);
 				continue;
 			}
@@ -410,7 +410,7 @@ bool FileMemoryCard::Create(const wxString& mcdFile, uint sizeInMB)
 {
 	//int enc[16] = {0x77,0x7f,0x7f,0x77,0x7f,0x7f,0x77,0x7f,0x7f,0x77,0x7f,0x7f,0,0,0,0};
 
-	Console.WriteLn(L"(FileMcd) Creating new %uMB memory card: " + mcdFile, sizeInMB);
+	Log::Console.info("(FileMcd) Creating new {:u}MB memory card: {:s}\n", sizeInMB, mcdFile);
 
 	wxFFile fp(mcdFile, L"wb");
 	if (!fp.IsOpened())

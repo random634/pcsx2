@@ -287,13 +287,13 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 	if (!info || (!langCode.IsEmpty() && (langCode.CmpNoCase(info->CanonicalName) != 0)))
 	{
 		if (!info)
-			Log::Console.warning("Invalid language identifier (wxID={:d})\n", wxLangId );
+			Log::Console.warning("Invalid language identifier (wxID={:d})\n", wxLangId);
 
 		if (!langCode.IsEmpty() && (langCode.CmpNoCase(L"default")!=0))
 		{
 			info = wxLocale::FindLanguageInfo(langCode);
 			if (!info)
-				Console.Warning( "Unrecognized language canonical name '%ls'", WX_STR(langCode) );
+				Log::Console.warning("Unrecognized language canonical name '{:s}'\n", langCode);
 		}
 	}
 
@@ -304,8 +304,9 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 
 	if( !locale->IsOk() )
 	{
-		Console.Warning( L"SetLanguage: '%s' [%s] is not supported by the operating system",
-			WX_STR(i18n_GetBetterLanguageName(info)), WX_STR(locale->GetCanonicalName())
+		Log::Console.warning(
+			"SetLanguage: '{:s}' [{:s}] is not supported by the operating system\n",
+			i18n_GetBetterLanguageName(info), locale->GetCanonicalName()
 		);
 		return false;
 	}
@@ -325,7 +326,7 @@ bool i18n_SetLanguage( wxLanguage wxLangId, const wxString& langCode )
 		return true;
 	}
 	
-	Console.WriteLn( L"Loading language translation databases for '%s' [%s]",
+	Log::Console.info("Loading language translation databases for '{:s}' [{:s}]\n",
 		WX_STR(i18n_GetBetterLanguageName(info)), WX_STR(locale->GetCanonicalName())
 	);
 

@@ -156,7 +156,7 @@ bool IsoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filen
 			return false;
 		}
 
-		Console.WriteLn( L"(Drag&Drop) Received filename: " + filenames[0] );
+		Log::Console.info("(Drag&Drop) Received filename: {:s}\n", filenames[0]);
 
 		// ---------------
 		//    ELF CHECK
@@ -173,7 +173,7 @@ bool IsoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filen
 
 		if( ((u32&)ident) == ((u32&)elfIdent) )
 		{
-			Console.WriteLn( L"(Drag&Drop) Found ELF file type!" );
+			Log::Console.info("(Drag&Drop) Found ELF file type!\n");
 
 			g_Conf->CurrentELF = filenames[0];
 

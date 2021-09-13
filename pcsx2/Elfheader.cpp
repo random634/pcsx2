@@ -64,10 +64,10 @@ void ElfObject::initElfHeaders()
 		secthead = (ELF_SHR*)&data[header.e_shoff];
 
 	if ( ( header.e_shnum > 0 ) && ( header.e_shentsize != sizeof(ELF_SHR) ) )
-		Log::Console.error("(ELF) Size of section headers is not standard\n" );
+		Log::Console.error("(ELF) Size of section headers is not standard\n");
 
 	if ( ( header.e_phnum > 0 ) && ( header.e_phentsize != sizeof(ELF_PHR) ) )
-		Log::Console.error("(ELF) Size of program headers is not standard\n" );
+		Log::Console.error("(ELF) Size of program headers is not standard\n");
 
 	//getCRC();
 
@@ -324,7 +324,7 @@ int GetPS2ElfName( wxString& name )
 			if( parts.lvalue.IsEmpty() && parts.rvalue.IsEmpty() ) continue;
 			if( parts.rvalue.IsEmpty() && file.getLength() != file.getSeekPos() )
 			{ // Some games have a character on the last line of the file, don't print the error in those cases.
-				Console.Warning( "(SYSTEM.CNF) Unusual or malformed entry in SYSTEM.CNF ignored:" );
+				Log::Console.warning("(SYSTEM.CNF) Unusual or malformed entry in SYSTEM.CNF ignored:\n");
 				Console.Indent().WriteLn( original );
 				continue;
 			}

@@ -69,7 +69,7 @@ static __fi void gsCSRwrite( const tGS_CSR& csr )
 {
 	if (csr.RESET) {
 		GUNIT_WARN("GUNIT_WARN: csr.RESET");
-		//Console.Warning( "csr.RESET" );
+		//Log::Console.warning("csr.RESET\n");
 		//gifUnit.Reset(true); // Don't think gif should be reset...
 		gifUnit.gsSIGNAL.queued = false;
 		GetMTGS().SendSimplePacket(GS_RINGTYPE_RESET, 0, 0, 0);
