@@ -427,7 +427,7 @@ void VU_Thread::WaitVU()
 	{
 		if (IsDone())
 			break;
-		//DevCon.WriteLn("WaitVU()");
+		//Log::Console.debug("WaitVU()\n");
 		//pxAssert(THREAD_VU1);
 		KickStart();
 		std::this_thread::yield(); // Give a chance to the MTVU thread to actually start

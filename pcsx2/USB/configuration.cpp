@@ -117,7 +117,7 @@ bool LoadSettingValue(const TSTDSTRING& ini, const TSTDSTRING& section, const TC
 #endif
 		catch (std::exception& err)
 		{
-			DevCon.WriteLn("%s\n", err.what());
+			Log::Console.debug("{:s}\n", err.what());
 		}
 	}
 	return false;

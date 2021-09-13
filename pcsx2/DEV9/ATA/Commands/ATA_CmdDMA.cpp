@@ -143,7 +143,7 @@ void ATA::HDD_ReadDMA(bool isLBA48)
 {
 	if (!PreCmd())
 		return;
-	DevCon.WriteLn("DEV9: HDD_ReadDMA");
+	Log::Console.debug("DEV9: HDD_ReadDMA\n");
 
 	IDE_CmdLBA48Transform(isLBA48);
 
@@ -163,7 +163,7 @@ void ATA::HDD_WriteDMA(bool isLBA48)
 {
 	if (!PreCmd())
 		return;
-	DevCon.WriteLn("DEV9: HDD_WriteDMA");
+	Log::Console.debug("DEV9: HDD_WriteDMA\n");
 
 	IDE_CmdLBA48Transform(isLBA48);
 

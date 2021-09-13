@@ -69,7 +69,7 @@ __fi void mVUstatusFlagOp(mV)
 		}
 	}
 	iPC = curPC;
-	DevCon.WriteLn(Color_Green, "microVU%d: FSSET Optimization", getIndex);
+	Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: FSSET Optimization\n", getIndex);
 }
 
 int findFlagInst(int* fFlag, int cycles)
@@ -277,13 +277,13 @@ __fi void mVUsetupFlags(mV, microFlagCycles& mFC)
 
 	const bool pf = false; // Print Flag Info
 	if (pf)
-		DevCon.WriteLn("mVU%d - [#%d][sPC=%04x][bPC=%04x][mVUBranch=%d][branch=%d]",
+		Log::Console.debug("mVU{:d} - [#{:d}][sPC={:04x}][bPC={:04x}][mVUBranch={:d}][branch={:d}]\n",
 			mVU.index, mVU.prog.cur->idx, mVUstartPC / 2 * 8, xPC, mVUbranch, mVUlow.branch);
 
 	if (doSFlagInsts && __Status)
 	{
 		if (pf)
-			DevCon.WriteLn("mVU%d - Status Flag", mVU.index);
+			Log::Console.debug("mVU{:d} - Status Flag\n", mVU.index);
 		int bStatus[4];
 		int sortRegs = sortFlag(mFC.xStatus, bStatus, mFC.cycles);
 		// DevCon::Status("sortRegs = %d", params sortRegs);
@@ -328,7 +328,7 @@ __fi void mVUsetupFlags(mV, microFlagCycles& mFC)
 	if (doMFlagInsts && __Mac)
 	{
 		if (pf)
-			DevCon.WriteLn("mVU%d - Mac Flag", mVU.index);
+			Log::Console.debug("mVU{:d} - Mac Flag\n", mVU.index);
 		int bMac[4];
 		sortFlag(mFC.xMac, bMac, mFC.cycles);
 		xMOVAPS(xmmT1, ptr128[mVU.macFlag]);
@@ -339,7 +339,7 @@ __fi void mVUsetupFlags(mV, microFlagCycles& mFC)
 	if (doCFlagInsts && __Clip)
 	{
 		if (pf)
-			DevCon.WriteLn("mVU%d - Clip Flag", mVU.index);
+			Log::Console.debug("mVU{:d} - Clip Flag\n", mVU.index);
 		int bClip[4];
 		sortFlag(mFC.xClip, bClip, mFC.cycles);
 		xMOVAPS(xmmT2, ptr128[mVU.clipFlag]);

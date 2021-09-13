@@ -56,7 +56,7 @@ static std::string hostRoot;
 
 void Hle_SetElfPath(const char* elfFileName)
 {
-	DevCon.WriteLn("HLE Host: Will load ELF: %s\n", elfFileName);
+	Log::Console.debug("HLE Host: Will load ELF: {:s}\n", elfFileName);
 	ghc::filesystem::path elf_path{elfFileName};
 	hostRoot = elf_path.parent_path().concat("/").string();
 	Log::Console.info("HLE Host: Set 'host:' root path to: {:s}\n", hostRoot);
@@ -833,7 +833,7 @@ namespace R3000A
 		void RegisterLibraryEntries_DEBUG()
 		{
 			const std::string modname = iopMemReadString(a0 + 12);
-			DevCon.WriteLn(Color_Gray, "RegisterLibraryEntries: %8.8s version %x.%02x", modname.data(), (unsigned)iopMemRead8(a0 + 9), (unsigned)iopMemRead8(a0 + 8));
+			Log::Console.debug(LogStyle::GameLog, "RegisterLibraryEntries: {:<8s} version {:x}.{:02x}\n", modname, (unsigned)iopMemRead8(a0 + 9), (unsigned)iopMemRead8(a0 + 8));
 		}
 	} // namespace loadcore
 
@@ -865,11 +865,11 @@ namespace R3000A
 		{
 			if(a0 < std::size(intrname) - 1)
 			{
-				DevCon.WriteLn(Color_Gray, "RegisterIntrHandler: intr %s, handler %x", intrname[a0], a2);
+				Log::Console.debug(LogStyle::GameLog, "RegisterIntrHandler: intr {:s}, handler {:x}\n", intrname[a0], a2);
 			}
 			else
 			{
-				DevCon.WriteLn(Color_Gray, "RegisterIntrHandler: intr UNKNOWN (%d), handler %x",a0,a2);
+				Log::Console.debug(LogStyle::GameLog, "RegisterIntrHandler: intr UNKNOWN ({:d}), handler {:x}\n",a0,a2);
 			}
 		}
 	} // namespace intrman
@@ -878,7 +878,7 @@ namespace R3000A
 	{
 		void sceSifRegisterRpc_DEBUG()
 		{
-			DevCon.WriteLn(Color_Gray, "sifcmd sceSifRegisterRpc: rpc_id %x", a1);
+			Log::Console.debug(LogStyle::GameLog, "sifcmd sceSifRegisterRpc: rpc_id {:x}\n", a1);
 		}
 	} // namespace sifcmd
 

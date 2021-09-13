@@ -216,8 +216,8 @@ __ri microProgram* mVUcreateProg(microVU& mVU, int startPC)
 	double cacheSize = (double)((uptr)mVU.prog.x86end - (uptr)mVU.prog.x86start);
 	double cacheUsed = ((double)((uptr)mVU.prog.x86ptr - (uptr)mVU.prog.x86start)) / (double)_1mb;
 	double cachePerc = ((double)((uptr)mVU.prog.x86ptr - (uptr)mVU.prog.x86start)) / cacheSize * 100;
-	ConsoleColors c = mVU.index ? Color_Orange : Color_Magenta;
-	DevCon.WriteLn(c, "microVU%d: Cached Prog = [%03d] [PC=%04x] [List=%02d] (Cache=%3.3f%%) [%3.1fmb]",
+	LogStyle c = mVU.index ? LogStyle::CompatibilityOrange : LogStyle::CompatibilityMagenta;
+	Log::Console.debug(c, "microVU{:d}: Cached Prog = [{:03d}] [PC={:04x}] [List={:02d}] (Cache={:.3f}%) [{:.1f}mb]\n",
 		mVU.index, prog->idx, startPC * 8, mVU.prog.prog[startPC]->size() + 1, cachePerc, cacheUsed);
 	return prog;
 }
@@ -277,7 +277,7 @@ void mVUprintUniqueRatio(microVU& mVU)
 	makeUnique(v);
 	if (!total)
 		return;
-	DevCon.WriteLn("%d / %d [%3.1f%%]", v.size(), total, 100. - (double)v.size() / (double)total * 100.);
+	Log::Console.debug("{:d} / {:d} [{:.1f}%]\n", v.size(), total, 100. - (double)v.size() / (double)total * 100.);
 }
 
 // Compare Cached microProgram to mVU.regs().Micro
@@ -488,14 +488,14 @@ uint recMicroVU1::GetCacheReserve() const
 
 void recMicroVU0::SetCacheReserve(uint reserveInMegs) const
 {
-	DevCon.WriteLn("microVU0: Changing cache size [%dmb]", reserveInMegs);
+	Log::Console.debug("microVU0: Changing cache size [{:d}mb]\n", reserveInMegs);
 	microVU0.cacheSize = std::min(reserveInMegs, mVUcacheReserve);
 	safe_delete(microVU0.cache_reserve); // I assume this unmaps the memory
 	mVUreserveCache(microVU0); // Need rec-reset after this
 }
 void recMicroVU1::SetCacheReserve(uint reserveInMegs) const
 {
-	DevCon.WriteLn("microVU1: Changing cache size [%dmb]", reserveInMegs);
+	Log::Console.debug("microVU1: Changing cache size [{:d}mb]\n", reserveInMegs);
 	microVU1.cacheSize = std::min(reserveInMegs, mVUcacheReserve);
 	safe_delete(microVU1.cache_reserve); // I assume this unmaps the memory
 	mVUreserveCache(microVU1); // Need rec-reset after this

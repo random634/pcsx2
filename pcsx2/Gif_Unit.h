@@ -247,7 +247,7 @@ struct Gif_Path
 		{
 			DevCon.WriteLn(Color_Red, "Gif Path[%d] - MTGS Wait! [r=0x%x]", idx + 1, getReadAmount());
 			Gif_MTGS_Wait(isMTVU());
-			DevCon.WriteLn(Color_Green, "Gif Path[%d] - MTGS Wait! [r=0x%x]", idx + 1, getReadAmount());
+			Log::Console.debug(LogStyle::CompatibilityGreen, "Gif Path[{:d}] - MTGS Wait! [r=0x{:x}]\n", idx + 1, getReadAmount());
 			return;
 		}
 		Gif_MTGS_Wait(isMTVU());
@@ -276,7 +276,7 @@ struct Gif_Path
 			else
 				Gif_AddBlankGSPacket(buffLimit - offset, idx);
 		}
-		//DevCon.WriteLn("Realign Packet [%d]", curSize - offset);
+		//Log::Console.debug("Realign Packet [{:d}]\n", curSize - offset);
 		if (intersect)
 			memmove(buffer, &buffer[offset], curSize - offset);
 		else
@@ -623,7 +623,7 @@ struct Gif_Unit
 					stat.P3Q = 1;
 				return 0;
 			} // DMA Stall
-			  //if (stat.P2Q) DevCon.WriteLn("P2Q while path 3");
+			  //if (stat.P2Q) Log::Console.debug("P2Q while path 3\n");
 		}
 		if (tranType == GIF_TRANS_XGKICK)
 		{
@@ -739,10 +739,10 @@ struct Gif_Unit
 						}
 					}
 					//FlushToMTGS();
-					//DevCon.WriteLn("Incomplete GS Packet for path %d, size=%d", stat.APATH, gsPack.size);
+					//Log::Console.debug("Incomplete GS Packet for path {:d}, size={:d}\n", stat.APATH, gsPack.size);
 					break; // Not finished with GS packet
 				}
-				//DevCon.WriteLn("Adding GS Packet for path %d", stat.APATH);
+				//Log::Console.debug("Adding GS Packet for path {:d}\n", stat.APATH);
 				if (gifPath[curPath].state == GIF_PATH_WAIT || gifPath[curPath].state == GIF_PATH_IDLE)
 				{
 					AddCompletedGSPacket(gsPack, (GIF_PATH)(stat.APATH - 1));

@@ -252,7 +252,7 @@ static inline u32 branchAddr(const mV)
 static void __fc mVUwaitMTVU()
 {
 	if (IsDevBuild)
-		DevCon.WriteLn("microVU0: Waiting on VU1 thread to access VU1 regs!");
+		Log::Console.debug("microVU0: Waiting on VU1 thread to access VU1 regs!\n");
 	vu1Thread.WaitVU();
 }
 

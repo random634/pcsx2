@@ -618,7 +618,7 @@ protected:
 
 			if (entry->GetName().CmpNoCase(EntryFilename_StateVersion) == 0)
 			{
-				DevCon.WriteLn(Color_Green, L" ... found '%s'", EntryFilename_StateVersion);
+				Log::Console.debug(LogStyle::CompatibilityGreen, " ... found '{:s}'\n", wxString(EntryFilename_StateVersion));
 				foundVersion = true;
 				CheckVersion(*reader);
 				continue;
@@ -626,7 +626,7 @@ protected:
 
 			if (entry->GetName().CmpNoCase(EntryFilename_InternalStructures) == 0)
 			{
-				DevCon.WriteLn(Color_Green, L" ... found '%s'", EntryFilename_InternalStructures);
+				Log::Console.debug(LogStyle::CompatibilityGreen, " ... found '{:s}'\n", wxString(EntryFilename_InternalStructures));
 				foundInternal = std::move(entry);
 				continue;
 			}
@@ -642,7 +642,7 @@ protected:
 			{
 				if (entry->GetName().CmpNoCase(SavestateEntries[i]->GetFilename()) == 0)
 				{
-					DevCon.WriteLn(Color_Green, L" ... found '%s'", WX_STR(SavestateEntries[i]->GetFilename()));
+					Log::Console.debug(LogStyle::CompatibilityGreen, " ... found '{:s}'\n", WX_STR(SavestateEntries[i]->GetFilename()));
 					foundEntry[i] = std::move(entry);
 					break;
 				}

@@ -740,8 +740,8 @@ mVUop(mVU_FSAND)
 	pass1 { mVUanalyzeSflag(mVU, _It_); }
 	pass2
 	{
-		if (_Imm12_ & 0x0c30) DevCon.WriteLn(Color_Green, "mVU_FSAND: Checking I/D/IS/DS Flags");
-		if (_Imm12_ & 0x030c) DevCon.WriteLn(Color_Green, "mVU_FSAND: Checking U/O/US/OS Flags");
+		if (_Imm12_ & 0x0c30) Log::Console.debug(LogStyle::CompatibilityGreen, "mVU_FSAND: Checking I/D/IS/DS Flags\n");
+		if (_Imm12_ & 0x030c) Log::Console.debug(LogStyle::CompatibilityGreen, "mVU_FSAND: Checking U/O/US/OS Flags\n");
 		mVUallocSFLAGc(gprT1, gprT2, sFLAG.read);
 		xAND(gprT1, _Imm12_);
 		mVUallocVIb(mVU, gprT1, _It_);
@@ -771,8 +771,8 @@ mVUop(mVU_FSEQ)
 	pass2
 	{
 		int imm = 0;
-		if (_Imm12_ & 0x0c30) DevCon.WriteLn(Color_Green, "mVU_FSEQ: Checking I/D/IS/DS Flags");
-		if (_Imm12_ & 0x030c) DevCon.WriteLn(Color_Green, "mVU_FSEQ: Checking U/O/US/OS Flags");
+		if (_Imm12_ & 0x0c30) Log::Console.debug(LogStyle::CompatibilityGreen, "mVU_FSEQ: Checking I/D/IS/DS Flags\n");
+		if (_Imm12_ & 0x030c) Log::Console.debug(LogStyle::CompatibilityGreen, "mVU_FSEQ: Checking U/O/US/OS Flags\n");
 		if (_Imm12_ & 0x0001) imm |= 0x0000f00; // Z
 		if (_Imm12_ & 0x0002) imm |= 0x000f000; // S
 		if (_Imm12_ & 0x0004) imm |= 0x0010000; // U
@@ -1548,7 +1548,7 @@ void __fastcall mVU_XGKICK_(u32 addr)
 
 	if (size > diff)
 	{
-		//DevCon.WriteLn(Color_Green, "microVU1: XGkick Wrap!");
+		//Log::Console.debug(LogStyle::CompatibilityGreen, "microVU1: XGkick Wrap!\n");
 		gifUnit.gifPath[GIF_PATH_1].CopyGSPacketData(&vuRegs[1].Mem[addr], diff, true);
 		gifUnit.TransferGSPacketData(GIF_TRANS_XGKICK, &vuRegs[1].Mem[0], size - diff, true);
 	}
@@ -1613,7 +1613,7 @@ void setBranchA(mP, int x, int _x_)
 	{
 		if (_Imm11_ == 1 && !_x_ && !isBranchDelaySlot)
 		{
-			DevCon.WriteLn(Color_Green, "microVU%d: Branch Optimization", mVU.index);
+			Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Branch Optimization\n", mVU.index);
 			mVUlow.isNOP = true;
 			return;
 		}

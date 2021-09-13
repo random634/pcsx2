@@ -20,7 +20,7 @@
 
 void ATA::HDD_Smart()
 {
-	DevCon.WriteLn("DEV9: HDD_Smart");
+	Log::Console.debug("DEV9: HDD_Smart\n");
 
 	if ((regStatus & ATA_STAT_READY) == 0)
 		return;

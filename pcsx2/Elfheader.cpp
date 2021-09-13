@@ -55,7 +55,7 @@ ElfObject::ElfObject( const wxString& srcfile, uint hdrsize )
 
 void ElfObject::initElfHeaders()
 {
-	DevCon.WriteLn( L"Initializing Elf: %d bytes", data.GetSizeInBytes());
+	Log::Console.debug("Initializing Elf: {:d} bytes\n", data.GetSizeInBytes());
 
 	if ( header.e_phnum > 0 )
 		proghead = (ELF_PHR*)&data[header.e_phoff];

@@ -247,7 +247,7 @@ __fi void vif0Interrupt()
 
 	if (vif0.vifstalled.enabled && vif0.done)
 	{
-		DevCon.WriteLn("VIF0 looping on stall at end\n");
+		Log::Console.debug("VIF0 looping on stall at end\n");
 		CPU_INT(DMAC_VIF0, 0);
 		return; //Dont want to end if vif is stalled.
 	}

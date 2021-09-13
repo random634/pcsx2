@@ -419,7 +419,7 @@ __ri void mVUanalyzeSflag(mV, int It)
 		if (mVUcount < 4)
 		{
 			if (!(mVUpBlock->pState.needExactMatch & 1)) // The only time this should happen is on the first program block
-				DevCon.WriteLn(Color_Green, "microVU%d: pState's sFlag Info was expected to be set [%04x]", getIndex, xPC);
+				Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: pState's sFlag Info was expected to be set [{:04x}]\n", getIndex, xPC);
 		}
 	}
 }
@@ -450,7 +450,7 @@ __ri void mVUanalyzeMflag(mV, int Is, int It)
 		if (mVUcount < 4)
 		{
 			if (!(mVUpBlock->pState.needExactMatch & 2)) // The only time this should happen is on the first program block
-				DevCon.WriteLn(Color_Green, "microVU%d: pState's mFlag Info was expected to be set [%04x]", getIndex, xPC);
+				Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: pState's mFlag Info was expected to be set [{:04x}]\n", getIndex, xPC);
 		}
 	}
 }
@@ -466,7 +466,7 @@ __fi void mVUanalyzeCflag(mV, int It)
 	if (mVUcount < 4)
 	{
 		if (!(mVUpBlock->pState.needExactMatch & 4)) // The only time this should happen is on the first program block
-			DevCon.WriteLn(Color_Green, "microVU%d: pState's cFlag Info was expected to be set [%04x]", getIndex, xPC);
+			Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: pState's cFlag Info was expected to be set [{:04x}]\n", getIndex, xPC);
 	}
 	analyzeVIreg2(mVU, It, mVUlow.VI_write, 1);
 }
@@ -525,7 +525,7 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 
 			if (mVUpBlock->pState.viBackUp == xReg)
 			{
-				DevCon.WriteLn(Color_Green, "microVU%d: Loading Branch VI value from previous block", getIndex);
+				Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Loading Branch VI value from previous block\n", getIndex);
 
 				if (i == 0)
 					warn = true;
@@ -566,7 +566,7 @@ static void analyzeBranchVI(mV, int xReg, bool& infoVar)
 			infoVar = true;
 		}
 		iPC = bPC;
-		DevCon.WriteLn(Color_Green, "microVU%d: Branch VI-Delay (%d) [%04x][%03d]", getIndex, j + 1, xPC, mVU.prog.cur->idx);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Branch VI-Delay ({:d}) [{:04x}][{:03d}]\n", getIndex, j + 1, xPC, mVU.prog.cur->idx);
 	}
 	else
 	{
@@ -621,7 +621,7 @@ __fi void analyzeBranchVI(mV, int xReg, bool& infoVar)
 			infoVar = 1;
 		}
 		iPC = bPC;
-		DevCon.WriteLn( Color_Green, "microVU%d: Branch VI-Delay (%d) [%04x]", getIndex, i, xPC);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Branch VI-Delay ({:d}) [{:04x}]\n", getIndex, i, xPC);
 	}
 	else iPC = bPC;
 }

@@ -1146,10 +1146,10 @@ void Panels::MemoryCardListPanel_Simple::ReadFilesAtMcdFolder()
 			currentCardFile.Slot = -1;
 			currentCardFile.IsEnabled = false;
 			m_allFilesystemCards.push_back(currentCardFile);
-			//DevCon.WriteLn(L"Enumerated file: '%s'", WX_STR(currentCardFile.Filename.GetFullName()) );
+			//Log::Console.debug("Enumerated file: '{:s}'\n", WX_STR(currentCardFile.Filename.GetFullName()) );
 		}
 		/*else
-			DevCon.WriteLn(L"MCD folder card file skipped: '%s'", WX_STR(memcardList[i]) );*/
+			Log::Console.debug("MCD folder card file skipped: '{:s}'\n", WX_STR(memcardList[i]) );*/
 	}
 }
 

@@ -215,7 +215,7 @@ namespace usb_pad
 							SetAutoCenter(mFFdev, ffdata->u.autocenter);
 							break;
 						default:
-							DevCon.WriteLn("CMD_DOWNLOAD_AND_PLAY: unhandled force type 0x%02X in slots 0x%02X\n", ffdata->type, slots);
+							Log::Console.debug("CMD_DOWNLOAD_AND_PLAY: unhandled force type 0x{:02X} in slots 0x{:02X}\n", ffdata->type, slots);
 							break;
 					}
 				}
@@ -250,7 +250,7 @@ namespace usb_pad
 									mFFdev->DisableForce(EFF_DAMPER);
 									break;
 								default:
-									DevCon.WriteLn("CMD_STOP: unhandled force type 0x%02X in slot 0x%02X\n", ffdata->type, slots);
+									Log::Console.debug("CMD_STOP: unhandled force type 0x{:02X} in slot 0x{:02X}\n", ffdata->type, slots);
 									break;
 							}
 						}
@@ -258,7 +258,7 @@ namespace usb_pad
 				}
 				break;
 				case CMD_DEFAULT_SPRING_ON: //0x04
-					DevCon.WriteLn("CMD_DEFAULT_SPRING_ON: unhandled cmd\n");
+					Log::Console.debug("CMD_DEFAULT_SPRING_ON: unhandled cmd\n");
 					break;
 				case CMD_DEFAULT_SPRING_OFF: //0x05
 				{
@@ -269,24 +269,24 @@ namespace usb_pad
 					}
 					else
 					{
-						DevCon.WriteLn("CMD_DEFAULT_SPRING_OFF: unhandled slots 0x%02X\n", slots);
+						Log::Console.debug("CMD_DEFAULT_SPRING_OFF: unhandled slots 0x{:02X}\n", slots);
 					}
 				}
 				break;
 				case CMD_NORMAL_MODE: //0x08
-					DevCon.WriteLn("CMD_NORMAL_MODE: unhandled cmd\n");
+					Log::Console.debug("CMD_NORMAL_MODE: unhandled cmd\n");
 					break;
 				case CMD_SET_LED: //0x09
-					DevCon.WriteLn("CMD_SET_LED: unhandled cmd\n");
+					Log::Console.debug("CMD_SET_LED: unhandled cmd\n");
 					break;
 				case CMD_RAW_MODE: //0x0B
-					DevCon.WriteLn("CMD_RAW_MODE: unhandled cmd\n");
+					Log::Console.debug("CMD_RAW_MODE: unhandled cmd\n");
 					break;
 				case CMD_SET_DEFAULT_SPRING: //0x0E
-					DevCon.WriteLn("CMD_SET_DEFAULT_SPRING: unhandled cmd\n");
+					Log::Console.debug("CMD_SET_DEFAULT_SPRING: unhandled cmd\n");
 					break;
 				case CMD_SET_DEAD_BAND: //0x0F
-					DevCon.WriteLn("CMD_SET_DEAD_BAND: unhandled cmd\n");
+					Log::Console.debug("CMD_SET_DEAD_BAND: unhandled cmd\n");
 					break;
 			}
 		}
@@ -301,7 +301,7 @@ namespace usb_pad
 			if (ffdata->type == EXT_CMD_WHEEL_RANGE_200_DEGREES)
 			{
 			}
-			DevCon.WriteLn("CMD_EXTENDED: unhandled cmd 0x%02X%02X%02X\n",
+			Log::Console.debug("CMD_EXTENDED: unhandled cmd 0x{:02X}{:02X}{:02X}\n",
 					   ffdata->type, ffdata->u.params[0], ffdata->u.params[1]);
 		}
 	}

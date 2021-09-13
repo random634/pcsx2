@@ -311,12 +311,12 @@ bool TAPGetWin32Adapter(const char* name, PIP_ADAPTER_ADDRESSES adapter, std::un
 
 	if (dwStatus == ERROR_BUFFER_OVERFLOW)
 	{
-		DevCon.WriteLn("DEV9: GetWin32Adapter() buffer too small, resizing");
+		Log::Console.debug("DEV9: GetWin32Adapter() buffer too small, resizing\n");
 		//
 		neededSize = dwBufLen / sizeof(IP_ADAPTER_ADDRESSES) + 1;
 		AdapterInfo = std::make_unique<IP_ADAPTER_ADDRESSES[]>(neededSize);
 		dwBufLen = sizeof(IP_ADAPTER_ADDRESSES) * neededSize;
-		DevCon.WriteLn("DEV9: New size %i", neededSize);
+		Log::Console.debug("DEV9: New size {:d}\n", neededSize);
 
 		dwStatus = GetAdaptersAddresses(
 			AF_UNSPEC,

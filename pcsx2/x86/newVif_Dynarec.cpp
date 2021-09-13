@@ -175,7 +175,7 @@ void VifUnpackSSE_Dynarec::writeBackRow() const
 	const int idx = v.idx;
 	xMOVAPS(ptr128[&(MTVU_VifX.MaskRow)], xmmRow);
 
-	DevCon.WriteLn("nVif: writing back row reg! [doMode = %d]", doMode);
+	Log::Console.debug("nVif: writing back row reg! [doMode = {:d}]\n", doMode);
 	// ToDo: Do we need to write back to vifregs.rX too!? :/
 }
 
@@ -301,7 +301,7 @@ void VifUnpackSSE_Dynarec::CompileRoutine()
 		else if (isFill)
 		{
 			//Filling doesn't need anything fancy, it's pretty much a normal write, just doesnt increment the source.
-			//DevCon.WriteLn("filling mode!");
+			//Log::Console.debug("filling mode!\n");
 			xUnpack(upkNum);
 			xMovDest();
 
@@ -344,8 +344,8 @@ _vifT __fi nVifBlock* dVifCompile(nVifBlock& block, bool isFill)
 	// Check size before the compilation
 	if (v.recWritePtr > (v.recReserve->GetPtrEnd() - _256kb))
 	{
-		DevCon.WriteLn(L"nVif Recompiler Cache Reset! [%ls > %ls]",
-			pxsPtr(v.recWritePtr), pxsPtr(v.recReserve->GetPtrEnd()));
+		Log::Console.debug("nVif Recompiler Cache Reset! [{:08p} > {:08p}]\n",
+			(void*)v.recWritePtr, (void*)v.recReserve->GetPtrEnd());
 		recReset(idx);
 	}
 
@@ -396,10 +396,12 @@ _vifT __fi void dVifUnpack(const u8* data, bool isFill)
 	block.key0 = key0;
 	block.key1 = key1;
 
-	//DevCon.WriteLn("nVif%d: Recompiled Block!", idx);
-	//DevCon.WriteLn(L"[num=% 3d][upkType=0x%02x][scl=%d][cl=%d][wl=%d][mode=%d][m=%d][mask=%s]",
+	//Log::Console.debug(
+	//	"nVif{:d}: Recompiled Block!\n"
+	//	"[num={:<3d}][upkType=0x{:02x}][scl={:d}][cl={:d}][wl={:d}][mode={:d}][m={:d}][mask={:s}]\n",
+	//	idx,
 	//	block.num, block.upkType, block.scl, block.cl, block.wl, block.mode,
-	//	doMask >> 4, doMask ? wxsFormat( L"0x%08x", block.mask ).c_str() : L"ignored"
+	//	doMask >> 4, doMask ? wxsFormat( L"0x%08x", block.mask ) : "ignored"
 	//);
 
 	// Seach in cache before trying to compile the block

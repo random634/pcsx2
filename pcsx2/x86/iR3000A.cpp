@@ -737,7 +737,7 @@ static void recAlloc()
 
 void recResetIOP()
 {
-	DevCon.WriteLn("iR3000A Recompiler reset.");
+	Log::Console.debug("iR3000A Recompiler reset.\n");
 
 	Perf::iop.reset();
 
@@ -1140,9 +1140,9 @@ void psxDynarecMemcheck()
 void __fastcall psxDynarecMemLogcheck(u32 start, bool store)
 {
 	if (store)
-		DevCon.WriteLn("Hit store breakpoint @0x%x", start);
+		Log::Console.debug("Hit store breakpoint @0x{:x}\n", start);
 	else
-		DevCon.WriteLn("Hit load breakpoint @0x%x", start);
+		Log::Console.debug("Hit load breakpoint @0x{:x}\n", start);
 }
 
 void psxRecMemcheck(u32 op, u32 bits, bool store)

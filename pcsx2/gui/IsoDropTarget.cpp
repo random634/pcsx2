@@ -190,7 +190,7 @@ bool IsoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filen
 
 		if (iso.Test( filenames[0] ))
 		{
-			DevCon.WriteLn( L"(Drag&Drop) Found valid ISO file type!" );
+			Log::Console.debug("(Drag&Drop) Found valid ISO file type!\n");
 			wxGetApp().PostEvent( DroppedIso(m_WindowBound, filenames[0]) );
 			return true;
 		}

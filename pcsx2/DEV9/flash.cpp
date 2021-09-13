@@ -94,7 +94,7 @@ void FLASHinit()
 		ret = fread(file, 1, CARD_SIZE_ECC, fd);
 		if (ret != CARD_SIZE_ECC)
 		{
-			DevCon.WriteLn("DEV9: Reading error.");
+			Log::Console.debug("DEV9: Reading error.\n");
 		}
 
 		fclose(fd);
@@ -148,11 +148,11 @@ u32 FLASHread32(u32 addr, int size)
 			return value;
 
 		case FLASH_R_CMD:
-			DevCon.WriteLn("DEV9: *FLASH CMD %dbit read %s DENIED", size * 8, getCmdName(cmd));
+			Log::Console.debug("DEV9: *FLASH CMD {:d}bit read {:s} DENIED\n", size * 8, getCmdName(cmd));
 			return cmd;
 
 		case FLASH_R_ADDR:
-			DevCon.WriteLn("DEV9: *FLASH ADDR %dbit read DENIED", size * 8);
+			Log::Console.debug("DEV9: *FLASH ADDR {:d}bit read DENIED\n", size * 8);
 			return 0;
 
 		case FLASH_R_CTRL:
@@ -174,7 +174,7 @@ u32 FLASHread32(u32 addr, int size)
 			return 0;
 
 		default:
-			DevCon.WriteLn("DEV9: *FLASH Unknown %dbit read at address %lx", size * 8, addr);
+			Log::Console.debug("DEV9: *FLASH Unknown {:d}bit read at address {:x}\n", size * 8, addr);
 			return 0;
 	}
 }
@@ -197,7 +197,7 @@ void FLASHwrite32(u32 addr, u32 value, int size)
 			{
 				if ((value != SM_CMD_GETSTATUS) && (value != SM_CMD_RESET))
 				{
-					DevCon.WriteLn("DEV9: *FLASH CMD %dbit write %s ILLEGAL in busy mode - IGNORED", size * 8, getCmdName(value));
+					Log::Console.debug("DEV9: *FLASH CMD {:d}bit write {:s} ILLEGAL in busy mode - IGNORED\n", size * 8, getCmdName(value));
 					break;
 				}
 			}
@@ -205,12 +205,12 @@ void FLASHwrite32(u32 addr, u32 value, int size)
 			{
 				if ((value != SM_CMD_PROGRAMPAGE) && (value != SM_CMD_RESET))
 				{
-					DevCon.WriteLn("DEV9: *FLASH CMD %dbit write %s ILLEGAL after WRITEDATA cmd - IGNORED", size * 8, getCmdName(value));
+					Log::Console.debug("DEV9: *FLASH CMD {:d}bit write {:s} ILLEGAL after WRITEDATA cmd - IGNORED\n", size * 8, getCmdName(value));
 					ctrl &= ~FLASH_PP_READY; //go busy, reset is needed
 					break;
 				}
 			}
-			DevCon.WriteLn("DEV9: *FLASH CMD %dbit write %s", size * 8, getCmdName(value));
+			Log::Console.debug("DEV9: *FLASH CMD {:d}bit write {:s}\n", size * 8, getCmdName(value));
 			switch (value)
 			{ // A8 bit is encoded in READ cmd;)
 				case SM_CMD_READ1:

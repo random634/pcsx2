@@ -207,7 +207,7 @@ void Gif_AddGSPacketMTVU(GS_Packet& gsPack, GIF_PATH path)
 
 void Gif_AddCompletedGSPacket(GS_Packet& gsPack, GIF_PATH path)
 {
-	//DevCon.WriteLn("Adding Completed Gif Packet [size=%x]", gsPack.size);
+	//Log::Console.debug("Adding Completed Gif Packet [size={:x}]\n", gsPack.size);
 	if (COPY_GS_PACKET_TO_MTGS)
 	{
 		GetMTGS().PrepDataPacket(path, gsPack.size / 16);
@@ -225,7 +225,7 @@ void Gif_AddCompletedGSPacket(GS_Packet& gsPack, GIF_PATH path)
 
 void Gif_AddBlankGSPacket(u32 size, GIF_PATH path)
 {
-	//DevCon.WriteLn("Adding Blank Gif Packet [size=%x]", size);
+	//Log::Console.debug("Adding Blank Gif Packet [size={:x}]\n", size);
 	gifUnit.gifPath[path].readAmount.fetch_add(size);
 	GetMTGS().SendSimpleGSPacket(GS_RINGTYPE_GSPACKET, ~0u, size, path);
 }

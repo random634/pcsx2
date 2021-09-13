@@ -125,7 +125,7 @@ VirtualPad::VirtualPad(wxWindow* parent, int controllerPort, AppConfig::InputRec
 	// The reason for this is in order to minimize the performance impact, we need total control over when render is called
 	// Windows redraws the window _alot_ otherwise which leads to major performance problems (when GS is using the software renderer)
 	Bind(wxEVT_PAINT, &VirtualPad::OnPaint, this);
-	// DevCon.WriteLn("Paint Event Bound");
+	// Log::Console.debug("Paint Event Bound\n");
 
 	// Finalize layout
 	SetIcons(wxGetApp().GetIconBundle());
@@ -155,7 +155,7 @@ void VirtualPad::OnClose(wxCloseEvent& event)
 	// Re-bind the Paint event in case this is due to a game being opened/closed
 	manualRedrawMode = false;
 	Bind(wxEVT_PAINT, &VirtualPad::OnPaint, this);
-	// DevCon.WriteLn("Paint Event Bound");
+	// Log::Console.debug("Paint Event Bound\n");
 	Hide();
 }
 
@@ -165,7 +165,7 @@ void VirtualPad::OnIconize(wxIconizeEvent& event)
 	{
 		manualRedrawMode = false;
 		Bind(wxEVT_PAINT, &VirtualPad::OnPaint, this);
-		// DevCon.WriteLn("Paint Event Bound");
+		// Log::Console.debug("Paint Event Bound\n");
 	}
 }
 
@@ -177,7 +177,7 @@ void VirtualPad::OnEraseBackground(wxEraseEvent& event)
 
 void VirtualPad::OnPaint(wxPaintEvent& event)
 {
-	// DevCon.WriteLn("Paint Event Called");
+	// Log::Console.debug("Paint Event Called\n");
 	wxBufferedPaintDC dc(this, wxBUFFER_VIRTUAL_AREA);
 	Render(dc);
 }
@@ -208,7 +208,7 @@ void VirtualPad::Render(wxDC& bdc)
 		// Switch to Manual Rendering once the first user action on the VirtualPad is taken
 		if (!manualRedrawMode && !renderQueue.empty())
 		{
-			// DevCon.WriteLn("Paint Event Unbound");
+			// Log::Console.debug("Paint Event Unbound\n");
 			Unbind(wxEVT_PAINT, &VirtualPad::OnPaint, this);
 			manualRedrawMode = true;
 		}

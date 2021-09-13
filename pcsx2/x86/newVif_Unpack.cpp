@@ -237,7 +237,7 @@ __ri void __fastcall _nVifUnpackLoop(const u8* data)
 	// skipSize used for skipping writes only
 	const int skipSize = (vifRegs.cycle.cl - vifRegs.cycle.wl) * 16;
 
-	//DevCon.WriteLn("[%d][%d][%d][num=%d][upk=%d][cl=%d][bl=%d][skip=%d]", isFill, doMask, doMode, vifRegs.num, upkNum, vif.cl, blockSize, skipSize);
+//	Log::Console.debug("[{:d}][{:d}][{:d}][num={:d}][upk={:d}][cl={:d}][bl={:d}][skip={:d}]\n", isFill, doMask, doMode, vifRegs.num, upkNum, vif.cl, blockSize, skipSize);
 
 	if (!doMode && (vif.cmd & 0x10))
 		setMasks(vif, vifRegs);
@@ -266,7 +266,7 @@ __ri void __fastcall _nVifUnpackLoop(const u8* data)
 		}
 		else
 		{
-			//DevCon.WriteLn("SSE Unpack!");
+			//Log::Console.debug("SSE Unpack!\n");
 			uint cl3 = std::min(vif.cl, 3);
 			fnbase[cl3](dest, data);
 		}
@@ -277,7 +277,7 @@ __ri void __fastcall _nVifUnpackLoop(const u8* data)
 
 		if (isFill)
 		{
-			//DevCon.WriteLn("isFill!");
+			//Log::Console.debug("isFill!\n");
 			if (vif.cl <= vifRegs.cycle.cl)
 				data += vSize;
 			else if (vif.cl == vifRegs.cycle.wl)

@@ -109,7 +109,7 @@ void mVUsetupRange(microVU& mVU, s32 pc, bool isStartPC)
 	else
 	{
 		mVUrange.end = mVU.microMemSize;
-		DevCon.WriteLn(Color_Green, "microVU%d: Prog Range Wrap [%04x] [%d]", mVU.index, mVUrange.start, mVUrange.end);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Prog Range Wrap [{:04x}] [{:d}]\n", mVU.index, mVUrange.start, mVUrange.end);
 		microRange mRange = {0, pc};
 		ranges->push_front(mRange);
 	}
@@ -152,7 +152,7 @@ void doIbit(mV)
 			u32 tempI;
 			if (CHECK_VU_OVERFLOW && ((curI & 0x7fffffff) >= 0x7f800000))
 			{
-				DevCon.WriteLn(Color_Green, "microVU%d: Clamping I Reg", mVU.index);
+				Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Clamping I Reg\n", mVU.index);
 				tempI = (0x80000000 & curI) | 0x7f7fffff; // Clamp I Reg
 			}
 			else
@@ -168,7 +168,7 @@ void doSwapOp(mV)
 {
 	if (mVUinfo.backupVF && !mVUlow.noWriteVF)
 	{
-		DevCon.WriteLn(Color_Green, "microVU%d: Backing Up VF Reg [%04x]", getIndex, xPC);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: Backing Up VF Reg [{:04x}]\n", getIndex, xPC);
 
 		// Allocate t1 first for better chance of reg-alloc
 		const xmm& t1 = mVU.regAlloc->allocReg(mVUlow.VF_write.reg);
@@ -493,11 +493,11 @@ void mVUtestCycles(microVU& mVU, microFlagCycles& mFC)
 __fi void startLoop(mV)
 {
 	if (curI & _Mbit_ && isVU0)
-		DevCon.WriteLn(Color_Green, "microVU%d: M-bit set! PC = %x", getIndex, xPC);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: M-bit set! PC = {:x}\n", getIndex, xPC);
 	if (curI & _Dbit_)
-		DevCon.WriteLn(Color_Green, "microVU%d: D-bit set! PC = %x", getIndex, xPC);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: D-bit set! PC = {:x}\n", getIndex, xPC);
 	if (curI & _Tbit_)
-		DevCon.WriteLn(Color_Green, "microVU%d: T-bit set! PC = %x", getIndex, xPC);
+		Log::Console.debug(LogStyle::CompatibilityGreen, "microVU{:d}: T-bit set! PC = {:x}\n", getIndex, xPC);
 	memzero(mVUinfo);
 	memzero(mVUregsTemp);
 }

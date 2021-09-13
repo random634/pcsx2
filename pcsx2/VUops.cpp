@@ -357,9 +357,9 @@ static __fi float vuADD_TriAceHack(u32 a, u32 b) {
 		if (aExp - bExp >= 25) b &= 0x80000000;
 		if (aExp - bExp <=-25) a &= 0x80000000;
 		float ret = vuDouble(a) + vuDouble(b);
-		DevCon.WriteLn("aExp = %d, bExp = %d", aExp, bExp);
-		DevCon.WriteLn("0x%08x + 0x%08x = 0x%08x", a, b, (u32&)ret);
-		DevCon.WriteLn("%f + %f = %f", vuDouble(a), vuDouble(b), ret);
+		Log::Console.debug("aExp = {:d}, bExp = {:d}\n", aExp, bExp);
+		Log::Console.debug("0x{:08x} + 0x{:08x} = 0x{:08x}\n", a, b, (u32&)ret);
+		Log::Console.debug("{:f} + {:f} = {:f}\n", vuDouble(a), vuDouble(b), ret);
 		return ret;
 	}
 	return vuDouble(a) + vuDouble(b);
@@ -2214,7 +2214,7 @@ static __ri void _vuXGKICK(VURegs * VU)
 	u32 size = gifUnit.GetGSPacketSize(GIF_PATH_1, VU->Mem, addr);
 
 	if (size > diff) {
-		//DevCon.WriteLn(Color_Green, "VU1 Int: XGkick Wrap!");
+		//Log::Console.debug(LogStyle::CompatibilityGreen, "VU1 Int: XGkick Wrap!\n");
 		gifUnit.gifPath[GIF_PATH_1].CopyGSPacketData(  &VU->Mem[addr],  diff,true);
 		gifUnit.TransferGSPacketData(GIF_TRANS_XGKICK, &VU->Mem[0],size-diff,true);
 	}

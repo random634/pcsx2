@@ -545,8 +545,8 @@ void cdvdReadKey(u8, u16, u32 arg2, u8* key)
 			break;
 	}
 
-	DevCon.WriteLn("CDVD.KEY = %02X,%02X,%02X,%02X,%02X,%02X,%02X",
-				   cdvd.Key[0], cdvd.Key[1], cdvd.Key[2], cdvd.Key[3], cdvd.Key[4], cdvd.Key[14], cdvd.Key[15]);
+	Log::Console.debug("CDVD.KEY = {:02X},{:02X},{:02X},{:02X},{:02X},{:02X},{:02X}\n",
+		cdvd.Key[0], cdvd.Key[1], cdvd.Key[2], cdvd.Key[3], cdvd.Key[4], cdvd.Key[14], cdvd.Key[15]);
 }
 
 s32 cdvdGetToc(void* toc)
@@ -573,7 +573,7 @@ static void cdvdDetectDisk()
 
 s32 cdvdCtrlTrayOpen()
 {
-	DevCon.WriteLn(Color_Green, L"Open virtual disk tray");
+	Log::Console.debug(LogStyle::CompatibilityGreen, "Open virtual disk tray\n");
 	DiscSwapTimerSeconds = cdvd.RTC.second; // remember the PS2 time when this happened
 	cdvd.Status = CDVD_STATUS_TRAY_OPEN;
 	cdvd.Ready = CDVD_NOTREADY;
@@ -583,7 +583,7 @@ s32 cdvdCtrlTrayOpen()
 
 s32 cdvdCtrlTrayClose()
 {
-	DevCon.WriteLn(Color_Green, L"Close virtual disk tray");
+	Log::Console.debug(LogStyle::CompatibilityGreen, "Close virtual disk tray\n");
 	cdvd.Status = CDVD_STATUS_PAUSE;
 	cdvd.Ready = CDVD_READY1;
 	cdvd.TrayTimeout = 0; // Reset so it can't get closed twice by cdvdVsync()
@@ -874,7 +874,7 @@ __fi void cdvdActionInterrupt()
 
 		case cdvdAction_Break:
 			// Make sure the cdvd action state is pretty well cleared:
-			DevCon.WriteLn("CDVD Break Call");
+			Log::Console.debug("CDVD Break Call\n");
 			cdvd.Reading = 0;
 			cdvd.Readed = 0;
 			cdvd.Ready = CDVD_READY2;        // should be CDVD_READY1 or something else?
@@ -1391,7 +1391,7 @@ static void cdvdWrite04(u8 rt)
 			//the code below handles only CdGetToc!
 			//if(cdvd.Param[0]==0x01)
 			//{
-			DevCon.WriteLn("CDGetToc Param[0]=%d, Param[1]=%d", cdvd.Param[0], cdvd.Param[1]);
+			Log::Console.debug("CDGetToc Param[0]={:d}, Param[1]={:d}\n", cdvd.Param[0], cdvd.Param[1]);
 			//}
 			cdvdGetToc(iopPhysMem(HW_DMA3_MADR));
 			cdvdSetIrq((1 << Irq_CommandComplete)); //| (1<<Irq_DataReady) );
@@ -1404,7 +1404,7 @@ static void cdvdWrite04(u8 rt)
 			u8 arg0 = cdvd.Param[0];
 			u16 arg1 = cdvd.Param[1] | (cdvd.Param[2] << 8);
 			u32 arg2 = cdvd.Param[3] | (cdvd.Param[4] << 8) | (cdvd.Param[5] << 16) | (cdvd.Param[6] << 24);
-			DevCon.WriteLn("cdvdReadKey(%d, %d, %d)", arg0, arg1, arg2);
+			Log::Console.debug("cdvdReadKey({:d}, {:d}, {:d})\n", arg0, arg1, arg2);
 			cdvdReadKey(arg0, arg1, arg2, cdvd.Key);
 			cdvd.KeyXor = 0x00;
 			cdvdSetIrq();
@@ -1481,7 +1481,7 @@ static __fi void cdvdWrite0A(u8 rt)
 static __fi void cdvdWrite0F(u8 rt)
 { // TYPE
 	CDVD_LOG("cdvdWrite0F(Type) %x", rt);
-	DevCon.WriteLn("*PCSX2*: CDVD TYPE %x", rt);
+	Log::Console.debug("*PCSX2*: CDVD TYPE {:x}\n", rt);
 }
 
 static __fi void cdvdWrite14(u8 rt)
@@ -1863,7 +1863,7 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 
 				cdvdGetMechaVer(&cdvd.Result[1]);
 				cdvdReadRegionParams(&cdvd.Result[3]); //size==8
-				DevCon.WriteLn("REGION PARAMS = %s %s", mg_zones[cdvd.Result[1] & 7], &cdvd.Result[3]);
+				Log::Console.debug("REGION PARAMS = {:s} {:s}\n", mg_zones[cdvd.Result[1] & 7], &cdvd.Result[3]);
 				cdvd.Result[1] = 1 << cdvd.Result[1]; //encryption zone; see offset 0x1C in encrypted headers
 				//////////////////////////////////////////
 				cdvd.Result[2] = 0; //??

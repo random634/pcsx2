@@ -1063,7 +1063,7 @@ static u32 scaleblockcycles()
 	unscaled_overall += unscaled;
 	float ratio = static_cast<float>(unscaled_overall) / scaled_overall;
 
-	DevCon.WriteLn(L"Unscaled overall: %d,  scaled overall: %d,  relative EE clock speed: %d %%",
+	Log::Console.debug("Unscaled overall: {:d},  scaled overall: {:d},  relative EE clock speed: {:d} %\n",
 	               unscaled_overall, scaled_overall, static_cast<int>(100 * ratio));
 #endif
 
@@ -1087,7 +1087,7 @@ u32 scaleblockcycles_clear()
 	unscaled_overall += unscaled;
 	float ratio = static_cast<float>(unscaled_overall) / scaled_overall;
 
-	DevCon.WriteLn(L"Unscaled overall: %d,  scaled overall: %d,  relative EE clock speed: %d %%",
+	Log::Console.debug("Unscaled overall: {:d},  scaled overall: {:d},  relative EE clock speed: {:d} %\n",
 		unscaled_overall, scaled_overall, static_cast<int>(100 * ratio));
 #endif
 	s_nBlockCycles &= 0x7;
@@ -1297,9 +1297,9 @@ void dynarecMemcheck()
 void __fastcall dynarecMemLogcheck(u32 start, bool store)
 {
 	if (store)
-		DevCon.WriteLn("Hit store breakpoint @0x%x", start);
+		Log::Console.debug("Hit store breakpoint @0x{:x}\n", start);
 	else
-		DevCon.WriteLn("Hit load breakpoint @0x%x", start);
+		Log::Console.debug("Hit load breakpoint @0x{:x}\n", start);
 }
 
 void recMemcheck(u32 op, u32 bits, bool store)

@@ -31,7 +31,7 @@ s32 FWopen()
 	fwregs = (s8*)calloc(0x10000, 1);
 	if (fwregs == NULL)
 	{
-		DevCon.WriteLn("FW: Error allocating Memory");
+		Log::Console.debug("FW: Error allocating Memory\n");
 		return -1;
 	}
 	return 0;
@@ -101,7 +101,7 @@ u32 FWread32(u32 addr)
 			break;
 	}
 
-	DevCon.WriteLn("FW: read mem 0x%x: 0x%x", addr, ret);
+	Log::Console.debug("FW: read mem 0x{:x}: 0x{:x}\n", addr, ret);
 
 	return ret;
 }
@@ -191,5 +191,5 @@ void FWwrite32(u32 addr, u32 value)
 			fwRu32(addr) = value;
 			break;
 	}
-	DevCon.WriteLn("FW: write mem 0x%x: 0x%x", addr, value);
+	Log::Console.debug("FW: write mem 0x{:x}: 0x{:x}\n", addr, value);
 }

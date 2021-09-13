@@ -20,7 +20,7 @@
 
 void ATA::HDD_SCE()
 {
-	DevCon.WriteLn("DEV9: HDD_SCE SONY-SPECIFIC SECURITY CONTROL COMMAND %x", regFeature);
+	Log::Console.debug("DEV9: HDD_SCE SONY-SPECIFIC SECURITY CONTROL COMMAND {:x}\n", regFeature);
 
 	switch (regFeature)
 	{
