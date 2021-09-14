@@ -195,12 +195,13 @@ void PadData::LogPadData(u8 const& port)
 	wxString rightAnalogBytes = RawPadBytesToString(2, 4);
 	wxString leftAnalogBytes = RawPadBytesToString(4, 6);
 	wxString pressureBytes = RawPadBytesToString(6, 17);
-	wxString fullLog =
-		wxString::Format("[PAD %d] Raw Bytes: Pressed = [%s]\n", port + 1, pressedBytes) +
-		wxString::Format("[PAD %d] Raw Bytes: Right Analog = [%s]\n", port + 1, rightAnalogBytes) +
-		wxString::Format("[PAD %d] Raw Bytes: Left Analog = [%s]\n", port + 1, leftAnalogBytes) +
-		wxString::Format("[PAD %d] Raw Bytes: Pressure = [%s]\n", port + 1, pressureBytes);
-	controlLog(fullLog);
+	Log::RecControl.debug(
+		"[PAD {0:d}] Raw Bytes: Pressed = [{1:s}]\n"
+		"[PAD {0:d}] Raw Bytes: Right Analog = [{2:s}]\n"
+		"[PAD {0:d}] Raw Bytes: Left Analog = [{3:s}]\n"
+		"[PAD {0:d}] Raw Bytes: Pressure = [{4:s}]\n",
+		port + 1, pressedBytes, rightAnalogBytes, leftAnalogBytes, pressureBytes
+	);
 }
 
 #endif

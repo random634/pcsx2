@@ -691,7 +691,7 @@ namespace R3000A
 			if (fd == 1) // stdout
 			{
 				const std::string s = Ra1;
-				iopConLog(ShiftJIS_ConvertString(s.data(), a2));
+				Log::SysCon::IOP.info(ShiftJIS_ConvertString(s.data(), a2).utf8_string());
 				pc = ra;
 				v0 = a2;
 				return 1;
@@ -822,7 +822,7 @@ namespace R3000A
 				}
 			}
 			*ptmp = 0;
-			iopConLog(ShiftJIS_ConvertString(tmp, 1023));
+			Log::SysCon::IOP.info(ShiftJIS_ConvertString(tmp, 1023).utf8_string());
 
 			return 1;
 		}

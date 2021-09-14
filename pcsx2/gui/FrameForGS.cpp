@@ -166,7 +166,7 @@ void GSPanel::RemoveRecordingAccelerators()
 {
 	m_Accels.reset(new AcceleratorDictionary);
 	InitDefaultAccelerators();
-	recordingConLog(L"Disabled Input Recording Key Bindings\n");
+	Log::Recording.debug("Disabled Input Recording Key Bindings\n");
 }
 #endif
 

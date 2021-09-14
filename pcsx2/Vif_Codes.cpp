@@ -150,7 +150,7 @@ vifOp(vifCode_Base)
 		vif1.cmd = 0;
 		vif1.pass = 0;
 	}
-	pass3 { VifCodeLog("Base"); }
+	pass3 { Log::EE::VIFcode.debug("Base\n"); }
 	return 1;
 }
 
@@ -202,13 +202,13 @@ __fi int _vifCode_Direct(int pass, const u8* data, bool isDirectHL)
 
 vifOp(vifCode_Direct)
 {
-	pass3 { VifCodeLog("Direct"); }
+	pass3 { Log::EE::VIFcode.debug("Direct\n"); }
 	return _vifCode_Direct<idx>(pass, (u8*)data, 0);
 }
 
 vifOp(vifCode_DirectHL)
 {
-	pass3 { VifCodeLog("DirectHL"); }
+	pass3 { Log::EE::VIFcode.debug("DirectHL\n"); }
 	return _vifCode_Direct<idx>(pass, (u8*)data, 1);
 }
 
@@ -234,7 +234,7 @@ vifOp(vifCode_Flush)
 			vif1.cmd = 0;
 		vif1.pass = 0;
 	}
-	pass3 { VifCodeLog("Flush"); }
+	pass3 { Log::EE::VIFcode.debug("Flush\n"); }
 	return 1;
 }
 
@@ -261,7 +261,7 @@ vifOp(vifCode_FlushA)
 		vif1.cmd = 0;
 		vif1.pass = 0;
 	}
-	pass3 { VifCodeLog("FlushA"); }
+	pass3 { Log::EE::VIFcode.debug("FlushA\n"); }
 	return 1;
 }
 
@@ -275,7 +275,7 @@ vifOp(vifCode_FlushE)
 		vifX.cmd = 0;
 		vifX.pass = 0;
 	}
-	pass3 { VifCodeLog("FlushE"); }
+	pass3 { Log::EE::VIFcode.debug("FlushE\n"); }
 	return 1;
 }
 
@@ -287,7 +287,7 @@ vifOp(vifCode_ITop)
 		GetVifX.cmd = 0;
 		GetVifX.pass = 0;
 	}
-	pass3 { VifCodeLog("ITop"); }
+	pass3 { Log::EE::VIFcode.debug("ITop\n"); }
 	return 1;
 }
 
@@ -301,7 +301,7 @@ vifOp(vifCode_Mark)
 		vifX.cmd = 0;
 		vifX.pass = 0;
 	}
-	pass3 { VifCodeLog("Mark"); }
+	pass3 { Log::EE::VIFcode.debug("Mark\n"); }
 	return 1;
 }
 
@@ -408,7 +408,7 @@ vifOp(vifCode_MPG)
 			return ret;
 		}
 	}
-	pass3 { VifCodeLog("MPG"); }
+	pass3 { Log::EE::VIFcode.debug("MPG\n"); }
 	return 0;
 }
 
@@ -435,7 +435,7 @@ vifOp(vifCode_MSCAL)
 			}
 		}
 	}
-	pass3 { VifCodeLog("MSCAL"); }
+	pass3 { Log::EE::VIFcode.debug("MSCAL\n"); }
 	return 1;
 }
 
@@ -461,7 +461,7 @@ vifOp(vifCode_MSCALF)
 			vifExecQueue(idx);
 		}
 	}
-	pass3 { VifCodeLog("MSCALF"); }
+	pass3 { Log::EE::VIFcode.debug("MSCALF\n"); }
 	return 1;
 }
 
@@ -485,7 +485,7 @@ vifOp(vifCode_MSCNT)
 			}
 		}
 	}
-	pass3 { VifCodeLog("MSCNT"); }
+	pass3 { Log::EE::VIFcode.debug("MSCNT\n"); }
 	return 1;
 }
 
@@ -506,7 +506,7 @@ vifOp(vifCode_MskPath3)
 		vif1.cmd = 0;
 		vif1.pass = 0;
 	}
-	pass3 { VifCodeLog("MskPath3"); }
+	pass3 { Log::EE::VIFcode.debug("MskPath3\n"); }
 	return 1;
 }
 
@@ -527,7 +527,7 @@ vifOp(vifCode_Nop)
 			}
 		}
 	}
-	pass3 { VifCodeLog("Nop"); }
+	pass3 { Log::EE::VIFcode.debug("Nop\n"); }
 	return 1;
 }
 
@@ -554,7 +554,7 @@ vifOp(vifCode_Null)
 			vifX.irq = 0;
 	}
 	pass2 { Log::Console.error("Vif{:d} bad vifcode! [CMD = {:x}]\n", idx, vifX.cmd); }
-	pass3 { VifCodeLog("Null"); }
+	pass3 { Log::EE::VIFcode.debug("Null\n"); }
 	return 1;
 }
 
@@ -569,7 +569,7 @@ vifOp(vifCode_Offset)
 		vif1.cmd = 0;
 		vif1.pass = 0;
 	}
-	pass3 { VifCodeLog("Offset"); }
+	pass3 { Log::EE::VIFcode.debug("Offset\n"); }
 	return 1;
 }
 
@@ -629,7 +629,7 @@ vifOp(vifCode_STCol)
 			vu1Thread.WriteCol(vifX);
 		return ret;
 	}
-	pass3 { VifCodeLog("STCol"); }
+	pass3 { Log::EE::VIFcode.debug("STCol\n"); }
 	return 0;
 }
 
@@ -650,7 +650,7 @@ vifOp(vifCode_STRow)
 			vu1Thread.WriteRow(vifX);
 		return ret;
 	}
-	pass3 { VifCodeLog("STRow"); }
+	pass3 { Log::EE::VIFcode.debug("STRow\n"); }
 	return 1;
 }
 
@@ -664,7 +664,7 @@ vifOp(vifCode_STCycl)
 		vifX.cmd = 0;
 		vifX.pass = 0;
 	}
-	pass3 { VifCodeLog("STCycl"); }
+	pass3 { Log::EE::VIFcode.debug("STCycl\n"); }
 	return 1;
 }
 
@@ -684,7 +684,7 @@ vifOp(vifCode_STMask)
 		vifX.cmd = 0;
 		vifX.pass = 0;
 	}
-	pass3 { VifCodeLog("STMask"); }
+	pass3 { Log::EE::VIFcode.debug("STMask\n"); }
 	return 1;
 }
 
@@ -696,7 +696,7 @@ vifOp(vifCode_STMod)
 		GetVifX.cmd = 0;
 		GetVifX.pass = 0;
 	}
-	pass3 { VifCodeLog("STMod"); }
+	pass3 { Log::EE::VIFcode.debug("STMod\n"); }
 	return 1;
 }
 
@@ -733,7 +733,7 @@ vifOp(vifCode_Unpack)
 		static const char* const vntbl[] = {"S", "V2", "V3", "V4"};
 		static const uint vltbl[] = {32, 16, 8, 5};
 
-		VifCodeLog("Unpack %s_%u (%s) @ 0x%04X%s (cl=%u  wl=%u  num=0x%02X)",
+		Log::EE::VIFcode.debug("Unpack {:s}_{:d} ({:s}) @ 0x{:04X}{:s} (cl={:d}  wl={:d}  num=0x{:02X})\n",
 			vntbl[vn], vltbl[vl], (vifX.cmd & 0x10) ? "masked" : "unmasked",
 			calc_addr<idx>(flg), flg ? "(FLG)" : "",
 			vifRegs.cycle.cl, vifRegs.cycle.wl, (vifXRegs.code >> 16) & 0xff);

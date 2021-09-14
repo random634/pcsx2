@@ -565,14 +565,14 @@ static void psxRecompileIrxImport()
 	const char* funcname = nullptr;
 #endif
 
-	if (!hle && !debug && (!SysTraceActive(IOP.Bios) || !funcname))
+	if (!hle && !debug && (!Log::IOP::Bios.shouldLog(LogLevel::Debug) || !funcname))
 		return;
 
 	xMOV(ptr32[&psxRegs.code], psxRegs.code);
 	xMOV(ptr32[&psxRegs.pc], psxpc);
 	_psxFlushCall(FLUSH_NODESTROY);
 
-	if (SysTraceActive(IOP.Bios))
+	if (Log::IOP::Bios.shouldLog(LogLevel::Debug))
 	{
 		xPUSH((uptr)funcname);
 		xFastCall((void*)irxImportLog_rec, import_table, index);

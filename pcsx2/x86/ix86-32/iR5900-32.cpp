@@ -1655,7 +1655,7 @@ static u32 s_recblocks[] = {0};
 //  less likely, self-modifying code)
 void __fastcall dyna_block_discard(u32 start, u32 sz)
 {
-	eeRecPerfLog.Write(Color_StrongGray, "Clearing Manual Block @ 0x%08X  [size=%d]", start, sz * 4);
+	Log::EERecPerf.info(LogStyle::CompatibilityGray, "Clearing Manual Block @ 0x{:08X}  [size={:d}]\n", start, sz * 4);
 	recClear(start, sz);
 }
 
@@ -1740,12 +1740,12 @@ static void memory_protect_recompiled_code(u32 startpc, u32 size)
 
 				// note: clearcnt is measured per-page, not per-block!
 				ConsoleColorScope cs(Color_Gray);
-				eeRecPerfLog.Write("Manual block @ %08X : size =%3d  page/offs = 0x%05X/0x%03X  inpgsz = %d  clearcnt = %d",
+				Log::EERecPerf.info("Manual block @ {:08X} : size ={:>3d}  page/offs = 0x{:05X}/0x{:03X}  inpgsz = {:d}  clearcnt = {:d}\n",
 					startpc, size, inpage_ptr >> 12, inpage_ptr & 0xfff, inpage_sz, manual_counter[inpage_ptr >> 12]);
 			}
 			else
 			{
-				eeRecPerfLog.Write("Uncounted Manual block @ 0x%08X : size =%3d page/offs = 0x%05X/0x%03X  inpgsz = %d",
+				Log::EERecPerf.info("Uncounted Manual block @ 0x{:08X} : size ={:>3d} page/offs = 0x{:05X}/0x{:03X}  inpgsz = {:d}\n",
 					startpc, size, inpage_ptr >> 12, inpage_ptr & 0xfff, inpage_sz);
 			}
 			break;

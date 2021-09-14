@@ -142,7 +142,7 @@ void __fastcall iopHwWrite8_Page3( u32 addr, mem8_t val )
 		if ((pidx == ArraySize(pbuf)-1) || (pbuf[pidx-1] == '\n'))
 		{
 			pbuf[pidx] = 0;
-			iopConLog( ShiftJIS_ConvertString(pbuf) );
+			Log::SysCon::IOP.info(ShiftJIS_ConvertString(pbuf).utf8_string());
 			pidx = 0;
 		}
 	}

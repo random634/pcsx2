@@ -24,7 +24,7 @@ namespace inputRec
 		if (log.empty())
 			return;
 
-		recordingConLog(fmt::format("[REC]: {}\n", log));
+		Log::Recording.debug("[REC]: {}\n", log);
 
 		// NOTE - Color is not currently used for OSD logs
 		GSosdLog(log.c_str(), wxGetApp().GetProgramLog()->GetRGBA(ConsoleColors::Color_StrongMagenta));
@@ -35,7 +35,7 @@ namespace inputRec
 		if (log.empty())
 			return;
 
-		recordingConLog(fmt::format("[REC]: {}\n", log));
+		Log::Recording.debug("[REC]: {}\n", log);
 	}
 
 	void consoleMultiLog(const std::vector<std::string>& logs)
@@ -44,6 +44,6 @@ namespace inputRec
 		for (std::string l : logs)
 			log.append(fmt::format("[REC]: {}\n", l));
 
-		recordingConLog(log);
+		Log::Recording.debug(log);
 	}
 } // namespace inputRec

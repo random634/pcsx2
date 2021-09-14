@@ -224,7 +224,7 @@ static int __Deci2Call(int call, u32 *addr)
 				memcpy(deci2buffer, pdeciaddr, copylen );
 				deci2buffer[copylen] = '\0';
 
-				eeConLog( ShiftJIS_ConvertString(deci2buffer) );
+				Log::SysCon::EE.info(ShiftJIS_ConvertString(deci2buffer).utf8_string());
 			}
 			((u32*)PSM(deci2addr))[3] = 0;
 			return 1;
@@ -244,7 +244,7 @@ static int __Deci2Call(int call, u32 *addr)
 		case 0x10://kputs
 			if( addr != NULL )
 			{
-				eeDeci2Log( ShiftJIS_ConvertString((char*)PSM(*addr)) );
+				Log::SysCon::DECI2.info(ShiftJIS_ConvertString((char*)PSM(*addr)).utf8_string());
 			}
 			return 1;
 	}
@@ -1021,7 +1021,7 @@ void SYSCALL()
 		break;
 		case Syscall::sceSifSetDma:
 			// The only thing this code is used for is the one log message, so don't execute it if we aren't logging bios messages.
-			if (SysTraceActive(EE.Bios))
+			if (Log::EE::Bios.shouldLog(LogLevel::Debug))
 			{
 				t_sif_dma_transfer *dmat;
 				//struct t_sif_cmd_header	*hdr;
