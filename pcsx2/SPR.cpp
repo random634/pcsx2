@@ -183,7 +183,7 @@ void _SPR0interleave()
 
 	if (tqwc == 0) tqwc = qwc;
 	//Log::Console.info("dmaSPR0 interleave\n");
-	SPR_LOG("SPR0 interleave size=%d, tqwc=%d, sqwc=%d, addr=%lx sadr=%lx",
+	Log::EE::SPR.debug("SPR0 interleave size={:d}, tqwc={:d}, sqwc={:d}, addr={:x} sadr={:x}\n",
 	        spr0ch.qwc, tqwc, sqwc, spr0ch.madr, spr0ch.sadr);
 
 	CPU_INT(DMAC_FROM_SPR, qwc * BIAS);
@@ -258,7 +258,7 @@ static __fi void _dmaSPR0()
 
 			spr0ch.madr = ptag[1]._u32; // MADR = ADDR field + SPR
 
-			SPR_LOG("spr0 dmaChain %8.8x_%8.8x size=%d, id=%d, addr=%lx spr=%lx",
+			Log::EE::SPR.debug("spr0 dmaChain {:08x}_{:08x} size={:d}, id={:d}, addr={:x} spr={:x}\n",
 				ptag[1]._u32, ptag[0]._u32, spr0ch.qwc, ptag->ID, spr0ch.madr, spr0ch.sadr);
 
 			switch (ptag->ID)
@@ -288,7 +288,7 @@ static __fi void _dmaSPR0()
 			}
 
 			spr0finished = done;
-			SPR_LOG("spr0 dmaChain complete %8.8x_%8.8x size=%d, id=%d, addr=%lx spr=%lx",
+			Log::EE::SPR.debug("spr0 dmaChain complete {:08x}_{:08x} size={:d}, id={:d}, addr={:x} spr={:x}\n",
 				ptag[1]._u32, ptag[0]._u32, spr0ch.qwc, ptag->ID, spr0ch.madr);
 			break;
 		}
@@ -338,12 +338,12 @@ void SPRFROMinterrupt()
 	spr0lastqwc = false;
 	spr0ch.chcr.STR = false;
 	hwDmacIrq(DMAC_FROM_SPR);
-	DMA_LOG("SPR0 DMA End");
+	Log::EE::DMAHW.debug("SPR0 DMA End\n");
 }
 
 void dmaSPR0()   // fromSPR
 {
-	SPR_LOG("dmaSPR0 chcr = %lx, madr = %lx, qwc  = %lx, sadr = %lx",
+	Log::EE::SPR.debug("dmaSPR0 chcr = {:x}, madr = {:x}, qwc  = {:x}, sadr = {:x}\n",
 	        spr0ch.chcr._u32, spr0ch.madr, spr0ch.qwc, spr0ch.sadr);
 
 
@@ -412,7 +412,7 @@ void _SPR1interleave()
 	tDMA_TAG *pMem;
 
 	if (tqwc == 0) tqwc = qwc;
-	SPR_LOG("SPR1 interleave size=%d, tqwc=%d, sqwc=%d, addr=%lx sadr=%lx",
+	Log::EE::SPR.debug("SPR1 interleave size={:d}, tqwc={:d}, sqwc={:d}, addr={:x} sadr={:x}\n",
 	        spr1ch.qwc, tqwc, sqwc, spr1ch.madr, spr1ch.sadr);
 	CPU_INT(DMAC_TO_SPR, qwc * BIAS);
 	while (qwc > 0)
@@ -448,7 +448,7 @@ void _dmaSPR1()   // toSPR work function
 
 			if (spr1ch.qwc > 0)
 			{
-				SPR_LOG("spr1 Normal or in Progress size=%d, addr=%lx taddr=%lx saddr=%lx", spr1ch.qwc, spr1ch.madr, spr1ch.tadr, spr1ch.sadr);
+				Log::EE::SPR.debug("spr1 Normal or in Progress size={:d}, addr={:x} taddr={:x} saddr={:x}\n", spr1ch.qwc, spr1ch.madr, spr1ch.tadr, spr1ch.sadr);
 				// Transfer Dn_QWC from Dn_MADR to SPR1
 				SPR1chain();
 				return;
@@ -468,11 +468,11 @@ void _dmaSPR1()   // toSPR work function
 			// Transfer dma tag if tte is set
 			if (spr1ch.chcr.TTE)
 			{
-				SPR_LOG("SPR TTE: %x_%x\n", ptag[3]._u32, ptag[2]._u32);
+				Log::EE::SPR.debug("SPR TTE: {:x}_{:x}\n\n", ptag[3]._u32, ptag[2]._u32);
 				SPR1transfer(ptag, 1); // Transfer Tag
 			}
 
-			SPR_LOG("spr1 dmaChain %8.8x_%8.8x size=%d, id=%d, addr=%lx taddr=%lx saddr=%lx",
+			Log::EE::SPR.debug("spr1 dmaChain {:08x}_{:08x} size={:d}, id={:d}, addr={:x} taddr={:x} saddr={:x}\n",
 				ptag[1]._u32, ptag[0]._u32, spr1ch.qwc, ptag->ID, spr1ch.madr, spr1ch.tadr, spr1ch.sadr);
 
 			done = hwDmacSrcChain(spr1ch, ptag->ID);
@@ -480,7 +480,7 @@ void _dmaSPR1()   // toSPR work function
 
 			if (spr1ch.chcr.TIE && ptag->IRQ) // Check TIE bit of CHCR and IRQ bit of tag
 			{
-				SPR_LOG("dmaIrq Set");
+				Log::EE::SPR.debug("dmaIrq Set\n");
 
 				//Log::Console.info("SPR1 TIE\n");
 				done = true;
@@ -501,10 +501,11 @@ void _dmaSPR1()   // toSPR work function
 
 void dmaSPR1()   // toSPR
 {
-	SPR_LOG("dmaSPR1 chcr = 0x%x, madr = 0x%x, qwc  = 0x%x\n"
-	        "        tadr = 0x%x, sadr = 0x%x",
-	        spr1ch.chcr._u32, spr1ch.madr, spr1ch.qwc,
-	        spr1ch.tadr, spr1ch.sadr);
+	Log::EE::SPR.debug(
+		"dmaSPR1 chcr = 0x{:x}, madr = 0x{:x}, qwc  = 0x{:x}\n"
+		"        tadr = 0x{:x}, sadr = 0x{:x}\n",
+		spr1ch.chcr._u32, spr1ch.madr, spr1ch.qwc,
+		spr1ch.tadr, spr1ch.sadr);
 
 	spr1finished = false; // Init
 
@@ -522,14 +523,14 @@ void dmaSPR1()   // toSPR
 
 void SPRTOinterrupt()
 {
-	SPR_LOG("SPR1 Interrupt");
+	Log::EE::SPR.debug("SPR1 Interrupt\n");
 	if (!spr1finished || spr1ch.qwc > 0)
 	{
 		_dmaSPR1();
 		return;
 	}
 
-	DMA_LOG("SPR1 DMA End");
+	Log::EE::DMAHW.debug("SPR1 DMA End\n");
 	spr1ch.chcr.STR = false;
 	spr1lastqwc = false;
 	hwDmacIrq(DMAC_TO_SPR);

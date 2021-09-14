@@ -83,10 +83,10 @@ s32 PrepareEERead()
 
 void FinalizeEERead()
 {
-	SIF_LOG("Sif0: End EE");
+	Log::SIF.debug("Sif0: End EE\n");
 	sif0.ee.end = false;
 	sif0.ee.busy = false;
-	SIF_LOG("CPU INT FIRED SIF0");
+	Log::SIF.debug("CPU INT FIRED SIF0\n");
 	CPU_INT(DMAC_SIF0, 16);
 }
 
@@ -104,7 +104,7 @@ s32 DoSifRead(u32 iopAvailable)
 	u32 transferSizeWords = transferSizeBytes >> 2;
 	u32 transferSizeQWords = transferSizeBytes >> 4;
 
-	SIF_LOG("Write IOP to EE: +++++++++++ %lX of %lX", transferSizeWords, sif0.iop.counter);
+	Log::SIF.debug("Write IOP to EE: +++++++++++ {:X} of {:X}\n", transferSizeWords, sif0.iop.counter);
 
 	tDMA_TAG *ptag = sif0ch.getAddr(sif0ch.madr, DMAC_SIF0, true);
 	if (ptag == NULL)

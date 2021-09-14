@@ -162,7 +162,7 @@ void AnalyzeKeyEvent(keyEvent& evt)
 			if (index != -1)
 				PressButton(pad, index);
 
-			//PAD_LOG("Key pressed:%d\n", index);
+			//Log::IOP::PAD.debug("Key pressed:{:d}\n\n", index);
 
 			event.evt = KEYPRESS;
 			event.key = key;

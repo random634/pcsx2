@@ -179,7 +179,7 @@ static void execI()
 		print_me--;
 		disOut.clear();
 		disR5900Fasm(disOut, cpuRegs.code, pc);
-		CPU_LOG( disOut.c_str() );
+		Log::EE::R5900.debug("{:s}\n", disOut);
 	}
 #endif
 

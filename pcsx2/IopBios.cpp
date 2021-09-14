@@ -983,7 +983,7 @@ namespace R3000A
 
 	void irxImportLog(const std::string& libname, u16 index, const char* funcname)
 	{
-		PSXBIOS_LOG("%8.8s.%03d: %s (%x, %x, %x, %x)",
+		Log::IOP::Bios.debug("{:08x}.{:03d}: {:s} ({:x}, {:x}, {:x}, {:x})\n",
 			libname.data(), index, funcname ? funcname : "unknown",
 			a0, a1, a2, a3);
 	}

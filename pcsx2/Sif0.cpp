@@ -26,7 +26,7 @@ static bool done = false;
 
 static __fi void Sif0Init()
 {
-	SIF_LOG("SIF0 DMA start...");
+	Log::SIF.debug("SIF0 DMA start...\n");
 	done = false;
 	sif0.ee.cycles = 0;
 	sif0.iop.cycles = 0;
@@ -39,8 +39,8 @@ static __fi bool WriteFifoToEE()
 
 	tDMA_TAG *ptag;
 
-	//SIF_LOG(" EE SIF doing transfer %04Xqw to %08X", readSize, sif0ch.madr);
-	SIF_LOG("Write Fifo to EE: ----------- %lX of %lX", readSize << 2, sif0ch.qwc << 2);
+	//Log::SIF.debug(" EE SIF doing transfer {:04X}qw to {:08X}\n", readSize, sif0ch.madr);
+	Log::SIF.debug("Write Fifo to EE: ----------- {:X} of {:X}\n", readSize << 2, sif0ch.qwc << 2);
 
 	ptag = sif0ch.getAddr(sif0ch.madr, DMAC_SIF0, true);
 	if (ptag == NULL)
@@ -74,7 +74,7 @@ static __fi bool WriteIOPtoFifo()
 	// There's some data ready to transfer into the fifo..
 	const int writeSize = std::min(sif0.iop.counter, sif0.fifo.sif_free());
 
-	SIF_LOG("Write IOP to Fifo: +++++++++++ %lX of %lX", writeSize, sif0.iop.counter);
+	Log::SIF.debug("Write IOP to Fifo: +++++++++++ {:X} of {:X}\n", writeSize, sif0.iop.counter);
 
 	sif0.fifo.write((u32*)iopPhysMem(hw_dma9.madr), writeSize);
 	hw_dma9.madr += writeSize << 2;
@@ -94,12 +94,12 @@ static __fi bool ProcessEETag()
 	tDMA_TAG& ptag(*(tDMA_TAG*)tag);
 
 	sif0.fifo.read((u32*)&tag[0], 2); // Tag
-	SIF_LOG("SIF0 EE read tag: %x %x %x %x", tag[0], tag[1], tag[2], tag[3]);
+	Log::SIF.debug("SIF0 EE read tag: {:x} {:x} {:x} {:x}\n", tag[0], tag[1], tag[2], tag[3]);
 
 	sif0ch.unsafeTransfer(&ptag);
 	sif0ch.madr = tag[1];
 
-	SIF_LOG("SIF0 EE dest chain tag madr:%08X qwc:%04X id:%X irq:%d(%08X_%08X)",
+	Log::SIF.debug("SIF0 EE dest chain tag madr:{:08X} qwc:{:04X} id:{:X} irq:{:d}({:08X}_{:08X})\n",
 		sif0ch.madr, sif0ch.qwc, ptag.ID, ptag.IRQ, tag[1], tag[0]);
 
 	if (sif0ch.chcr.TIE && ptag.IRQ)
@@ -149,7 +149,7 @@ static __fi bool ProcessIOPTag()
 	sif0.iop.writeJunk = (sif0.iop.counter & 0x3) ? (4 - sif0.iop.counter & 0x3) : 0;
 	// IOP tags have an IRQ bit and an End of Transfer bit:
 	if (sif0tag.IRQ  || (sif0tag.ID & 4)) sif0.iop.end = true;
-	SIF_LOG("SIF0 IOP Tag: madr=%lx, tadr=%lx, counter=%lx (%08X_%08X) Junk %d", hw_dma9.madr, hw_dma9.tadr, sif0.iop.counter, sif0words, sif0data, sif0.iop.writeJunk);
+	Log::SIF.debug("SIF0 IOP Tag: madr={:x}, tadr={:x}, counter={:x} ({:08X}_{:08X}) Junk {:d}\n", hw_dma9.madr, hw_dma9.tadr, sif0.iop.counter, sif0words, sif0data, sif0.iop.writeJunk);
 
 	return true;
 }
@@ -157,12 +157,12 @@ static __fi bool ProcessIOPTag()
 // Stop transferring ee, and signal an interrupt.
 static __fi void EndEE()
 {
-	SIF_LOG("Sif0: End EE");
+	Log::SIF.debug("Sif0: End EE\n");
 	sif0.ee.end = false;
 	sif0.ee.busy = false;
 	if (sif0.ee.cycles == 0)
 	{
-		SIF_LOG("SIF0 EE: cycles = 0");
+		Log::SIF.debug("SIF0 EE: cycles = 0\n");
 		sif0.ee.cycles = 1;
 	}
 
@@ -172,7 +172,7 @@ static __fi void EndEE()
 // Stop transferring iop, and signal an interrupt.
 static __fi void EndIOP()
 {
-	SIF_LOG("Sif0: End IOP");
+	Log::SIF.debug("Sif0: End IOP\n");
 	sif0data = 0;
 	sif0.iop.end = false;
 	sif0.iop.busy = false;
@@ -294,7 +294,7 @@ static __fi void Sif0End()
 	psHu32(SBUS_F240) &= ~0x20;
 	psHu32(SBUS_F240) &= ~0x2000;
 
-	DMA_LOG("SIF0 DMA End");
+	Log::EE::DMAHW.debug("SIF0 DMA End\n");
 }
 
 // Transfer IOP to EE, putting data in the fifo as an intermediate step.
@@ -310,7 +310,7 @@ __fi void SIF0Dma()
 
 		if (sif0.iop.counter == 0 && sif0.iop.writeJunk && sif0.fifo.sif_free() >= sif0.iop.writeJunk)
 		{
-			SIF_LOG("Writing Junk %d", sif0.iop.writeJunk);
+			Log::SIF.debug("Writing Junk {:d}\n", sif0.iop.writeJunk);
 			sif0.fifo.writeJunk(sif0.iop.writeJunk);
 			sif0.iop.writeJunk = 0;
 		}
@@ -350,11 +350,11 @@ __fi void  EEsif0Interrupt()
 
 __fi void dmaSIF0()
 {
-	SIF_LOG(wxString(L"dmaSIF0" + sif0ch.cmqt_to_str()).To8BitData());
+	Log::SIF.debug("dmaSIF0 {:s}\n", sif0ch.cmqt_to_str());
 
 	if (sif0.fifo.readPos != sif0.fifo.writePos)
 	{
-		SIF_LOG("warning, sif0.fifoReadPos != sif0.fifoWritePos");
+		Log::SIF.debug("warning, sif0.fifoReadPos != sif0.fifoWritePos\n");
 	}
 
 	//if(sif0ch.chcr.MOD == CHAIN_MODE && sif0ch.qwc > 0) Log::Dev.warning("SIF0 QWC on Chain CHCR {:s}\n", sif0ch.chcr.desc());

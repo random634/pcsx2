@@ -137,7 +137,7 @@ bool _VIF1chain()
 		return true;
 	}
 
-	VIF_LOG("VIF1chain size=%d, madr=%lx, tadr=%lx",
+	Log::EE::VIF.debug("VIF1chain size={:d}, madr={:x}, tadr={:x}\n",
 	        vif1ch.qwc, vif1ch.madr, vif1ch.tadr);
 
 	if (vif1.irqoffset.enabled)
@@ -158,7 +158,7 @@ __fi void vif1SetupTransfer()
 	g_vif1Cycles += 1; // Add 1 g_vifCycles from the QW read for the tag
 	vif1.inprogress &= ~1;
 
-	VIF_LOG("VIF1 Tag %8.8x_%8.8x size=%d, id=%d, madr=%lx, tadr=%lx",
+	Log::EE::VIF.debug("VIF1 Tag {:08x}_{:08x} size={:d}, id={:d}, madr={:x}, tadr={:x}\n",
 			ptag[1]._u32, ptag[0]._u32, vif1ch.qwc, ptag->ID, vif1ch.madr, vif1ch.tadr);
 
 	if (!vif1.done && ((dmacRegs.ctrl.STD == STD_VIF1) && (ptag->ID == TAG_REFS)))   // STD == VIF1
@@ -187,7 +187,7 @@ __fi void vif1SetupTransfer()
 		masked_tag._u64[0] = 0;
 		masked_tag._u64[1] = *((u64*)ptag + 1);
 
-		VIF_LOG("\tVIF1 SrcChain TTE=1, data = 0x%08x.%08x", masked_tag._u32[3], masked_tag._u32[2]);
+		Log::EE::VIF.debug("\tVIF1 SrcChain TTE=1, data = 0x{:08x}.{:08x}\n", masked_tag._u32[3], masked_tag._u32[2]);
 
 		if (vif1.irqoffset.enabled)
 		{
@@ -221,7 +221,7 @@ __fi void vif1SetupTransfer()
 	//Check TIE bit of CHCR and IRQ bit of tag
 	if (vif1ch.chcr.TIE && ptag->IRQ)
 	{
-		VIF_LOG("dmaIrq Set");
+		Log::EE::VIF.debug("dmaIrq Set\n");
 
         //End Transfer
 		vif1.done = true;
@@ -250,11 +250,11 @@ __fi void vif1VUFinish()
 	}
 
 	vif1Regs.stat.VEW = false;
-	VIF_LOG("VU1 finished");
+	Log::EE::VIF.debug("VU1 finished\n");
 
 	if( gifRegs.stat.APATH == 1 )
 	{
-		VIF_LOG("Clear APATH1");
+		Log::EE::VIF.debug("Clear APATH1\n");
 		gifRegs.stat.APATH = 0;
 		gifRegs.stat.OPH = 0;
 		vif1Regs.stat.VGW = false; //Let vif continue if it's stuck on a flush
@@ -284,7 +284,7 @@ __fi void vif1VUFinish()
 
 __fi void vif1Interrupt()
 {
-	VIF_LOG("vif1Interrupt: %8.8x chcr %x, done %x, qwc %x", cpuRegs.cycle, vif1ch.chcr._u32, vif1.done, vif1ch.qwc);
+	Log::EE::VIF.debug("vif1Interrupt: {:08x} chcr {:x}, done {:x}, qwc {:x}\n", cpuRegs.cycle, vif1ch.chcr._u32, vif1.done, vif1ch.qwc);
 
 	g_vif1Cycles = 0;
 
@@ -334,7 +334,7 @@ __fi void vif1Interrupt()
 
 	if (vif1.irq && vif1.vifstalled.enabled && vif1.vifstalled.value == VIF_IRQ_STALL)
 	{
-		VIF_LOG("VIF IRQ Firing");
+		Log::EE::VIF.debug("VIF IRQ Firing\n");
 		if (!vif1Regs.stat.ER1)
 			vif1Regs.stat.INT = true;
 		
@@ -356,7 +356,7 @@ __fi void vif1Interrupt()
 			if((vif1ch.qwc > 0 || !vif1.done) && !CHECK_VIF1STALLHACK)	
 			{
 				vif1Regs.stat.VPS = VPS_DECODING; //If there's more data you need to say it's decoding the next VIF CMD (Onimusha - Blade Warriors)
-				VIF_LOG("VIF1 Stalled");
+				Log::EE::VIF.debug("VIF1 Stalled\n");
 				return;
 			}
 		}
@@ -427,17 +427,18 @@ __fi void vif1Interrupt()
 	vif1.irqoffset.enabled = false;
 	if(vif1.queued_program) vifExecQueue(1);
 	g_vif1Cycles = 0;
-	VIF_LOG("VIF1 DMA End");
+	Log::EE::VIF.debug("VIF1 DMA End\n");
 	hwDmacIrq(DMAC_VIF1);
 
 }
 
 void dmaVIF1()
 {
-	VIF_LOG("dmaVIF1 chcr = %lx, madr = %lx, qwc  = %lx\n"
-	        "        tadr = %lx, asr0 = %lx, asr1 = %lx",
-	        vif1ch.chcr._u32, vif1ch.madr, vif1ch.qwc,
-	        vif1ch.tadr, vif1ch.asr0, vif1ch.asr1);
+	Log::EE::VIF.debug(
+		"dmaVIF1 chcr = {:x}, madr = {:x}, qwc  = {:x}\n"
+		"        tadr = {:x}, asr0 = {:x}, asr1 = {:x}\n",
+		vif1ch.chcr._u32, vif1ch.madr, vif1ch.qwc,
+		vif1ch.tadr, vif1ch.asr0, vif1ch.asr1);
 
 	g_vif1Cycles = 0;
 	vif1.inprogress = 0;

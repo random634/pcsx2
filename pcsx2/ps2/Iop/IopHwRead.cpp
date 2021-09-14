@@ -74,12 +74,12 @@ mem8_t __fastcall iopHwRead8_Page1( u32 addr )
 			else if( (masked_addr >= pgmsk(HW_USB_START)) && (masked_addr < pgmsk(HW_USB_END)) )
 			{
 				ret = USBread8( addr );
-				PSXHW_LOG( "HwRead8 from USB @ 0x%08x = 0x%02x", addr, ret );
+				Log::IOP::KnownHW.debug("HwRead8 from USB @ 0x{:08x} = 0x{:02x}\n", addr, ret );
 			}
 			else
 			{
 				ret = psxHu8(addr);
-				PSXUnkHW_LOG( "HwRead8 from Unknown @ 0x%08x = 0x%02x", addr, ret );
+				Log::IOP::UnknownHW.debug("HwRead8 from Unknown @ 0x{:08x} = 0x{:02x}\n", addr, ret );
 			}
 		return ret;
 	}

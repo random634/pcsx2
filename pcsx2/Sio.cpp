@@ -138,7 +138,7 @@ SIO_FORCEINLINE void sioInterrupt() {
 		if (!(psxRegs.interrupt & (1 << IopEvt_SIO)))
 			PSX_INT(IopEvt_SIO, 64); // PSXCLK/250000);
 	} else {
-		PAD_LOG("Sio Interrupt");
+		Log::IOP::PAD.debug("Sio Interrupt\n");
 		sio.StatReg |= IRQ;
 		iopIntcIrq(7); //Should this be used instead of the one below?
 		//psxHu32(0x1070)|=0x80;

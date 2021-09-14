@@ -205,29 +205,26 @@ static __ri const char* _ioplog_GetHwName( u32 addr, T val )
 template< typename T>
 static __ri void IopHwTraceLog( u32 addr, T val, bool mode )
 {
-	if (!IsDevBuild) return;
-	if (!EmuConfig.Trace.Enabled || !EmuConfig.Trace.IOP.m_EnableAll || !EmuConfig.Trace.IOP.m_EnableRegisters) return;
+	if (!Log::IOP::KnownHW.shouldLog(LogLevel::Debug) && !Log::IOP::UnknownHW.shouldLog(LogLevel::Debug))
+		return;
 
-	FastFormatAscii valStr;
-	FastFormatAscii labelStr;
-	labelStr.Write("Hw%s%u", mode ? "Read" : "Write", sizeof (T) * 8);
+	std::string valStr;
+	std::string labelStr = fmt::format("Hw{:s}{:d}", mode ? "Read" : "Write", sizeof(T) * 8);
 
-	switch( sizeof (T) )
+	switch (sizeof(T))
 	{
-		case 1: valStr.Write("0x%02x", val); break;
-		case 2: valStr.Write("0x%04x", val); break;
-		case 4: valStr.Write("0x%08x", val); break;
+		case 1:  valStr = fmt::format("0x{:02x}", (u8 &)val); break;
+		case 2:  valStr = fmt::format("0x{:04x}", (u16&)val); break;
+		case 4:  valStr = fmt::format("0x{:08x}", (u32&)val); break;
 
-		case 8: valStr.Write("0x%08x.%08x", ((u32*)&val)[1], ((u32*)&val)[0]); break;
-		case 16: ((u128&)val).WriteTo(valStr);
+		case 8:  valStr = fmt::format("0x{:08x}.{:08x}", ((u32*)&val)[1], ((u32*)&val)[0]); break;
+		case 16: valStr = fmt::format("0x{:08x}.{:08x}.{:08x}.{:08x}", ((u32*)&val)[3], ((u32*)&val)[2], ((u32*)&val)[1], ((u32*)&val)[0]);
 	}
 
-	static const char* temp = "%-12s @ 0x%08X/%-16s %s %s";
-
-	if( const char* regname = _ioplog_GetHwName<T>( addr, val ) )
-		PSXHW_LOG( temp, labelStr.c_str(), addr, regname, mode ? "->" : "<-", valStr.c_str() );
-	else
-		PSXUnkHW_LOG( temp, labelStr.c_str(), addr, "Unknown", mode ? "->" : "<-", valStr.c_str() );
+	const char* regname = _ioplog_GetHwName<T>(addr, val);
+	LogSource& log = regname ? Log::IOP::KnownHW : Log::IOP::UnknownHW;
+	regname = regname ? regname : "Unknown";
+	log.debug("{:<12s} @ 0x{:08X}/{:<16s} {:s} {:s}\n", labelStr, addr, regname, mode ? "->" : "<-", valStr);
 }
 
 } };

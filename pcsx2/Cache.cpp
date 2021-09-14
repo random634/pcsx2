@@ -116,7 +116,7 @@ namespace
 
 			uptr target = addr();
 
-			CACHE_LOG("Write back at %zx", target);
+			Log::EE::Cache.debug("Write back at {:x}\n", target);
 			*reinterpret_cast<CacheData*>(target) = data;
 			tag.clearDirty();
 		}
@@ -191,12 +191,12 @@ static int getFreeCache(u32 mem, int* way)
 	uptr ppf = vmv.assumePtr(mem);
 
 	if((cpuRegs.CP0.n.Config & 0x10000) == 0)
-		CACHE_LOG("Cache off!");
+		Log::EE::Cache.debug("Cache off!\n");
 
 	if (findInCache(set, ppf, way))
 	{
 		if (set.tags[*way].isLocked())
-			CACHE_LOG("Index %x Way %x Locked!!", setIdx, *way);
+			Log::EE::Cache.debug("Index {:x} Way {:x} Locked!!\n", setIdx, *way);
 	}
 	else
 	{
@@ -218,7 +218,7 @@ void writeCache(u32 mem, Int value)
 	int way = 0;
 	const int idx = getFreeCache(mem, &way);
 
-	CACHE_LOG("writeCache%d %8.8x adding to %d, way %d, value %llx", 8 * sizeof(value), mem, idx, way, value);
+	Log::EE::Cache.debug("writeCache{:d} {:08x} adding to {:d}, way {:d}, value {:x}\n", 8 * sizeof(value), mem, idx, way, value);
 	CacheLine line = cache.lineAt(idx, way);
 	line.tag.setDirty(); // Set dirty bit for writes;
 	u32 aligned = mem & ~(sizeof(value) - 1);
@@ -250,7 +250,7 @@ void writeCache128(u32 mem, const mem128_t* value)
 	int way = 0;
 	const int idx = getFreeCache(mem, &way);
 
-	CACHE_LOG("writeCache128 %8.8x adding to %d, way %x, lo %x, hi %x", mem, idx, way, value->lo, value->hi);
+	Log::EE::Cache.debug("writeCache128 {:08x} adding to {:d}, way {:x}, lo {:x}, hi {:x}\n", mem, idx, way, value->lo, value->hi);
 	CacheLine line = cache.lineAt(idx, way);
 	line.tag.setDirty(); // Set dirty bit for writes;
 	u32 aligned = mem & ~0xF;
@@ -266,7 +266,7 @@ Int readCache(u32 mem)
 	CacheLine line = cache.lineAt(idx, way);
 	u32 aligned = mem & ~(sizeof(Int) - 1);
 	Int value = *reinterpret_cast<Int*>(&line.data.bytes[aligned & 0x3f]);
-	CACHE_LOG("readCache%d %8.8x from %d, way %d, value %llx", 8 * sizeof(value), mem, idx, way, value);
+	Log::EE::Cache.debug("readCache{:d} {:08x} from {:d}, way {:d}, value {:x}\n", 8 * sizeof(value), mem, idx, way, value);
 	return value;
 }
 
@@ -302,11 +302,11 @@ void doCacheHitOp(u32 addr, const char* name, Op op)
 
 	if (!findInCache(set, ppf, &way))
 	{
-		CACHE_LOG("CACHE %s NO HIT addr %x, index %d, tag0 %zx tag1 %zx", name, addr, index, set.tags[0].rawValue, set.tags[1].rawValue);
+		Log::EE::Cache.debug("CACHE {:s} NO HIT addr {:x}, index {:d}, tag0 {:x} tag1 {:x}", name, addr, index, set.tags[0].rawValue, set.tags[1].rawValue);
 		return;
 	}
 
-	CACHE_LOG("CACHE %s addr %x, index %d, way %d, flags %x OP %x", name, addr, index, way, set.tags[way].flags(), cpuRegs.code);
+	Log::EE::Cache.debug("CACHE {:s} addr {:x}, index {:d}, way {:d}, flags {:x} OP {:x}\n", name, addr, index, way, set.tags[way].flags(), cpuRegs.code);
 
 	op(cache.lineAt(index, way));
 }
@@ -321,7 +321,7 @@ extern int Dcache;
 void CACHE()
 {
 	u32 addr = cpuRegs.GPR.r[_Rs_].UL[0] + _Imm_;
-	// CACHE_LOG("cpuRegs.GPR.r[_Rs_].UL[0] = %x, IMM = %x RT = %x", cpuRegs.GPR.r[_Rs_].UL[0], _Imm_, _Rt_);
+	// Log::EE::Cache.debug("cpuRegs.GPR.r[_Rs_].UL[0] = {:x}, IMM = {:x} RT = {:x}\n", cpuRegs.GPR.r[_Rs_].UL[0], _Imm_, _Rt_);
 
 	switch (_Rt_) 
 	{
@@ -353,7 +353,7 @@ void CACHE()
 			const int way = addr & 0x1;
 			CacheLine line = cache.lineAt(index, way);
 
-			CACHE_LOG("CACHE DXIN addr %x, index %d, way %d, flag %x", addr, index, way, line.tag.flags());
+			Log::EE::Cache.debug("CACHE DXIN addr {:x}, index {:d}, way {:d}, flag {:x}\n", addr, index, way, line.tag.flags());
 
 			line.clear();
 			break;
@@ -367,7 +367,7 @@ void CACHE()
 
 			cpuRegs.CP0.n.TagLo = *reinterpret_cast<u32*>(&line.data.bytes[addr & 0x3C]);
 
-			CACHE_LOG("CACHE DXLDT addr %x, index %d, way %d, DATA %x OP %x", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
+			Log::EE::Cache.debug("CACHE DXLDT addr {:x}, index {:d}, way {:d}, DATA {:x} OP {:x}\n", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
 			break;
 		}
 
@@ -384,8 +384,8 @@ void CACHE()
 			// Our tags don't contain PS2 paddrs (instead they contain x86 addrs)
 			cpuRegs.CP0.n.TagLo = line.tag.flags();
 
-			CACHE_LOG("CACHE DXLTG addr %x, index %d, way %d, DATA %x OP %x ", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
-			CACHE_LOG("WARNING: DXLTG emulation supports flags only, things could break");
+			Log::EE::Cache.debug("CACHE DXLTG addr {:x}, index {:d}, way {:d}, DATA {:x} OP {:x} \n", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
+			Log::EE::Cache.debug("WARNING: DXLTG emulation supports flags only, things could break\n");
 			break;
 		}
 
@@ -397,7 +397,7 @@ void CACHE()
 
 			*reinterpret_cast<u32*>(&line.data.bytes[addr & 0x3C]) = cpuRegs.CP0.n.TagLo;
 
-			CACHE_LOG("CACHE DXSDT addr %x, index %d, way %d, DATA %x OP %x", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
+			Log::EE::Cache.debug("CACHE DXSDT addr {:x}, index {:d}, way {:d}, DATA {:x} OP {:x}\n", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
 			break;
 		}
 
@@ -410,8 +410,8 @@ void CACHE()
 			line.tag.rawValue &= ~CacheTag::ALL_FLAGS;
 			line.tag.rawValue |= (cpuRegs.CP0.n.TagLo & CacheTag::ALL_FLAGS);
 
-			CACHE_LOG("CACHE DXSTG addr %x, index %d, way %d, DATA %x OP %x", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
-			CACHE_LOG("WARNING: DXSTG emulation supports flags only, things will probably break");
+			Log::EE::Cache.debug("CACHE DXSTG addr {:x}, index {:d}, way {:d}, DATA {:x} OP {:x}\n", addr, index, way, cpuRegs.CP0.n.TagLo, cpuRegs.code);
+			Log::EE::Cache.debug("WARNING: DXSTG emulation supports flags only, things will probably break\n");
 			break;
 		}
 
@@ -421,7 +421,7 @@ void CACHE()
 			const int way = addr & 0x1;
 			CacheLine line = cache.lineAt(index, way);
 
-			CACHE_LOG("CACHE DXWBIN addr %x, index %d, way %d, flags %x paddr %zx", addr, index, way, line.tag.flags(), line.addr());
+			Log::EE::Cache.debug("CACHE DXWBIN addr {:x}, index {:d}, way {:d}, flags {:x} paddr {:x}\n", addr, index, way, line.tag.flags(), line.addr());
 			line.writeBackIfNeeded();
 			line.clear();
 			break;

@@ -73,7 +73,7 @@ void SaveStateBase::vif1Freeze()
 
 __fi void vif0FBRST(u32 value)
 {
-	VIF_LOG("VIF0_FBRST write32 0x%8.8x", value);
+	Log::EE::VIF.debug("VIF0_FBRST write32 0x{:08x}\n", value);
 
 	if (value & 0x1) // Reset Vif.
 	{
@@ -149,7 +149,7 @@ __fi void vif0FBRST(u32 value)
 
 __fi void vif1FBRST(u32 value)
 {
-	VIF_LOG("VIF1_FBRST write32 0x%8.8x", value);
+	Log::EE::VIF.debug("VIF1_FBRST write32 0x{:08x}\n", value);
 
 	if (FBRST(value).RST) // Reset Vif.
 	{
@@ -245,7 +245,7 @@ __fi void vif1FBRST(u32 value)
 
 __fi void vif1STAT(u32 value)
 {
-	VIF_LOG("VIF1_STAT write32 0x%8.8x", value);
+	Log::EE::VIF.debug("VIF1_STAT write32 0x{:08x}\n", value);
 
 	/* Only FDR bit is writable, so mask the rest */
 	if ((vif1Regs.stat.FDR) ^ ((tVIF_STAT&)value).FDR)
@@ -355,7 +355,7 @@ _vifT __fi bool vifWrite32(u32 mem, u32 value)
 	switch (mem)
 	{
 		case caseVif(MARK):
-			VIF_LOG("VIF%d_MARK write32 0x%8.8x", idx, value);
+			Log::EE::VIF.debug("VIF{:d}_MARK write32 0x{:08x}\n", idx, value);
 			vifXRegs.stat.MRK = false;
 			//vifXRegs.mark	   = value;
 			break;

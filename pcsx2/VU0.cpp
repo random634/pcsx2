@@ -49,7 +49,7 @@ void COP2_SPECIAL2() {
 
 void COP2_Unknown()
 {
-	CPU_LOG("Unknown COP2 opcode called");
+	Log::EE::R5900.debug("Unknown COP2 opcode called\n");
 }
 
 //****************************************************************************

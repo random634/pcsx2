@@ -39,7 +39,7 @@ __ri void cpuUpdateOperationMode() {
 
 void __fastcall WriteCP0Status(u32 value) {
 
-	//DMA_LOG("COP0 Status write = 0x%08x", value);
+	//Log::EE::DMAHW.debug("COP0 Status write = 0x{:08x}\n", value);
 
 	cpuRegs.CP0.n.Status.val = value;
     cpuSetNextEventDelta(4);
@@ -244,7 +244,7 @@ void MapTLB(int i)
 	u32 mask, addr;
 	u32 saddr, eaddr;
 
-	COP0_LOG("MAP TLB %d: 0x%08X-> [0x%08X 0x%08X] S=%d G=%d ASID=%d Mask=0x%03X EntryLo0 PFN=%x EntryLo0 Cache=%x EntryLo1 PFN=%x EntryLo1 Cache=%x VPN2=%x",
+	Log::EE::COP0.debug("MAP TLB {:d}: 0x{:08X}-> [0x{:08X} 0x{:08X}] S={:d} G={:d} ASID={:d} Mask=0x{:03X} EntryLo0 PFN={:x} EntryLo0 Cache={:x} EntryLo1 PFN={:x} EntryLo1 Cache={:x} VPN2={:x}\n",
 		i, tlb[i].VPN2, tlb[i].PFN0, tlb[i].PFN1, tlb[i].S >> 31, tlb[i].G, tlb[i].ASID,
 		tlb[i].Mask, tlb[i].EntryLo0 >> 6, (tlb[i].EntryLo0 & 0x38) >> 3, tlb[i].EntryLo1 >> 6, (tlb[i].EntryLo1 & 0x38) >> 3, tlb[i].VPN2);
 

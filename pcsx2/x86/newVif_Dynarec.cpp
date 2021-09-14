@@ -90,11 +90,11 @@ __fi void VifUnpackSSE_Dynarec::SetMasks(int cS) const
 	if ((m2 && doMask) || doMode)
 	{
 		xMOVAPS(xmmRow, ptr128[&vif.MaskRow]);
-		MSKPATH3_LOG("Moving row");
+		Log::EE::MSKPATH3.debug("Moving row\n");
 	}
 	if (m3 && doMask)
 	{
-		MSKPATH3_LOG("Merging Cols");
+		Log::EE::MSKPATH3.debug("Merging Cols\n");
 		xMOVAPS(xmmCol0, ptr128[&vif.MaskCol]);
 		if ((cS >= 2) && (m3 & 0x0000ff00)) xPSHUF.D(xmmCol1, xmmCol0, _v1);
 		if ((cS >= 3) && (m3 & 0x00ff0000)) xPSHUF.D(xmmCol2, xmmCol0, _v2);
@@ -266,7 +266,7 @@ void VifUnpackSSE_Dynarec::CompileRoutine()
 	uint vNum = vB.num ? vB.num : 256;
 	doMode    = (upkNum == 0xf) ? 0 : doMode; // V4_5 has no mode feature.
 	UnpkNoOfIterations = 0;
-	MSKPATH3_LOG("Compiling new block, unpack number %x, mode %x, masking %x, vNum %x", upkNum, doMode, doMask, vNum);
+	Log::EE::MSKPATH3.debug("Compiling new block, unpack number {:x}, mode {:x}, masking {:x}, vNum {:x}\n", upkNum, doMode, doMask, vNum);
 
 	pxAssume(vCL == 0);
 
@@ -425,7 +425,7 @@ _vifT __fi void dVifUnpack(const u8* data, bool isFill)
 		}
 		else
 		{
-			VIF_LOG("Running Interpreter Block: nVif%x - VU Mem Ptr Overflow; falling back to interpreter. Start = %x End = %x num = %x, wl = %x, cl = %x",
+			Log::EE::VIF.debug("Running Interpreter Block: nVif{:x} - VU Mem Ptr Overflow; falling back to interpreter. Start = {:x} End = {:x} num = {:x}, wl = {:x}, cl = {:x}\n",
 				v.idx, vif.tag.addr, vif.tag.addr + (block.num * 16), block.num, block.wl, block.cl);
 			_nVifUnpack(idx, data, vifRegs.mode, isFill);
 		}

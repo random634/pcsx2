@@ -169,7 +169,7 @@ static void ReadTrack()
 	cdr.Prev[1] = itob(cdr.SetSector[1]);
 	cdr.Prev[2] = itob(cdr.SetSector[2]);
 
-	CDVD_LOG("KEY *** %x:%x:%x", cdr.Prev[0], cdr.Prev[1], cdr.Prev[2]);
+	Log::IOP::CDVD.debug("KEY *** {:x}:{:x}:{:x}\n", cdr.Prev[0], cdr.Prev[1], cdr.Prev[2]);
 	if (EmuConfig.CdvdVerboseReads)
 		Log::Console.debug("CD Read Sector {:x}\n", msf_to_lsn(cdr.SetSector));
 	cdr.RErr = DoCDVDreadTrack(msf_to_lsn(cdr.SetSector), CDVD_MODE_2340);
@@ -533,7 +533,7 @@ void cdrInterrupt()
 	if (cdr.Stat != NoIntr && cdr.Reg2 != 0x18)
 		psxHu32(0x1070) |= 0x4;
 
-	CDVD_LOG("Cdr Interrupt %x\n", Irq);
+	Log::IOP::CDVD.debug("Cdr Interrupt {:x}\n\n", Irq);
 }
 
 void cdrReadInterrupt()
@@ -548,7 +548,7 @@ void cdrReadInterrupt()
 		return;
 	}
 
-	CDVD_LOG("KEY END");
+	Log::IOP::CDVD.debug("KEY END\n");
 
 	cdr.OCUP = 1;
 	SetResultSize(1);
@@ -578,7 +578,7 @@ void cdrReadInterrupt()
 
 	cdr.Stat = DataReady;
 
-	CDVD_LOG(" %x:%x:%x", cdr.Transfer[0], cdr.Transfer[1], cdr.Transfer[2]);
+	Log::IOP::CDVD.debug(" {:x}:{:x}:{:x}\n", cdr.Transfer[0], cdr.Transfer[1], cdr.Transfer[2]);
 
 	cdr.SetSector[2]++;
 
@@ -638,7 +638,7 @@ u8 cdrRead0(void)
 	// what means the 0x10 and the 0x08 bits? i only saw it used by the bios
 	cdr.Ctrl |= 0x18;
 
-	CDVD_LOG("CD0 Read: %x", cdr.Ctrl);
+	Log::IOP::CDVD.debug("CD0 Read: {:x}\n", cdr.Ctrl);
 	return psxHu8(0x1800) = cdr.Ctrl;
 }
 
@@ -649,7 +649,7 @@ cdrWrite0:
 
 void cdrWrite0(u8 rt)
 {
-	CDVD_LOG("CD0 write: %x", rt);
+	Log::IOP::CDVD.debug("CD0 write: {:x}\n", rt);
 
 	cdr.Ctrl = rt | (cdr.Ctrl & ~0x3);
 
@@ -679,7 +679,7 @@ u8 cdrRead1(void)
 	else
 		psxHu8(0x1801) = 0;
 
-	CDVD_LOG("CD1 Read: %x", psxHu8(0x1801));
+	Log::IOP::CDVD.debug("CD1 Read: {:x}\n", psxHu8(0x1801));
 	return psxHu8(0x1801);
 }
 
@@ -687,7 +687,7 @@ void cdrWrite1(u8 rt)
 {
 	int i;
 
-	CDVD_LOG("CD1 write: %x (%s)", rt, CmdName[rt]);
+	Log::IOP::CDVD.debug("CD1 write: {:x} ({:s})\n", rt, CmdName[rt]);
 	cdr.Cmd = rt;
 	cdr.OCUP = 0;
 
@@ -847,7 +847,7 @@ void cdrWrite1(u8 rt)
 			break;
 
 		case CdlSetmode:
-			CDVD_LOG("Setmode %x", cdr.Param[0]);
+			Log::IOP::CDVD.debug("Setmode {:x}\n", cdr.Param[0]);
 
 			cdr.Mode = cdr.Param[0];
 			cdr.Ctrl |= 0x80;
@@ -962,13 +962,13 @@ u8 cdrRead2(void)
 		ret = *cdr.pTransfer++;
 	}
 
-	CDVD_LOG("CD2 Read: %x", ret);
+	Log::IOP::CDVD.debug("CD2 Read: {:x}\n", ret);
 	return ret;
 }
 
 void cdrWrite2(u8 rt)
 {
-	CDVD_LOG("CD2 write: %x", rt);
+	Log::IOP::CDVD.debug("CD2 write: {:x}\n", rt);
 
 	if (cdr.Ctrl & 0x1)
 	{
@@ -1008,13 +1008,13 @@ u8 cdrRead3(void)
 	else
 		psxHu8(0x1803) = 0;
 
-	CDVD_LOG("CD3 Read: %x", psxHu8(0x1803));
+	Log::IOP::CDVD.debug("CD3 Read: {:x}\n", psxHu8(0x1803));
 	return psxHu8(0x1803);
 }
 
 void cdrWrite3(u8 rt)
 {
-	CDVD_LOG("CD3 write: %x", rt);
+	Log::IOP::CDVD.debug("CD3 write: {:x}\n", rt);
 
 	if (rt == 0x07 && cdr.Ctrl & 0x1)
 	{
@@ -1053,7 +1053,7 @@ void psxDma3(u32 madr, u32 bcr, u32 chcr)
 {
 	u32 cdsize;
 
-	CDVD_LOG("*** DMA 3 *** %lx addr = %lx size = %lx", chcr, madr, bcr);
+	Log::IOP::CDVD.debug("*** DMA 3 *** {:x} addr = {:x} size = {:x}\n", chcr, madr, bcr);
 
 	switch (chcr)
 	{
@@ -1078,7 +1078,7 @@ void psxDma3(u32 madr, u32 bcr, u32 chcr)
 			return;
 
 		default:
-			CDVD_LOG("Unknown cddma %lx", chcr);
+			Log::IOP::CDVD.debug("Unknown cddma {:x}\n", chcr);
 			break;
 	}
 	HW_DMA3_CHCR &= ~0x01000000;

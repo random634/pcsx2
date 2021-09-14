@@ -27,7 +27,7 @@ static bool sif1_dma_stall = false;
 
 static __fi void Sif1Init()
 {
-	SIF_LOG("SIF1 DMA start...");
+	Log::SIF.debug("SIF1 DMA start...\n");
 	done = false;
 	sif1.ee.cycles = 0;
 	sif1.iop.cycles = 0;
@@ -38,7 +38,7 @@ static __fi bool WriteEEtoFifo()
 {
 	// There's some data ready to transfer into the fifo..
 
-	SIF_LOG("Sif 1: Write EE to Fifo");
+	Log::SIF.debug("Sif 1: Write EE to Fifo\n");
 	const int writeSize = std::min((s32)sif1ch.qwc, sif1.fifo.sif_free() >> 2);
 
 	tDMA_TAG *ptag;
@@ -65,10 +65,10 @@ static __fi bool WriteFifoToIOP()
 {
 	// If we're reading something, continue to do so.
 
-	SIF_LOG("Sif1: Write Fifo to IOP");
+	Log::SIF.debug("Sif1: Write Fifo to IOP\n");
 	const int readSize = std::min(sif1.iop.counter, sif1.fifo.size);
 
-	SIF_LOG("Sif 1 IOP doing transfer %04X to %08X", readSize, HW_DMA10_MADR);
+	Log::SIF.debug("Sif 1 IOP doing transfer {:04X} to {:08X}\n", readSize, HW_DMA10_MADR);
 
 	sif1.fifo.read((u32*)iopPhysMem(hw_dma10.madr), readSize);
 	psxCpu->Clear(hw_dma10.madr, readSize);

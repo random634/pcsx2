@@ -35,7 +35,7 @@ void vu0ResetRegs()
 }
 
 void __fastcall vu0ExecMicro(u32 addr) {
-	VUM_LOG("vu0ExecMicro %x", addr);
+	Log::EE::COP2.debug("vu0ExecMicro {:x}\n", addr);
 
 	if(VU0.VI[REG_VPU_STAT].UL & 0x1) {
 		Log::Dev.warning("vu0ExecMicro > Stalling for previous microprogram to finish\n");

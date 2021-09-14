@@ -94,7 +94,7 @@ __fi void setDmacStat(u32 num)
 // Note: Dma addresses are guaranteed to be aligned to 16 bytes (128 bits)
 __fi tDMA_TAG* SPRdmaGetAddr(u32 addr, bool write)
 {
-	// if (addr & 0xf) { DMA_LOG("*PCSX2*: DMA address not 128bit aligned: %8.8x", addr); }
+	// if (addr & 0xf) { Log::EE::DMAHW.debug("*PCSX2*: DMA address not 128bit aligned: {:08x}\n", addr); }
 
 	//For some reason Getaway references SPR Memory from itself using SPR0, oh well, let it i guess...
 	if((addr & 0x70000000) == 0x70000000)
@@ -162,7 +162,7 @@ __fi tDMA_TAG* SPRdmaGetAddr(u32 addr, bool write)
 // Note: Dma addresses are guaranteed to be aligned to 16 bytes (128 bits)
 __ri tDMA_TAG *dmaGetAddr(u32 addr, bool write)
 {
-	// if (addr & 0xf) { DMA_LOG("*PCSX2*: DMA address not 128bit aligned: %8.8x", addr); }
+	// if (addr & 0xf) { Log::EE::DMAHW.debug("*PCSX2*: DMA address not 128bit aligned: {:08x}\n", addr); }
 	if (DMA_TAG(addr).SPR) return (tDMA_TAG*)&eeMem->Scratch[addr & 0x3ff0];
 
 	// FIXME: Why??? DMA uses physical addresses
@@ -212,16 +212,16 @@ static u32 oldvalue = 0;
 
 static void StartQueuedDMA()
 {
-	if (QueuedDMA.VIF0) { DMA_LOG("Resuming DMA for VIF0"); QueuedDMA.VIF0 = !QuickDmaExec(dmaVIF0, D0_CHCR); }
-	if (QueuedDMA.VIF1) { DMA_LOG("Resuming DMA for VIF1"); QueuedDMA.VIF1 = !QuickDmaExec(dmaVIF1, D1_CHCR); }
-	if (QueuedDMA.GIF ) { DMA_LOG("Resuming DMA for GIF" ); QueuedDMA.GIF  = !QuickDmaExec(dmaGIF , D2_CHCR); }
-	if (QueuedDMA.IPU0) { DMA_LOG("Resuming DMA for IPU0"); QueuedDMA.IPU0 = !QuickDmaExec(dmaIPU0, D3_CHCR); }
-	if (QueuedDMA.IPU1) { DMA_LOG("Resuming DMA for IPU1"); QueuedDMA.IPU1 = !QuickDmaExec(dmaIPU1, D4_CHCR); }
-	if (QueuedDMA.SIF0) { DMA_LOG("Resuming DMA for SIF0"); QueuedDMA.SIF0 = !QuickDmaExec(dmaSIF0, D5_CHCR); }
-	if (QueuedDMA.SIF1) { DMA_LOG("Resuming DMA for SIF1"); QueuedDMA.SIF1 = !QuickDmaExec(dmaSIF1, D6_CHCR); }
-	if (QueuedDMA.SIF2) { DMA_LOG("Resuming DMA for SIF2"); QueuedDMA.SIF2 = !QuickDmaExec(dmaSIF2, D7_CHCR); }
-	if (QueuedDMA.SPR0) { DMA_LOG("Resuming DMA for SPR0"); QueuedDMA.SPR0 = !QuickDmaExec(dmaSPR0, D8_CHCR); }
-	if (QueuedDMA.SPR1) { DMA_LOG("Resuming DMA for SPR1"); QueuedDMA.SPR1 = !QuickDmaExec(dmaSPR1, D9_CHCR); }
+	if (QueuedDMA.VIF0) { Log::EE::DMAHW.debug("Resuming DMA for VIF0\n"); QueuedDMA.VIF0 = !QuickDmaExec(dmaVIF0, D0_CHCR); }
+	if (QueuedDMA.VIF1) { Log::EE::DMAHW.debug("Resuming DMA for VIF1\n"); QueuedDMA.VIF1 = !QuickDmaExec(dmaVIF1, D1_CHCR); }
+	if (QueuedDMA.GIF ) { Log::EE::DMAHW.debug("Resuming DMA for GIF\n" ); QueuedDMA.GIF  = !QuickDmaExec(dmaGIF , D2_CHCR); }
+	if (QueuedDMA.IPU0) { Log::EE::DMAHW.debug("Resuming DMA for IPU0\n"); QueuedDMA.IPU0 = !QuickDmaExec(dmaIPU0, D3_CHCR); }
+	if (QueuedDMA.IPU1) { Log::EE::DMAHW.debug("Resuming DMA for IPU1\n"); QueuedDMA.IPU1 = !QuickDmaExec(dmaIPU1, D4_CHCR); }
+	if (QueuedDMA.SIF0) { Log::EE::DMAHW.debug("Resuming DMA for SIF0\n"); QueuedDMA.SIF0 = !QuickDmaExec(dmaSIF0, D5_CHCR); }
+	if (QueuedDMA.SIF1) { Log::EE::DMAHW.debug("Resuming DMA for SIF1\n"); QueuedDMA.SIF1 = !QuickDmaExec(dmaSIF1, D6_CHCR); }
+	if (QueuedDMA.SIF2) { Log::EE::DMAHW.debug("Resuming DMA for SIF2\n"); QueuedDMA.SIF2 = !QuickDmaExec(dmaSIF2, D7_CHCR); }
+	if (QueuedDMA.SPR0) { Log::EE::DMAHW.debug("Resuming DMA for SPR0\n"); QueuedDMA.SPR0 = !QuickDmaExec(dmaSPR0, D8_CHCR); }
+	if (QueuedDMA.SPR1) { Log::EE::DMAHW.debug("Resuming DMA for SPR1\n"); QueuedDMA.SPR1 = !QuickDmaExec(dmaSPR1, D9_CHCR); }
 }
 
 static __ri void DmaExec( void (*func)(), u32 mem, u32 value )
@@ -366,7 +366,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 	iswitch(mem) {
 		icase(D0_CHCR) // dma0 - vif0
 		{
-			DMA_LOG("VIF0dma EXECUTE, value=0x%x", value);
+			Log::EE::DMAHW.debug("VIF0dma EXECUTE, value=0x{:x}\n", value);
 			DmaExec(dmaVIF0, mem, value);
 			return false;
 		}
@@ -379,7 +379,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D1_CHCR) // dma1 - vif1 - chcr
 		{
-			DMA_LOG("VIF1dma EXECUTE, value=0x%x", value);
+			Log::EE::DMAHW.debug("VIF1dma EXECUTE, value=0x{:x}\n", value);
 			DmaExec(dmaVIF1, mem, value);
 			return false;
 		}
@@ -392,7 +392,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D2_CHCR) // dma2 - gif
 		{
-			DMA_LOG("GIFdma EXECUTE, value=0x%x", value);
+			Log::EE::DMAHW.debug("GIFdma EXECUTE, value=0x{:x}\n", value);
 			DmaExec(dmaGIF, mem, value);
 			return false;
 		}
@@ -405,7 +405,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D3_CHCR) // dma3 - fromIPU
 		{
-			DMA_LOG("IPU0dma EXECUTE, value=0x%x\n", value);
+			Log::EE::DMAHW.debug("IPU0dma EXECUTE, value=0x{:x}\n\n", value);
 			DmaExec(dmaIPU0, mem, value);
 			return false;
 		}
@@ -418,7 +418,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D4_CHCR) // dma4 - toIPU
 		{
-			DMA_LOG("IPU1dma EXECUTE, value=0x%x\n", value);
+			Log::EE::DMAHW.debug("IPU1dma EXECUTE, value=0x{:x}\n\n", value);
 			DmaExec(dmaIPU1, mem, value);
 			return false;
 		}
@@ -431,7 +431,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D5_CHCR) // dma5 - sif0
 		{
-			DMA_LOG("SIF0dma EXECUTE, value=0x%x", value);
+			Log::EE::DMAHW.debug("SIF0dma EXECUTE, value=0x{:x}\n", value);
 			DmaExec(dmaSIF0, mem, value);
 			return false;
 		}
@@ -444,7 +444,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D6_CHCR) // dma6 - sif1
 		{
-			DMA_LOG("SIF1dma EXECUTE, value=0x%x", value);
+			Log::EE::DMAHW.debug("SIF1dma EXECUTE, value=0x{:x}\n", value);
 			DmaExec(dmaSIF1, mem, value);
 			return false;
 		}
@@ -457,7 +457,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D7_CHCR) // dma7 - sif2
 		{
-			DMA_LOG("SIF2dma EXECUTE, value=0x%x", value);
+			Log::EE::DMAHW.debug("SIF2dma EXECUTE, value=0x{:x}\n", value);
 			DmaExec(dmaSIF2, mem, value);
 			return false;
 		}
@@ -470,7 +470,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D8_CHCR) // dma8 - fromSPR
 		{
-			DMA_LOG("SPR0dma EXECUTE (fromSPR), value=0x%x", value);
+			Log::EE::DMAHW.debug("SPR0dma EXECUTE (fromSPR), value=0x{:x}\n", value);
 			DmaExec(dmaSPR0, mem, value);
 			return false;
 		}
@@ -511,7 +511,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(D9_CHCR) // dma9 - toSPR
 		{
-			DMA_LOG("SPR1dma EXECUTE (toSPR), value=0x%x", value);
+			Log::EE::DMAHW.debug("SPR1dma EXECUTE (toSPR), value=0x{:x}\n", value);
 			DmaExec(dmaSPR1, mem, value);
 			return false;
 		}
@@ -526,7 +526,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 		{
 			u32 oldvalue = psHu32(mem);
 
-			HW_LOG("DMAC_CTRL Write 32bit %x", value);
+			Log::EE::KnownHW.debug("DMAC_CTRL Write 32bit {:x}\n", value);
 
 			psHu32(mem) = value;
 			//Check for DMAS that were started while the DMAC was disabled
@@ -586,7 +586,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 		icase(DMAC_FAKESTAT)
 		{
 			//Log::Dev.warning("Midway fixup addr={:x} writing {:x} for DMA_STAT\n", mem, value);
-			HW_LOG("Midways own DMAC_STAT Write 32bit %x", value);
+			Log::EE::KnownHW.debug("Midways own DMAC_STAT Write 32bit {:x}\n", value);
 
 			// lower 16 bits: clear on 1
 			// upper 16 bits: reverse on 1
@@ -600,7 +600,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(DMAC_STAT)
 		{
-			HW_LOG("DMAC_STAT Write 32bit %x", value);
+			Log::EE::KnownHW.debug("DMAC_STAT Write 32bit {:x}\n", value);
 
 			// lower 16 bits: clear on 1
 			// upper 16 bits: reverse on 1
@@ -614,7 +614,7 @@ __fi bool dmacWrite32( u32 mem, mem32_t& value )
 
 		icase(DMAC_ENABLEW)
 		{
-			HW_LOG("DMAC_ENABLEW Write 32bit %lx", value);
+			Log::EE::KnownHW.debug("DMAC_ENABLEW Write 32bit {:x}\n", value);
 			oldvalue = psHu8(DMAC_ENABLEW + 2);
 			psHu32(DMAC_ENABLEW) = value;
 			psHu32(DMAC_ENABLER) = value;

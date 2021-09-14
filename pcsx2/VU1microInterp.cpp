@@ -72,7 +72,7 @@ static void _vu1Exec(VURegs* VU)
 		
 	}
 
-	//VUM_LOG("VU->cycle = %d (flags st=%x;mac=%x;clip=%x,q=%f)", VU->cycle, VU->statusflag, VU->macflag, VU->clipflag, VU->q.F);
+	//Log::EE::COP2.debug("VU->cycle = {:d} (flags st={:x};mac={:x};clip={:x},q={:f})\n", VU->cycle, VU->statusflag, VU->macflag, VU->clipflag, VU->q.F);
 
 	VU->code = ptr[1];
 	VU1regs_UPPER_OPCODE[VU->code & 0x3f](&uregs);

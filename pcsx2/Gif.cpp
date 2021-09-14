@@ -100,7 +100,7 @@ int GIF_Fifo::write_fifo(u32* pMem, int size)
 {
 	if (fifoSize == 16)
 	{
-		//GIF_LOG("GIF FIFO Full");
+		//Log::EE::GIF.debug("GIF FIFO Full\n");
 		return 0;
 	}
 
@@ -108,7 +108,7 @@ int GIF_Fifo::write_fifo(u32* pMem, int size)
 
 	int writePos = fifoSize * 4;
 
-	GIF_LOG("GIF FIFO Adding %d QW to GIF FIFO at offset %d FIFO now contains %d QW", transferSize, writePos, fifoSize);
+	Log::EE::GIF.debug("GIF FIFO Adding {:d} QW to GIF FIFO at offset {:d} FIFO now contains {:d} QW\n", transferSize, writePos, fifoSize);
 
 	memcpy(&data[writePos], pMem, transferSize * 16);
 
@@ -127,7 +127,7 @@ int GIF_Fifo::read_fifo()
 		CalculateFIFOCSR();
 		if (fifoSize)
 		{
-			GIF_LOG("GIF FIFO Can't read, GIF paused/busy. Waiting");
+			Log::EE::GIF.debug("GIF FIFO Can't read, GIF paused/busy. Waiting\n");
 			GifDMAInt(128);
 		}
 		return 0;
@@ -138,7 +138,7 @@ int GIF_Fifo::read_fifo()
 
 	sizeRead = gifUnit.TransferGSPacketData(GIF_TRANS_DMA, (u8*)&data, fifoSize * 16) / 16; //returns the size actually read
 
-	GIF_LOG("GIF FIFO Read %d QW from FIFO Current Size %d", sizeRead, fifoSize);
+	Log::EE::GIF.debug("GIF FIFO Read {:d} QW from FIFO Current Size {:d}\n", sizeRead, fifoSize);
 
 	if (sizeRead < (int)fifoSize)
 	{
@@ -152,16 +152,16 @@ int GIF_Fifo::read_fifo()
 
 			fifoSize = copyAmount;
 
-			GIF_LOG("GIF FIFO rearranged to now only contain %d QW", fifoSize);
+			Log::EE::GIF.debug("GIF FIFO rearranged to now only contain {:d} QW\n", fifoSize);
 		}
 		else
 		{
-			GIF_LOG("GIF FIFO not read");
+			Log::EE::GIF.debug("GIF FIFO not read\n");
 		}
 	}
 	else
 	{
-		GIF_LOG("GIF FIFO now empty");
+		Log::EE::GIF.debug("GIF FIFO now empty\n");
 		fifoSize = 0;
 	}
 
@@ -204,7 +204,7 @@ __fi void gifCheckPathStatus()
 
 __fi void gifInterrupt()
 {
-	GIF_LOG("gifInterrupt caught qwc=%d fifo=%d apath=%d oph=%d state=%d!", gifch.qwc, gifRegs.stat.FQC, gifRegs.stat.APATH, gifRegs.stat.OPH, gifUnit.gifPath[GIF_PATH_3].state);
+	Log::EE::GIF.debug("gifInterrupt caught qwc={:d} fifo={:d} apath={:d} oph={:d} state={:d}!\n", gifch.qwc, gifRegs.stat.FQC, gifRegs.stat.APATH, gifRegs.stat.OPH, gifUnit.gifPath[GIF_PATH_3].state);
 	gifCheckPathStatus();
 
 	if (gifUnit.gifPath[GIF_PATH_3].state == GIF_PATH_IDLE)
@@ -235,7 +235,7 @@ __fi void gifInterrupt()
 
 	if (gifUnit.gsSIGNAL.queued)
 	{
-		GIF_LOG("Path 3 Paused");
+		Log::EE::GIF.debug("Path 3 Paused\n");
 		GifDMAInt(128);
 		if (gif_fifo.fifoSize == 16)
 			return;
@@ -354,7 +354,7 @@ static __fi bool checkTieBit(tDMA_TAG*& ptag)
 {
 	if (gifch.chcr.TIE && ptag->IRQ)
 	{
-		GIF_LOG("dmaIrq Set");
+		Log::EE::GIF.debug("dmaIrq Set\n");
 		gif.gspath3done = true;
 		return true;
 	}
@@ -419,7 +419,7 @@ void GIFdma()
 			if (ptag == NULL)
 				return;
 			//Log::Dev.warning("GIF Reading Tag MSK = {:x}\n", vif1Regs.mskpath3);
-			GIF_LOG("gifdmaChain %8.8x_%8.8x size=%d, id=%d, addr=%lx tadr=%lx", ptag[1]._u32, ptag[0]._u32, gifch.qwc, ptag->ID, gifch.madr, gifch.tadr);
+			Log::EE::GIF.debug("gifdmaChain {:08x}_{:08x} size={:d}, id={:d}, addr={:x} tadr={:x}\n", ptag[1]._u32, ptag[0]._u32, gifch.qwc, ptag->ID, gifch.madr, gifch.tadr);
 			gifRegs.stat.FQC = std::min((u32)0x10, gifch.qwc);
 			CalculateFIFOCSR();
 
@@ -487,7 +487,7 @@ static u32 QWCinGIFMFIFO(u32 DrainADDR)
 {
 	u32 ret;
 
-	SPR_LOG("GIF MFIFO Requesting %x QWC from the MFIFO Base %x, SPR MADR %x Drain %x", gifch.qwc, dmacRegs.rbor.ADDR, spr0ch.madr, DrainADDR);
+	Log::EE::SPR.debug("GIF MFIFO Requesting {:x} QWC from the MFIFO Base {:x}, SPR MADR {:x} Drain {:x}\n", gifch.qwc, dmacRegs.rbor.ADDR, spr0ch.madr, DrainADDR);
 	// Calculate what we have in the fifo.
 	if (DrainADDR <= spr0ch.madr)
 	{
@@ -504,7 +504,7 @@ static u32 QWCinGIFMFIFO(u32 DrainADDR)
 	if (ret == 0)
 		gif.gifstate = GIF_STATE_EMPTY;
 
-	SPR_LOG("%x Available of the %x requested", ret, gifch.qwc);
+	Log::EE::SPR.debug("{:x} Available of the {:x} requested\n", ret, gifch.qwc);
 	return ret;
 }
 
@@ -562,7 +562,7 @@ static __fi void mfifoGIFchain()
 	{
 		if (QWCinGIFMFIFO(gifch.madr) == 0)
 		{
-			SPR_LOG("GIF FIFO EMPTY before transfer");
+			Log::EE::SPR.debug("GIF FIFO EMPTY before transfer\n");
 			gif.gifstate = GIF_STATE_EMPTY;
 			gif.mfifocycles += 4;
 			return;
@@ -583,7 +583,7 @@ static __fi void mfifoGIFchain()
 	}
 	else
 	{
-		SPR_LOG("Non-MFIFO Location transfer doing %x Total QWC", gifch.qwc);
+		Log::EE::SPR.debug("Non-MFIFO Location transfer doing {:x} Total QWC\n", gifch.qwc);
 		tDMA_TAG* pMem = dmaGetAddr(gifch.madr, false);
 		if (pMem == NULL)
 		{
@@ -616,12 +616,12 @@ void mfifoGifMaskMem(int id)
 		case TAG_END:
 			if (gifch.madr < dmacRegs.rbor.ADDR) // Probably not needed but we will check anyway.
 			{
-				SPR_LOG("GIF MFIFO MADR below bottom of ring buffer, wrapping GIF MADR = %x Ring Bottom %x", gifch.madr, dmacRegs.rbor.ADDR);
+				Log::EE::SPR.debug("GIF MFIFO MADR below bottom of ring buffer, wrapping GIF MADR = {:x} Ring Bottom {:x}\n", gifch.madr, dmacRegs.rbor.ADDR);
 				gifch.madr = qwctag(gifch.madr);
 			}
 			else if (gifch.madr > (dmacRegs.rbor.ADDR + (u32)dmacRegs.rbsr.RMSK)) // Usual scenario is the tag is near the end (Front Mission 4)
 			{
-				SPR_LOG("GIF MFIFO MADR outside top of ring buffer, wrapping GIF MADR = %x Ring Top %x", gifch.madr, (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK) + 16);
+				Log::EE::SPR.debug("GIF MFIFO MADR outside top of ring buffer, wrapping GIF MADR = {:x} Ring Top {:x}\n", gifch.madr, (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK) + 16);
 				gifch.madr = qwctag(gifch.madr);
 			}
 			break;

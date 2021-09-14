@@ -78,7 +78,7 @@ void psxShutdown() {
 
 void __fastcall psxException(u32 code, u32 bd)
 {
-//	PSXCPU_LOG("psxException %x: %x, %x", code, psxHu32(0x1070), psxHu32(0x1074));
+//	Log::IOP::R3000A.debug("psxException {:x}: {:x}, {:x}\n", code, psxHu32(0x1070), psxHu32(0x1074));
 	//Log::Console.info("!! psxException {:x}: {:x}, {:x}\n", code, psxHu32(0x1070), psxHu32(0x1074));
 	// Set the Cause
 	psxRegs.CP0.n.Cause &= ~0x7f;
@@ -87,7 +87,7 @@ void __fastcall psxException(u32 code, u32 bd)
 	// Set the EPC & PC
 	if (bd)
 	{
-		PSXCPU_LOG("bd set");
+		Log::IOP::R3000A.debug("bd set\n");
 		psxRegs.CP0.n.Cause|= 0x80000000;
 		psxRegs.CP0.n.EPC = (psxRegs.pc - 4);
 	}
@@ -223,7 +223,7 @@ __ri void iopEventTest()
 	{
 		if( (psxRegs.CP0.n.Status & 0xFE01) >= 0x401 )
 		{
-			PSXCPU_LOG("Interrupt: %x  %x", psxHu32(0x1070), psxHu32(0x1074));
+			Log::IOP::R3000A.debug("Interrupt: {:x}  {:x}\n", psxHu32(0x1070), psxHu32(0x1074));
 			psxException(0, 0);
 			iopEventAction = true;
 		}

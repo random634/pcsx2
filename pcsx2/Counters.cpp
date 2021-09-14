@@ -654,7 +654,7 @@ static __fi void _cpuTestTarget( int i )
 		return;
 
 	if(counters[i].mode.TargetInterrupt) {
-		EECNT_LOG("EE Counter[%d] TARGET reached - mode=%x, count=%x, target=%x", i, counters[i].mode, counters[i].count, counters[i].target);
+		Log::EE::Counters.debug("EE Counter[{:d}] TARGET reached - mode={:x}, count={:x}, target={:x}\n", i, counters[i].modeval, counters[i].count, counters[i].target);
 		if (!counters[i].mode.TargetReached)
 		{
 			counters[i].mode.TargetReached = 1;
@@ -673,7 +673,7 @@ static __fi void _cpuTestOverflow( int i )
 	if (counters[i].count <= 0xffff) return;
 
 	if (counters[i].mode.OverflowInterrupt) {
-		EECNT_LOG("EE Counter[%d] OVERFLOW - mode=%x, count=%x", i, counters[i].mode, counters[i].count);
+		Log::EE::Counters.debug("EE Counter[{:d}] OVERFLOW - mode={:x}, count={:x}\n", i, counters[i].modeval, counters[i].count);
 		if (!counters[i].mode.OverflowReached)
 		{
 			counters[i].mode.OverflowReached = 1;
@@ -733,7 +733,7 @@ static __fi void _rcntSetGate( int index )
 
 		if( !(counters[index].mode.GateSource == 0 && counters[index].mode.ClockSource == 3) )
 		{
-			EECNT_LOG( "EE Counter[%d] Using Gate!  Source=%s, Mode=%d.",
+			Log::EE::Counters.debug("EE Counter[{:d}] Using Gate!  Source={:s}, Mode={:d}.\n",
 				index, counters[index].mode.GateSource ? "vblank" : "hblank", counters[index].mode.GateMode );
 
 			gates |= (1<<index);
@@ -742,7 +742,7 @@ static __fi void _rcntSetGate( int index )
 			return;
 		}
 		else
-			EECNT_LOG( "EE Counter[%d] GATE DISABLED because of hblank source.", index );
+			Log::EE::Counters.debug("EE Counter[{:d}] GATE DISABLED because of hblank source.\n", index );
 	}
 
 	gates &= ~(1<<index);
@@ -782,7 +782,7 @@ static __fi void rcntStartGate(bool isVblank, u32 sCycle)
 				counters[i].count = rcntRcount(i);
 				counters[i].mode.IsCounting = 0;
 				counters[i].sCycleT = sCycle;
-				EECNT_LOG("EE Counter[%d] %s StartGate Type0, count = %x", i,
+				Log::EE::Counters.debug("EE Counter[{:d}] {:s} StartGate Type0, count = {:x}\n", i,
 					isVblank ? "vblank" : "hblank", counters[i].count );
 				break;
 
@@ -796,7 +796,7 @@ static __fi void rcntStartGate(bool isVblank, u32 sCycle)
 				counters[i].count = 0;
 				counters[i].target &= 0xffff;
 				counters[i].sCycleT = sCycle;
-				EECNT_LOG("EE Counter[%d] %s StartGate Type%d, count = %x", i,
+				Log::EE::Counters.debug("EE Counter[{:d}] {:s} StartGate Type{:d}, count = {:x}\n", i,
 					isVblank ? "vblank" : "hblank", counters[i].mode.GateMode, counters[i].count );
 				break;
 		}
@@ -828,7 +828,7 @@ static __fi void rcntEndGate(bool isVblank , u32 sCycle)
 				counters[i].mode.IsCounting = 1;
 				counters[i].sCycleT = cpuRegs.cycle;
 				
-				EECNT_LOG("EE Counter[%d] %s EndGate Type0, count = %x", i,
+				Log::EE::Counters.debug("EE Counter[{:d}] {:s} EndGate Type0, count = {:x}\n", i,
 					isVblank ? "vblank" : "hblank", counters[i].count );
 			break;
 
@@ -842,7 +842,7 @@ static __fi void rcntEndGate(bool isVblank , u32 sCycle)
 				counters[i].count = 0;
 				counters[i].target &= 0xffff;
 				counters[i].sCycleT = sCycle;
-				EECNT_LOG("EE Counter[%d] %s EndGate Type%d, count = %x", i,
+				Log::EE::Counters.debug("EE Counter[{:d}] {:s} EndGate Type{:d}, count = {:x}\n", i,
 					isVblank ? "vblank" : "hblank", counters[i].mode.GateMode, counters[i].count );
 			break;
 		}
@@ -880,7 +880,7 @@ static __fi void rcntWmode(int index, u32 value)
 
 	counters[index].modeval &= ~(value & 0xc00);
 	counters[index].modeval = (counters[index].modeval & 0xc00) | (value & 0x3ff);
-	EECNT_LOG("EE Counter[%d] writeMode = %x   passed value=%x", index, counters[index].modeval, value );
+	Log::EE::Counters.debug("EE Counter[{:d}] writeMode = {:x}   passed value={:x}\n", index, counters[index].modeval, value );
 
 	switch (counters[index].mode.ClockSource) { //Clock rate divisers *2, they use BUSCLK speed not PS2CLK
 		case 0: counters[index].rate = 2; break;
@@ -895,7 +895,7 @@ static __fi void rcntWmode(int index, u32 value)
 
 static __fi void rcntWcount(int index, u32 value)
 {
-	EECNT_LOG("EE Counter[%d] writeCount = %x,   oldcount=%x, target=%x", index, value, counters[index].count, counters[index].target );
+	Log::EE::Counters.debug("EE Counter[{:d}] writeCount = {:x},   oldcount={:x}, target={:x}\n", index, value, counters[index].count, counters[index].target );
 
 	counters[index].count = value & 0xffff;
 
@@ -921,7 +921,7 @@ static __fi void rcntWcount(int index, u32 value)
 
 static __fi void rcntWtarget(int index, u32 value)
 {
-	EECNT_LOG("EE Counter[%d] writeTarget = %x", index, value);
+	Log::EE::Counters.debug("EE Counter[{:d}] writeTarget = {:x}\n", index, value);
 
 	counters[index].target = value & 0xffff;
 
@@ -950,7 +950,7 @@ static __fi void rcntWtarget(int index, u32 value)
 
 static __fi void rcntWhold(int index, u32 value)
 {
-	EECNT_LOG("EE Counter[%d] Hold Write = %x", index, value);
+	Log::EE::Counters.debug("EE Counter[{:d}] Hold Write = {:x}\n", index, value);
 	counters[index].hold = value;
 }
 
@@ -965,7 +965,7 @@ __fi u32 rcntRcount(int index)
 		ret = counters[index].count;
 
 	// Spams the Console.
-	EECNT_LOG("EE Counter[%d] readCount32 = %x", index, ret);
+	Log::EE::Counters.debug("EE Counter[{:d}] readCount32 = {:x}\n", index, ret);
 	return ret;
 }
 

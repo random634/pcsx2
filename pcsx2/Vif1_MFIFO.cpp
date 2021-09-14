@@ -42,7 +42,7 @@ static u32 QWCinVIFMFIFO(u32 DrainADDR, u32 qwc)
 		ret = ((spr0ch.madr - dmacRegs.rbor.ADDR) + (limit - DrainADDR)) >> 4;
 	}
 
-	VIF_LOG("VIF MFIFO Requesting %x QWC of %x Available from the MFIFO Base %x MFIFO Top %x, SPR MADR %x Drain %x", qwc, ret, dmacRegs.rbor.ADDR, dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK + 16, spr0ch.madr, DrainADDR);
+	Log::EE::VIF.debug("VIF MFIFO Requesting {:x} QWC of {:x} Available from the MFIFO Base {:x} MFIFO Top {:x}, SPR MADR {:x} Drain {:x}\n", qwc, ret, dmacRegs.rbor.ADDR, dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK + 16, spr0ch.madr, DrainADDR);
 
 	return ret;
 }
@@ -63,7 +63,7 @@ static __fi bool mfifoVIF1rbTransfer()
 	{
 		int s1 = ((msize) - vif1ch.madr) >> 2;
 
-		VIF_LOG("Split MFIFO");
+		Log::EE::VIF.debug("Split MFIFO\n");
 
 		/* it does, so first copy 's1' bytes from 'addr' to 'data' */
 		vif1ch.madr = qwctag(vif1ch.madr);
@@ -91,7 +91,7 @@ static __fi bool mfifoVIF1rbTransfer()
 	}
 	else
 	{
-		VIF_LOG("Direct MFIFO");
+		Log::EE::VIF.debug("Direct MFIFO\n");
 
 		/* it doesn't, so just transfer 'qwc*4' words */
 		src = (u32*)PSM(vif1ch.madr);
@@ -119,7 +119,7 @@ static __fi void mfifo_VIF1chain()
 	{
 		//if(vif1ch.madr == (dmacRegs.rbor.ADDR + dmacRegs.rbsr.RMSK + 16)) Log::Dev.warning("Edge VIF1\n");
 		if (QWCinVIFMFIFO(vif1ch.madr, vif1ch.qwc) == 0) {
-			VIF_LOG("VIF MFIFO Empty before transfer");
+			Log::EE::VIF.debug("VIF MFIFO Empty before transfer\n");
 			vif1.inprogress |= 0x10;
 			g_vif1Cycles += 4;
 			return;
@@ -137,7 +137,7 @@ static __fi void mfifo_VIF1chain()
 	else
 	{
 		tDMA_TAG *pMem = dmaGetAddr(vif1ch.madr, !vif1ch.chcr.DIR);
-		VIF_LOG("Non-MFIFO Location");
+		Log::EE::VIF.debug("Non-MFIFO Location\n");
 
 		//No need to exit on non-mfifo as it is indirect anyway, so it can be transferring this while spr refills the mfifo
 
@@ -185,7 +185,7 @@ void mfifoVIF1transfer()
 	if (vif1ch.qwc == 0)
 	{
 		if (QWCinVIFMFIFO(vif1ch.tadr, 1) == 0) {
-			VIF_LOG("VIF MFIFO Empty before tag");
+			Log::EE::VIF.debug("VIF MFIFO Empty before tag\n");
 			vif1.inprogress |= 0x10;
 			g_vif1Cycles += 4;
 			return;
@@ -208,7 +208,7 @@ void mfifoVIF1transfer()
 			masked_tag._u64[0] = 0;
 			masked_tag._u64[1] = *((u64*)ptag + 1);
 
-			VIF_LOG("\tVIF1 SrcChain TTE=1, data = 0x%08x.%08x", masked_tag._u32[3], masked_tag._u32[2]);
+			Log::EE::VIF.debug("\tVIF1 SrcChain TTE=1, data = 0x{:08x}.{:08x}\n", masked_tag._u32[3], masked_tag._u32[2]);
 
 			if (vif1.irqoffset.enabled)
 			{
@@ -238,8 +238,8 @@ void mfifoVIF1transfer()
 
 		vif1ch.madr = ptag[1]._u32;
 
-		VIF_LOG("dmaChain %8.8x_%8.8x size=%d, id=%d, madr=%lx, tadr=%lx spr0 madr = %x",
-        ptag[1]._u32, ptag[0]._u32, vif1ch.qwc, ptag->ID, vif1ch.madr, vif1ch.tadr, spr0ch.madr);
+		Log::EE::VIF.debug("dmaChain {:08x}_{:08x} size={:d}, id={:d}, madr={:x}, tadr={:x} spr0 madr = {:x}\n",
+			ptag[1]._u32, ptag[0]._u32, vif1ch.qwc, ptag->ID, vif1ch.madr, vif1ch.tadr, spr0ch.madr);
 
 		vif1.done |= hwDmacSrcChainWithStack(vif1ch, ptag->ID);
 
@@ -247,7 +247,7 @@ void mfifoVIF1transfer()
 
 		if (vif1ch.chcr.TIE && ptag->IRQ)
 		{
-			VIF_LOG("dmaIrq Set");
+			Log::EE::VIF.debug("dmaIrq Set\n");
 			vif1.done = true;
 		}
 
@@ -261,13 +261,13 @@ void mfifoVIF1transfer()
 	}
 	
 
-	VIF_LOG("mfifoVIF1transfer end %x madr %x, tadr %x", vif1ch.chcr._u32, vif1ch.madr, vif1ch.tadr);
+	Log::EE::VIF.debug("mfifoVIF1transfer end {:x} madr {:x}, tadr {:x}\n", vif1ch.chcr._u32, vif1ch.madr, vif1ch.tadr);
 }
 
 void vifMFIFOInterrupt()
 {
 	g_vif1Cycles = 0;
-	VIF_LOG("vif mfifo interrupt");
+	Log::EE::VIF.debug("vif mfifo interrupt\n");
 
 	if (dmacRegs.ctrl.MFD != MFD_VIF1) {
 		vif1Interrupt();
@@ -305,7 +305,7 @@ void vifMFIFOInterrupt()
 	// Simulated GS transfer time done, clear the flags
 	
 	if (vif1.irq && vif1.vifstalled.enabled && vif1.vifstalled.value == VIF_IRQ_STALL) {
-		VIF_LOG("VIF MFIFO Code Interrupt detected");
+		Log::EE::VIF.debug("VIF MFIFO Code Interrupt detected\n");
 		vif1Regs.stat.INT = true;
 
 		if (((vif1Regs.code >> 24) & 0x7f) != 0x7) {
@@ -319,11 +319,11 @@ void vifMFIFOInterrupt()
 			//vif1Regs.stat.FQC = 0; // FQC=0
 			//vif1ch.chcr.STR = false;
 			vif1Regs.stat.FQC = std::min((u32)0x10, vif1ch.qwc);
-			VIF_LOG("VIF1 MFIFO Stalled qwc = %x done = %x inprogress = %x", vif1ch.qwc, vif1.done, vif1.inprogress & 0x10);
+			Log::EE::VIF.debug("VIF1 MFIFO Stalled qwc = {:x} done = {:x} inprogress = {:x}\n", vif1ch.qwc, vif1.done, vif1.inprogress & 0x10);
 			//Used to check if the MFIFO was empty, there's really no need if it's finished what it needed.
 			if((vif1ch.qwc > 0 || !vif1.done)) {
 				vif1Regs.stat.VPS = VPS_DECODING; //If there's more data you need to say it's decoding the next VIF CMD (Onimusha - Blade Warriors)
-				VIF_LOG("VIF1 MFIFO Stalled");
+				Log::EE::VIF.debug("VIF1 MFIFO Stalled\n");
 				return;
 			}
 		}
@@ -376,7 +376,7 @@ void vifMFIFOInterrupt()
 	vif1Regs.stat.FQC = std::min((u32)0x10, vif1ch.qwc);
 	vif1ch.chcr.STR = false;
 	hwDmacIrq(DMAC_VIF1);
-	DMA_LOG("VIF1 MFIFO DMA End");
+	Log::EE::DMAHW.debug("VIF1 MFIFO DMA End\n");
 
 	vif1Regs.stat.FQC = 0;
 }

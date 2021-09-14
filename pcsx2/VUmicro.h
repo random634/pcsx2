@@ -273,11 +273,11 @@ extern void iDumpVU1Registers();
 #ifdef VUM_LOG
 
 #define IdebugUPPER(VU) \
-	VUM_LOG("%s", dis##VU##MicroUF(VU.code, VU.VI[REG_TPC].UL));
+	Log::EE::COP2.debug("{:s}\n", dis##VU##MicroUF(VU.code, VU.VI[REG_TPC].UL));
 #define IdebugLOWER(VU) \
-	VUM_LOG("%s", dis##VU##MicroLF(VU.code, VU.VI[REG_TPC].UL));
+	Log::EE::COP2.debug("{:s}\n", dis##VU##MicroLF(VU.code, VU.VI[REG_TPC].UL));
 #define _vuExecMicroDebug(VU) \
-	VUM_LOG("_vuExecMicro: %8.8x", VU.VI[REG_TPC].UL);
+	Log::EE::COP2.debug("_vuExecMicro: {:08x}\n", VU.VI[REG_TPC].UL);
 
 #else
 

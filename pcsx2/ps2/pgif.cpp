@@ -47,7 +47,7 @@ All the PS1 GPU info comes from psx-spx: http://problemkaputt.de/psx-spx.htm
 #define LOG_PGPU_DMA 1
 
 #if LOG_PGPU_DMA
-	#define PGPU_DMA_LOG pgifConLog
+	#define PGPU_DMA_LOG Log::SysCon::PGIF.debug
 #else
 	#define PGPU_DMA_LOG(...) do {} while(0)
 #endif
@@ -547,13 +547,13 @@ void drainPgpuDmaLl()
 			dmaRegs.madr.address = 0x00FFFFFF;
 			dmaRegs.chcr.bits.BUSY = 0; //Transfer completed => clear busy flag
 			pgpuDmaIntr(3);
-			PGPU_DMA_LOG("PGPU DMA Linked List Finished");
+			PGPU_DMA_LOG("PGPU DMA Linked List Finished\n");
 		}
 		else
 		{
 			//Or the beginning of a new one
 			data = iopMemRead32(dma.ll_dma.next_address);
-			PGPU_DMA_LOG( "Next PGPU LL DMA header= %08X  ", data);
+			PGPU_DMA_LOG("Next PGPU LL DMA header= {:08X}  \n", data);
 			dmaRegs.madr.address = data & 0x00FFFFFF; //Copy the address in MADR.
 			dma.ll_dma.data_read_address = dma.ll_dma.next_address + 4; //start of data section of packet
 			dma.ll_dma.current_word = 0;
@@ -565,7 +565,7 @@ void drainPgpuDmaLl()
 	{
 		//We are in the middle of linked list transfer
 		data = iopMemRead32(dma.ll_dma.data_read_address);
-		PGPU_DMA_LOG( "PGPU LL DMA data= %08X  addr %08X ", data, dma.ll_dma.data_read_address);
+		PGPU_DMA_LOG("PGPU LL DMA data= {:08X}  addr {:08X} \n", data, dma.ll_dma.data_read_address);
 		ringBufPut(&rb_gp0, &data);
 		dma.ll_dma.data_read_address += 4;
 		dma.ll_dma.current_word++;
@@ -585,7 +585,7 @@ void drainPgpuDmaNrToGpu()
 	if (dma.normal.current_word < dma.normal.total_words)
 	{
 		data = iopMemRead32(dma.normal.address);
-		PGPU_DMA_LOG( "To GPU Normal DMA data= %08X  addr %08X ", data, dma.ll_dma.data_read_address);
+		PGPU_DMA_LOG("To GPU Normal DMA data= {:08X}  addr {:08X} \n", data, dma.ll_dma.data_read_address);
 
 		ringBufPut(&rb_gp0, &data);
 		if (dmaRegs.chcr.bits.MAS)
@@ -606,7 +606,7 @@ void drainPgpuDmaNrToGpu()
 		dma.state.to_gpu_active = 0;
 		dmaRegs.chcr.bits.BUSY = 0;
 		pgpuDmaIntr(1);
-		PGPU_DMA_LOG("To GPU DMA Normal FINISHED");
+		PGPU_DMA_LOG("To GPU DMA Normal FINISHED\n");
 	}
 }
 
@@ -634,7 +634,7 @@ void drainPgpuDmaNrToIop()
 			// decrease block amount only if full block size were drained.
 			dmaRegs.bcr.bit.block_amount -= 1;
 		}
-		PGPU_DMA_LOG("GPU->IOP ba: %x , cw: %x , tw: %x" ,dmaRegs.bcr.bit.block_amount, dma.normal.current_word, dma.normal.total_words);
+		PGPU_DMA_LOG("GPU->IOP ba: {:x} , cw: {:x} , tw: {:x}\n",dmaRegs.bcr.bit.block_amount, dma.normal.current_word, dma.normal.total_words);
 	}
 	if (dma.normal.current_word >= dma.normal.total_words)
 	{
@@ -659,7 +659,7 @@ void processPgpuDma()
 		Log::Console.warning("SyncMode 3! Assuming SyncMode 1\n");
 		dmaRegs.chcr.bits.TSM = 1;
 	}
-	PGPU_DMA_LOG("Starting GPU DMA! CHCR %08X  BCR %08X  MADR %08X ", dmaRegs.chcr.get(), dmaRegs.bcr.get(), dmaRegs.madr.address);
+	PGPU_DMA_LOG("Starting GPU DMA! CHCR {:08X}  BCR {:08X}  MADR {:08X} \n", dmaRegs.chcr.get(), dmaRegs.bcr.get(), dmaRegs.madr.address);
 
 	//Linked List Mode
 	if (dmaRegs.chcr.bits.TSM == 2)
@@ -671,7 +671,7 @@ void processPgpuDma()
 			dma.ll_dma.next_address = (dmaRegs.madr.address & 0x00FFFFFF); //The address in IOP RAM where to load the first header word from
 			dma.ll_dma.current_word = 0;
 			dma.ll_dma.total_words = 0;
-			PGPU_DMA_LOG("LL DMA FILL");
+			PGPU_DMA_LOG("LL DMA FILL\n");
 
 			//fill a single word in fifo now, because otherwise PS1DRV won't know that a transfer is pending.
 			fillFifoOnDrain();
@@ -689,13 +689,13 @@ void processPgpuDma()
 
 	if (dmaRegs.chcr.bits.DIR) // to gpu
 	{
-		PGPU_DMA_LOG("NORMAL DMA TO GPU");
+		PGPU_DMA_LOG("NORMAL DMA TO GPU\n");
 		dma.state.to_gpu_active = 1;
 		fillFifoOnDrain();
 	}
 	else
 	{
-		PGPU_DMA_LOG("NORMAL DMA FROM GPU");
+		PGPU_DMA_LOG("NORMAL DMA FROM GPU\n");
 		dma.state.to_iop_active = 1;
 		drainPgpuDmaNrToIop();
 	}
@@ -725,13 +725,13 @@ u32 psxDma2GpuR(u32 addr)
 			break;
 	}
 	if (addr != PGPU_DMA_CHCR)
-		PGPU_DMA_LOG("PGPU DMA read  0x%08X = 0x%08X", addr, data);
+		PGPU_DMA_LOG("PGPU DMA read  0x{:08X} = 0x{:08X}\n", addr, data);
 	return data;
 }
 
 void psxDma2GpuW(u32 addr, u32 data)
 {
-	PGPU_DMA_LOG("PGPU DMA write 0x%08X = 0x%08X", addr, data);
+	PGPU_DMA_LOG("PGPU DMA write 0x{:08X} = 0x{:08X}\n", addr, data);
 	addr &= 0x1FFFFFFF;
 	switch (addr)
 	{

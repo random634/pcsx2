@@ -146,7 +146,7 @@ __fi void gsWrite8(u32 mem, u8 value)
 			*PS2GS_BASE(mem) = value;
 		break;
 	}
-	GIF_LOG("GS write 8 at %8.8lx with data %8.8lx", mem, value);
+	Log::EE::GIF.debug("GS write 8 at {:08x} with data {:08x}\n", mem, value);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ __fi void gsWrite8(u32 mem, u8 value)
 
 __fi void gsWrite16(u32 mem, u16 value)
 {
-	GIF_LOG("GS write 16 at %8.8lx with data %8.8lx", mem, value);
+	Log::EE::GIF.debug("GS write 16 at {:08x} with data {:08x}\n", mem, value);
 
 	switch (mem)
 	{
@@ -183,7 +183,7 @@ __fi void gsWrite16(u32 mem, u16 value)
 __fi void gsWrite32(u32 mem, u32 value)
 {
 	pxAssume( (mem & 3) == 0 );
-	GIF_LOG("GS write 32 at %8.8lx with data %8.8lx", mem, value);
+	Log::EE::GIF.debug("GS write 32 at {:08x} with data {:08x}\n", mem, value);
 
 	switch (mem)
 	{
@@ -205,7 +205,7 @@ __fi void gsWrite32(u32 mem, u32 value)
 void __fastcall gsWrite64_generic( u32 mem, const mem64_t* value )
 {
 	const u32* const srcval32 = (u32*)value;
-	GIF_LOG("GS Write64 at %8.8lx with data %8.8x_%8.8x", mem, srcval32[1], srcval32[0]);
+	Log::EE::GIF.debug("GS Write64 at {:08x} with data {:08x}_{:08x}\n", mem, srcval32[1], srcval32[0]);
 
 	*(u64*)PS2GS_BASE(mem) = *value;
 }
@@ -217,7 +217,7 @@ void __fastcall gsWrite64_page_00( u32 mem, const mem64_t* value )
 
 void __fastcall gsWrite64_page_01( u32 mem, const mem64_t* value )
 {
-	GIF_LOG("GS Write64 at %8.8lx with data %8.8x_%8.8x", mem, (u32*)value[1], (u32*)value[0]);
+	Log::EE::GIF.debug("GS Write64 at {:08x} with data {:08x}_{:08x}\n", mem, ((u32*)value)[1], ((u32*)value)[0]);
 
 	switch( mem )
 	{
@@ -286,7 +286,7 @@ void __fastcall gsWrite128_generic( u32 mem, const mem128_t* value )
 {
 	const u32* const srcval32 = (u32*)value;
 
-	GIF_LOG("GS Write128 at %8.8lx with data %8.8x_%8.8x_%8.8x_%8.8x", mem,
+	Log::EE::GIF.debug("GS Write128 at {:08x} with data {:08x}_{:08x}_{:08x}_{:08x}\n", mem,
 		srcval32[3], srcval32[2], srcval32[1], srcval32[0]);
 
 	CopyQWC(PS2GS_BASE(mem), value);
@@ -294,7 +294,7 @@ void __fastcall gsWrite128_generic( u32 mem, const mem128_t* value )
 
 __fi u8 gsRead8(u32 mem)
 {
-	GIF_LOG("GS read 8 from %8.8lx  value: %8.8lx", mem, *(u8*)PS2GS_BASE(mem));
+	Log::EE::GIF.debug("GS read 8 from {:08x}  value: {:08x}\n", mem, *(u8*)PS2GS_BASE(mem));
 
 	switch (mem & ~0xF)
 	{
@@ -307,7 +307,7 @@ __fi u8 gsRead8(u32 mem)
 
 __fi u16 gsRead16(u32 mem)
 {
-	GIF_LOG("GS read 16 from %8.8lx  value: %8.8lx", mem, *(u16*)PS2GS_BASE(mem));
+	Log::EE::GIF.debug("GS read 16 from {:08x}  value: {:08x}\n", mem, *(u16*)PS2GS_BASE(mem));
 	switch (mem & ~0xF)
 	{
 		case GS_SIGLBLID:
@@ -319,7 +319,7 @@ __fi u16 gsRead16(u32 mem)
 
 __fi u32 gsRead32(u32 mem)
 {
-	GIF_LOG("GS read 32 from %8.8lx  value: %8.8lx", mem, *(u32*)PS2GS_BASE(mem));
+	Log::EE::GIF.debug("GS read 32 from {:08x}  value: {:08x}\n", mem, *(u32*)PS2GS_BASE(mem));
 	switch (mem & ~0xF)
 	{
 		case GS_SIGLBLID:
@@ -332,7 +332,7 @@ __fi u32 gsRead32(u32 mem)
 __fi u64 gsRead64(u32 mem)
 {
 	// fixme - PS2GS_BASE(mem+4) = (g_RealGSMem+(mem + 4 & 0x13ff))
-	GIF_LOG("GS read 64 from %8.8lx  value: %8.8lx_%8.8lx", mem, *(u32*)PS2GS_BASE(mem+4), *(u32*)PS2GS_BASE(mem) );
+	Log::EE::GIF.debug("GS read 64 from {:08x}  value: {:08x}_{:08x}\n", mem, *(u32*)PS2GS_BASE(mem+4), *(u32*)PS2GS_BASE(mem));
 	switch (mem & ~0xF)
 	{
 		case GS_SIGLBLID:

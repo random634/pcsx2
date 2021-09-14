@@ -69,7 +69,7 @@ struct sifFifo
 			writePos = (writePos + words) & (FIFO_SIF_W - 1);
 			size += words;
 		}
-		SIF_LOG("  SIF + %d = %d (pos=%d)", words, size, writePos);
+		Log::SIF.debug("  SIF + {:d} = {:d} (pos={:d})\n", words, size, writePos);
 	}
 
 	void writeJunk(int words)
@@ -87,7 +87,7 @@ struct sifFifo
 			writePos = (writePos + words) & (FIFO_SIF_W - 1);
 			size += words;
 		}
-		SIF_LOG("  SIF + %d = %d (pos=%d)", words, size, writePos);
+		Log::SIF.debug("  SIF + {:d} = {:d} (pos={:d})\n", words, size, writePos);
 	}
 
 	void read(u32 *to, int words)
@@ -103,7 +103,7 @@ struct sifFifo
 			readPos = (readPos + words) & (FIFO_SIF_W - 1);
 			size -= words;
 		}
-		SIF_LOG("  SIF - %d = %d (pos=%d)", words, size, readPos);
+		Log::SIF.debug("  SIF - {:d} = {:d} (pos={:d})\n", words, size, readPos);
 	}
 	void clear()
 	{

@@ -44,7 +44,7 @@ void vu1Finish(bool add_cycles) {
 	}
 	u32 vu1cycles = VU1.cycle;
 	if(VU0.VI[REG_VPU_STAT].UL & 0x100) {
-		VUM_LOG("vu1ExecMicro > Stalling until current microprogram finishes");
+		Log::EE::COP2.debug("vu1ExecMicro > Stalling until current microprogram finishes\n");
 		CpuVU1->Execute(vu1RunCycles);
 	}
 	if (VU0.VI[REG_VPU_STAT].UL & 0x100) {
@@ -75,7 +75,7 @@ void __fastcall vu1ExecMicro(u32 addr)
 	static int count = 0;
 	vu1Finish(false);
 
-	VUM_LOG("vu1ExecMicro %x (count=%d)", addr, count++);
+	Log::EE::COP2.debug("vu1ExecMicro {:x} (count={:d})\n", addr, count++);
 	VU1.cycle = cpuRegs.cycle;
 	VU0.VI[REG_VPU_STAT].UL &= ~0xFF00;
 	VU0.VI[REG_VPU_STAT].UL |=  0x0100;

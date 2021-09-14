@@ -66,7 +66,7 @@ void __fastcall ReadFIFO_VIF1(mem128_t* out)
 		}
 	}
 
-	VIF_LOG("ReadFIFO/VIF1 -> %ls", WX_STR(out->ToString()));
+	Log::EE::VIF.debug("ReadFIFO/VIF1 -> {:s}\n", WX_STR(out->ToString()));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ void __fastcall ReadFIFO_VIF1(mem128_t* out)
 //
 void __fastcall WriteFIFO_VIF0(const mem128_t* value)
 {
-	VIF_LOG("WriteFIFO/VIF0 <- %ls", WX_STR(value->ToString()));
+	Log::EE::VIF.debug("WriteFIFO/VIF0 <- {:s}\n", WX_STR(value->ToString()));
 
 	vif0ch.qwc += 1;
 	if (vif0.irqoffset.value != 0 && vif0.vifstalled.enabled)
@@ -96,7 +96,7 @@ void __fastcall WriteFIFO_VIF0(const mem128_t* value)
 
 void __fastcall WriteFIFO_VIF1(const mem128_t* value)
 {
-	VIF_LOG("WriteFIFO/VIF1 <- %ls", WX_STR(value->ToString()));
+	Log::EE::VIF.debug("WriteFIFO/VIF1 <- {:s}\n", WX_STR(value->ToString()));
 
 	if (vif1Regs.stat.FDR)
 	{

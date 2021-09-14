@@ -201,8 +201,8 @@ static void __fastcall _rcntTestTarget(int i)
 	if (psxCounters[i].count < psxCounters[i].target)
 		return;
 
-	PSXCNT_LOG("IOP Counter[%d] target 0x%I64x >= 0x%I64x (mode: %x)",
-			   i, psxCounters[i].count, psxCounters[i].target, psxCounters[i].mode);
+	Log::IOP::Counters.debug("IOP Counter[{:d}] target 0x{:x} >= 0x{:x} (mode: {:x})\n",
+		i, psxCounters[i].count, psxCounters[i].target, psxCounters[i].mode);
 
 	if (psxCounters[i].mode & IOPCNT_INT_TARGET)
 	{
@@ -228,8 +228,8 @@ static __fi void _rcntTestOverflow(int i)
 	if (psxCounters[i].count <= maxTarget)
 		return;
 
-	PSXCNT_LOG("IOP Counter[%d] overflow 0x%I64x >= 0x%I64x (mode: %x)",
-			   i, psxCounters[i].count, maxTarget, psxCounters[i].mode);
+	Log::IOP::Counters.debug("IOP Counter[{:d}] overflow 0x{:x} >= 0x{:x} (mode: {:x})\n",
+		i, psxCounters[i].count, maxTarget, psxCounters[i].mode);
 	if (!(psxCounters[i].mode & 0x40)) //One shot, whichever condition is met first
 	{
 		if (psxCounters[i].target < IOPCNT_FUTURE_TARGET)
@@ -571,7 +571,7 @@ void psxRcntWcount32(int index, u32 value)
 	u32 change;
 
 	pxAssert(index >= 3 && index < 6);
-	PSXCNT_LOG("32bit IOP Counter[%d] writeCount32 = %x", index, value);
+	Log::IOP::Counters.debug("32bit IOP Counter[{:d}] writeCount32 = {:x}\n", index, value);
 
 	if (psxCounters[index].rate != PSXHBLANK)
 	{
@@ -600,7 +600,7 @@ void psxRcntWcount32(int index, u32 value)
 __fi void psxRcntWmode16(int index, u32 value)
 {
 	int irqmode = 0;
-	PSXCNT_LOG("16bit IOP Counter[%d] writeMode = 0x%04X", index, value);
+	Log::IOP::Counters.debug("16bit IOP Counter[{:d}] writeMode = 0x{:04X}\n", index, value);
 
 	pxAssume(index >= 0 && index < 3);
 	psxCounter& counter = psxCounters[index];
@@ -618,19 +618,19 @@ __fi void psxRcntWmode16(int index, u32 value)
 	}
 	if (value & (1 << 7))
 	{
-		PSXCNT_LOG("16 Counter %d Toggle IRQ on %s", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
+		Log::IOP::Counters.debug("16 Counter {:d} Toggle IRQ on {:s}\n", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
 	}
 	else
 	{
-		PSXCNT_LOG("16 Counter %d Pulsed IRQ on %s", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
+		Log::IOP::Counters.debug("16 Counter {:d} Pulsed IRQ on {:s}\n", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
 	}
 	if (!(value & (1 << 6)))
 	{
-		PSXCNT_LOG("16 Counter %d One Shot", index);
+		Log::IOP::Counters.debug("16 Counter {:d} One Shot\n", index);
 	}
 	else
 	{
-		PSXCNT_LOG("16 Counter %d Repeat", index);
+		Log::IOP::Counters.debug("16 Counter {:d} Repeat\n", index);
 	}
 	if (index == 2)
 	{
@@ -663,7 +663,7 @@ __fi void psxRcntWmode16(int index, u32 value)
 			// gated counters are added up as per the h/vblank timers.
 			// (the PIXEL alt source becomes a vsync gate)
 			counter.mode |= IOPCNT_STOPPED;
-			PSXCNT_LOG("IOP Counter[%d] Gate Check set, value = 0x%04X", index, value);
+			Log::IOP::Counters.debug("IOP Counter[{:d}] Gate Check set, value = 0x{:04X}\n", index, value);
 			if (index == 0)
 				psxhblankgate |= 1; // fixme: these gate flags should be one var >_<
 			else
@@ -690,7 +690,7 @@ __fi void psxRcntWmode16(int index, u32 value)
 //
 __fi void psxRcntWmode32(int index, u32 value)
 {
-	PSXCNT_LOG("32bit IOP Counter[%d] writeMode = 0x%04x", index, value);
+	Log::IOP::Counters.debug("32bit IOP Counter[{:d}] writeMode = 0x{:04x}\n", index, value);
 	int irqmode = 0;
 	pxAssume(index >= 3 && index < 6);
 	psxCounter& counter = psxCounters[index];
@@ -708,19 +708,19 @@ __fi void psxRcntWmode32(int index, u32 value)
 	}
 	if (value & (1 << 7))
 	{
-		PSXCNT_LOG("32 Counter %d Toggle IRQ on %s", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
+		Log::IOP::Counters.debug("32 Counter {:d} Toggle IRQ on {:s}\n", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
 	}
 	else
 	{
-		PSXCNT_LOG("32 Counter %d Pulsed IRQ on %s", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
+		Log::IOP::Counters.debug("32 Counter {:d} Pulsed IRQ on {:s}\n", index, (irqmode & 3) == 1 ? "Target" : ((irqmode & 3) == 2 ? "Overflow" : "Target and Overflow"));
 	}
 	if (!(value & (1 << 6)))
 	{
-		PSXCNT_LOG("32 Counter %d One Shot", index);
+		Log::IOP::Counters.debug("32 Counter {:d} One Shot\n", index);
 	}
 	else
 	{
-		PSXCNT_LOG("32 Counter %d Repeat", index);
+		Log::IOP::Counters.debug("32 Counter {:d} Repeat\n", index);
 	}
 	if (index == 3)
 	{
@@ -731,7 +731,7 @@ __fi void psxRcntWmode32(int index, u32 value)
 
 		if (counter.mode & IOPCNT_ENABLE_GATE)
 		{
-			PSXCNT_LOG("IOP Counter[3] Gate Check set, value = %x", value);
+			Log::IOP::Counters.debug("IOP Counter[3] Gate Check set, value = {:x}\n", value);
 			counter.mode |= IOPCNT_STOPPED;
 			psxvblankgate |= 1 << 3;
 		}
@@ -814,7 +814,7 @@ u16 psxRcntRcount16(int index)
 
 	pxAssert(index < 3);
 
-	PSXCNT_LOG("IOP Counter[%d] readCount16 = %lx", index, (u16)retval);
+	Log::IOP::Counters.debug("IOP Counter[{:d}] readCount16 = {:x}\n", index, (u16)retval);
 
 	// Don't count HBLANK timers
 	// Don't count stopped gates either.
@@ -824,7 +824,7 @@ u16 psxRcntRcount16(int index)
 	{
 		u32 delta = (u32)((psxRegs.cycle - psxCounters[index].sCycleT) / psxCounters[index].rate);
 		retval += delta;
-		PSXCNT_LOG("              (delta = %lx)", delta);
+		Log::IOP::Counters.debug("              (delta = {:x})\n", delta);
 	}
 
 	return (u16)retval;
@@ -836,14 +836,14 @@ u32 psxRcntRcount32(int index)
 
 	pxAssert(index >= 3 && index < 6);
 
-	PSXCNT_LOG("IOP Counter[%d] readCount32 = %lx", index, retval);
+	Log::IOP::Counters.debug("IOP Counter[{:d}] readCount32 = {:x}\n", index, retval);
 
 	if (!(psxCounters[index].mode & IOPCNT_STOPPED) &&
 		(psxCounters[index].rate != PSXHBLANK))
 	{
 		u32 delta = (u32)((psxRegs.cycle - psxCounters[index].sCycleT) / psxCounters[index].rate);
 		retval += delta;
-		PSXCNT_LOG("               (delta = %lx)", delta);
+		Log::IOP::Counters.debug("               (delta = {:x})\n", delta);
 	}
 
 	return retval;

@@ -60,13 +60,13 @@ void sio2Reset() {
 }
 
 u32 sio2_getRecv1() {
-	PAD_LOG("Reading Recv1 = %x",sio2.packet.recvVal1);
+	Log::IOP::PAD.debug("Reading Recv1 = {:x}\n",sio2.packet.recvVal1);
 
 	return sio2.packet.recvVal1;
 }
 
 u32 sio2_getRecv2() {
-	PAD_LOG("Reading Recv2 = %x",0xF);
+	Log::IOP::PAD.debug("Reading Recv2 = {:x}\n",0xF);
 
 	return 0xf;
 }//0, 0x10, 0x20, 0x10 | 0x20; bits 4 & 5
@@ -75,7 +75,7 @@ u32 sio2_getRecv3() {
 	if(sio2.packet.recvVal3 == 0x8C || sio2.packet.recvVal3 == 0x8b ||
 	   sio2.packet.recvVal3 == 0x83)
 	{
-		PAD_LOG("Reading Recv3 = %x",sio2.packet.recvVal3);
+		Log::IOP::PAD.debug("Reading Recv3 = {:x}\n",sio2.packet.recvVal3);
 
 		sio.packetsize = sio2.packet.recvVal3;
 		sio2.packet.recvVal3 = 0; // Reset
@@ -83,7 +83,7 @@ u32 sio2_getRecv3() {
 	}
 	else
 	{
-		PAD_LOG("Reading Recv3 = %x",sio.packetsize << 16);
+		Log::IOP::PAD.debug("Reading Recv3 = {:x}\n",sio.packetsize << 16);
 
 		return sio.packetsize << 16;
 	}
@@ -99,11 +99,11 @@ void sio2_setSend3(u32 index, u32 value)
 //	int i;
 	sio2.packet.sendArray3[index]=value;
 //	if (index==15){
-//		for (i=0; i<4; i++){PAD_LOG("0x%08X ", sio2.packet.sendArray1[i]);}PAD_LOG("\n");
-//		for (i=0; i<4; i++){PAD_LOG("0x%08X ", sio2.packet.sendArray2[i]);}PAD_LOG("\n");
-//		for (i=0; i<8; i++){PAD_LOG("0x%08X ", sio2.packet.sendArray3[i]);}PAD_LOG("\n");
-//		for (  ; i<16; i++){PAD_LOG("0x%08X ", sio2.packet.sendArray3[i]);}PAD_LOG("\n");
-	PAD_LOG("[%d] : 0x%08X", index,sio2.packet.sendArray3[index]);
+//		for (i=0; i<4; i++){Log::IOP::PAD.debug("0x{:08X} \n", sio2.packet.sendArray1[i]);}Log::IOP::PAD.debug("\n\n");
+//		for (i=0; i<4; i++){Log::IOP::PAD.debug("0x{:08X} \n", sio2.packet.sendArray2[i]);}Log::IOP::PAD.debug("\n\n");
+//		for (i=0; i<8; i++){Log::IOP::PAD.debug("0x{:08X} \n", sio2.packet.sendArray3[i]);}Log::IOP::PAD.debug("\n\n");
+//		for (  ; i<16; i++){Log::IOP::PAD.debug("0x{:08X} \n", sio2.packet.sendArray3[i]);}Log::IOP::PAD.debug("\n\n");
+	Log::IOP::PAD.debug("[{:d}] : 0x{:08X}\n", index,sio2.packet.sendArray3[index]);
 //	}
 }	//0->15
 
@@ -148,7 +148,7 @@ void sio2_serialIn(u8 value){
 		ctrl |= (sio2.packet.sendArray3[sio2.cmdport] & 1) << 13;
 		//sioWriteCtrl16(SIO_RESET);
 		sioWriteCtrl16(ctrl);
-		PSXDMA_LOG("sio2_fifoIn: ctrl = %x, cmdlength = %x, cmdport = %d (%x)", ctrl, sio2.cmdlength, sio2.cmdport, sio2.packet.sendArray3[sio2.cmdport]);
+		Log::IOP::DMAHW.debug("sio2_fifoIn: ctrl = {:x}, cmdlength = {:x}, cmdport = {:d} ({:x})\n", ctrl, sio2.cmdlength, sio2.cmdport, sio2.packet.sendArray3[sio2.cmdport]);
 
 		sio2.cmdport++;
 	}
@@ -175,7 +175,7 @@ void sio2_fifoIn(u8 value){
 		ctrl |= (sio2.packet.sendArray3[sio2.cmdport] & 1) << 13;
 		//sioWriteCtrl16(SIO_RESET);
 		sioWriteCtrl16(ctrl);
-		PSXDMA_LOG("sio2_fifoIn: ctrl = %x, cmdlength = %x, cmdport = %d (%x)", ctrl, sio2.cmdlength, sio2.cmdport, sio2.packet.sendArray3[sio2.cmdport]);
+		Log::IOP::DMAHW.debug("sio2_fifoIn: ctrl = {:x}, cmdlength = {:x}, cmdport = {:d} ({:x})\n", ctrl, sio2.cmdlength, sio2.cmdport, sio2.packet.sendArray3[sio2.cmdport]);
 
 		sio2.cmdport++;
 	}
@@ -193,7 +193,7 @@ void sio2_fifoIn(u8 value){
 
 u8 sio2_fifoOut(){
 	if (sio2.recvIndex <= sio2.packet.sendSize){
-		//PAD_LOG("READING %x\n",sio2.buf[sio2.recvIndex]);
+		//Log::IOP::PAD.debug("READING {:x}\n\n",sio2.buf[sio2.recvIndex]);
 		return sio2.buf[sio2.recvIndex++];
 	} else {
 		Log::Console.error("*PCSX2*: buffer overrun\n");
@@ -214,7 +214,7 @@ void SaveStateBase::sio2Freeze()
 void psxDma11(u32 madr, u32 bcr, u32 chcr) {
 	unsigned int i, j;
 	int size = (bcr >> 16) * (bcr & 0xffff);
-	PSXDMA_LOG("*** DMA 11 - SIO2 in *** %lx addr = %lx size = %lx", chcr, madr, bcr);
+	Log::IOP::DMAHW.debug("*** DMA 11 - SIO2 in *** {:x} addr = {:x} size = {:x}\n", chcr, madr, bcr);
 
 	if (chcr != 0x01000201) return;
 
@@ -243,7 +243,7 @@ void psxDMA11Interrupt()
 
 void psxDma12(u32 madr, u32 bcr, u32 chcr) {
 	int size = ((bcr >> 16) * (bcr & 0xFFFF)) * 4;
-	PSXDMA_LOG("*** DMA 12 - SIO2 out *** %lx addr = %lx size = %lx", chcr, madr, size);
+	Log::IOP::DMAHW.debug("*** DMA 12 - SIO2 out *** {:x} addr = {:x} size = {:x}\n", chcr, madr, size);
 
 	if (chcr != 0x41000200) return;
 

@@ -54,7 +54,7 @@ bool _VIF0chain()
 		return true;
 	}
 
-	VIF_LOG("VIF0chain size=%d, madr=%lx, tadr=%lx",
+	Log::EE::VIF.debug("VIF0chain size={:d}, madr={:x}, tadr={:x}\n",
 	        vif0ch.qwc, vif0ch.madr, vif0ch.tadr);
 
 	if (vif0.irqoffset.enabled)
@@ -76,7 +76,7 @@ __fi void vif0SetupTransfer()
 
 	// Transfer dma tag if tte is set
 
-	VIF_LOG("vif0 Tag %8.8x_%8.8x size=%d, id=%d, madr=%lx, tadr=%lx",
+	Log::EE::VIF.debug("vif0 Tag {:08x}_{:08x} size={:d}, id={:d}, madr={:x}, tadr={:x}\n",
 			ptag[1]._u32, ptag[0]._u32, vif0ch.qwc, ptag->ID, vif0ch.madr, vif0ch.tadr);
 
 	vif0.inprogress = 0;
@@ -92,7 +92,7 @@ __fi void vif0SetupTransfer()
 		masked_tag._u64[0] = 0;
 		masked_tag._u64[1] = *((u64*)ptag + 1);
 
-		VIF_LOG("\tVIF0 SrcChain TTE=1, data = 0x%08x.%08x", masked_tag._u32[3], masked_tag._u32[2]);
+		Log::EE::VIF.debug("\tVIF0 SrcChain TTE=1, data = 0x{:08x}.{:08x}\n", masked_tag._u32[3], masked_tag._u32[2]);
 
 		if (vif0.irqoffset.enabled)
 		{
@@ -126,7 +126,7 @@ __fi void vif0SetupTransfer()
 	//Check TIE bit of CHCR and IRQ bit of tag
 	if (vif0ch.chcr.TIE && ptag->IRQ)
 	{
-		VIF_LOG("dmaIrq Set");
+		Log::EE::VIF.debug("dmaIrq Set\n");
 
         //End Transfer
 		vif0.done = true;
@@ -153,7 +153,7 @@ __fi void vif0VUFinish()
 		return;
 	}
 	vif0Regs.stat.VEW = false;
-	VIF_LOG("VU0 finished");
+	Log::EE::VIF.debug("VU0 finished\n");
 	if(vif0.waitforvu)
 	{
 		vif0.waitforvu = false;
@@ -167,7 +167,7 @@ __fi void vif0VUFinish()
 
 __fi void vif0Interrupt()
 {
-	VIF_LOG("vif0Interrupt: %8.8x", cpuRegs.cycle);
+	Log::EE::VIF.debug("vif0Interrupt: {:08x}\n", cpuRegs.cycle);
 
 	g_vif0Cycles = 0;
 
@@ -204,7 +204,7 @@ __fi void vif0Interrupt()
 			if (vif0ch.qwc > 0 || !vif0.done)
 			{
 				vif0Regs.stat.VPS = VPS_DECODING; //If there's more data you need to say it's decoding the next VIF CMD (Onimusha - Blade Warriors)
-				VIF_LOG("VIF0 Stalled");
+				Log::EE::VIF.debug("VIF0 Stalled\n");
 				return;
 			}
 		}
@@ -264,7 +264,7 @@ __fi void vif0Interrupt()
 	g_vif0Cycles = 0;
 	hwDmacIrq(DMAC_VIF0);
 	vif0Regs.stat.FQC = 0;
-	DMA_LOG("VIF0 DMA End");
+	Log::EE::DMAHW.debug("VIF0 DMA End\n");
 }
 
 void dmaVIF0()

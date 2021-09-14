@@ -32,7 +32,7 @@ _vifT void vifTransferLoop(u32* &data) {
 
 	vifXRegs.stat.VPS |= VPS_TRANSFERRING;
 	vifXRegs.stat.ER1  = false;
-	if(!idx)VIF_LOG("Starting VIF0 loop, pSize = %x, stalled = %x", pSize, vifX.vifstalled.enabled );
+	if(!idx)Log::EE::VIF.debug("Starting VIF0 loop, pSize = {:x}, stalled = {:x}\n", pSize, vifX.vifstalled.enabled );
 	while (pSize > 0 && !vifX.vifstalled.enabled) {
 
 		if(!vifX.cmd) { // Get new VifCode
@@ -49,7 +49,7 @@ _vifT void vifTransferLoop(u32* &data) {
 			vifX.cmd	  = data[0] >> 24;
 			
 			
-			VIF_LOG("New VifCMD %x tagsize %x irq %d", vifX.cmd, vifX.tag.size, vifX.irq);
+			Log::EE::VIF.debug("New VifCMD {:x} tagsize {:x} irq {:d}\n", vifX.cmd, vifX.tag.size, vifX.irq);
 			if (IsDevBuild && SysTrace.EE.VIFcode.IsActive()) {
 				// Pass 2 means "log it"
 				vifCmdHandler[idx][vifX.cmd & 0x7f](2, data);
@@ -81,7 +81,7 @@ _vifT static __fi bool vifTransfer(u32 *data, int size, bool TTE) {
 	vifX.irqoffset.value = transferred % 4; // cannot lose the offset
 	
 	if (vifX.irq && vifX.cmd == 0) {
-		VIF_LOG("Vif%d IRQ Triggering", idx);
+		Log::EE::VIF.debug("Vif{:d} IRQ Triggering\n", idx);
 		//Always needs to be set to return to the correct offset if there is data left.
 		vifX.vifstalled.enabled = VifStallEnable(vifXch);
 		vifX.vifstalled.value = VIF_IRQ_STALL;

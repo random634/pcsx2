@@ -178,7 +178,7 @@ static int __Deci2Call(int call, u32 *addr)
 			if( addr != NULL )
 			{
 				deci2addr = addr[1];
-				BIOS_LOG("deci2open: %x,%x,%x,%x",
+				Log::EE::Bios.debug("deci2open: {:x},{:x},{:x},{:x}\n",
 						 addr[3], addr[2], addr[1], addr[0]);
 				deci2handler = addr[2];
 			}
@@ -204,7 +204,7 @@ static int __Deci2Call(int call, u32 *addr)
 			
 			const u32* d2ptr = (u32*)PSM(deci2addr);
 
-			BIOS_LOG("deci2reqsend: %s: deci2addr: %x,%x,%x,buf=%x %x,%x,len=%x,%x",
+			Log::EE::Bios.debug("deci2reqsend: {:s}: deci2addr: {:x},{:x},{:x},buf={:x} {:x},{:x},len={:x},{:x}\n",
 				(( addr == NULL ) ? "NULL" : reqaddr),
 				d2ptr[7], d2ptr[6], d2ptr[5], d2ptr[4],
 				d2ptr[3], d2ptr[2], d2ptr[1], d2ptr[0]);
@@ -232,7 +232,7 @@ static int __Deci2Call(int call, u32 *addr)
 
 		case 4: // poll
 			if( addr != NULL )
-				BIOS_LOG("deci2poll: %x,%x,%x,%x\n", addr[3], addr[2], addr[1], addr[0]);
+				Log::EE::Bios.debug("deci2poll: {:x},{:x},{:x},{:x}\n\n", addr[3], addr[2], addr[1], addr[0]);
 			return 1;
 
 		case 5: // exrecv
@@ -261,7 +261,7 @@ void COP2()
 	//std::string disOut;
 	//disR5900Fasm(disOut, cpuRegs.code, cpuRegs.pc);
 
-	//VU0_LOG("%s", disOut.c_str());
+	//Log::EE::COP2.debug("{:s}\n", disOut);
 	Int_COP2PrintTable[_Rs_]();
 }
 
@@ -883,7 +883,7 @@ void SYSCALL()
 	else
 		call = cpuRegs.GPR.n.v1.UC[0];
 
-	BIOS_LOG("Bios call: %s (%x)", R5900::bios[call], call);
+	Log::EE::Bios.debug("Bios call: {:s} ({:x})\n", R5900::bios[call], call);
 
 
 	switch (static_cast<Syscall>(call))
