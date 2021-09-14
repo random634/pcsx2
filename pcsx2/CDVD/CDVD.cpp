@@ -1450,7 +1450,7 @@ static __fi void cdvdWrite07(u8 rt) // BREAK
 	if ((cdvd.Ready != CDVD_NOTREADY) || (cdvd.Action == cdvdAction_Break))
 		return;
 
-	DbgCon.WriteLn("*PCSX2*: CDVD BREAK %x", rt);
+	Log::Console.debug("*PCSX2*: CDVD BREAK {:x}\n", rt);
 
 	// Aborts any one of several CD commands:
 	// Pause, Seek, Read, Status, Standby, and Stop

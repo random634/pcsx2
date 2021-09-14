@@ -181,11 +181,13 @@ void vu1Exec(VURegs* VU)
 	_vu1Exec(VU);
 	VU->cycle++;
 
-	if (VU->VI[0].UL != 0) DbgCon.Error("VI[0] != 0!!!!\n");
-	if (VU->VF[0].f.x != 0.0f) DbgCon.Error("VF[0].x != 0.0!!!!\n");
-	if (VU->VF[0].f.y != 0.0f) DbgCon.Error("VF[0].y != 0.0!!!!\n");
-	if (VU->VF[0].f.z != 0.0f) DbgCon.Error("VF[0].z != 0.0!!!!\n");
-	if (VU->VF[0].f.w != 1.0f) DbgCon.Error("VF[0].w != 1.0!!!!\n");
+#ifdef LOG_PERF_SENSITIVE
+	if (VU->VI[0].UL  != 0)    Log::Dev.error("VI[0] != 0!!!!\n");
+	if (VU->VF[0].f.x != 0.0f) Log::Dev.error("VF[0].x != 0.0!!!!\n");
+	if (VU->VF[0].f.y != 0.0f) Log::Dev.error("VF[0].y != 0.0!!!!\n");
+	if (VU->VF[0].f.z != 0.0f) Log::Dev.error("VF[0].z != 0.0!!!!\n");
+	if (VU->VF[0].f.w != 1.0f) Log::Dev.error("VF[0].w != 1.0!!!!\n");
+#endif
 }
 
 InterpVU1::InterpVU1()

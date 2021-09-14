@@ -254,7 +254,7 @@ __fi void vif1STAT(u32 value)
 		// different so can't be stalled
 		if (vif1Regs.stat.test(VIF1_STAT_INT | VIF1_STAT_VSS | VIF1_STAT_VIS | VIF1_STAT_VFS))
 		{
-			DbgCon.WriteLn("changing dir when vif1 fifo stalled done = %x qwc = %x stat = %x", vif1.done, vif1ch.qwc, vif1Regs.stat._u32);
+			Log::Dev.debug("changing dir when vif1 fifo stalled done = {:x} qwc = {:x} stat = {:x}\n", vif1.done, vif1ch.qwc, vif1Regs.stat._u32);
 			isStalled = true;
 		}
 

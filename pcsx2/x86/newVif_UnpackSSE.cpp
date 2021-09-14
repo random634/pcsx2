@@ -359,12 +359,11 @@ void VifUnpackSSE_Init()
 
 	nVifUpkExec->ForbidModification();
 
-	Log::Console.debug("Unpack function generation complete.  Generated function statistics:\n");
-	DevCon.Indent().WriteLn(
-		L"Reserved buffer    : %u bytes @ %ls\n"
-		L"x86 code generated : %u bytes\n",
-		(uint)nVifUpkExec->GetCommittedBytes(),
-		pxsPtr(nVifUpkExec->GetPtr()),
+	Log::Console.debug(
+		"Unpack function generation complete.  Generated function statistics:\n"
+		"    Reserved buffer    : {:d} bytes @ 0x{:08X}\n"
+		"    x86 code generated : {:d} bytes\n",
+		(uint)nVifUpkExec->GetCommittedBytes(), (uptr)nVifUpkExec->GetPtr(),
 		(uint)(xGetPtr() - nVifUpkExec->GetPtr())
 	);
 }

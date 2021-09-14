@@ -286,7 +286,7 @@ __fi void mVUsetupFlags(mV, microFlagCycles& mFC)
 			Log::Console.debug("mVU{:d} - Status Flag\n", mVU.index);
 		int bStatus[4];
 		int sortRegs = sortFlag(mFC.xStatus, bStatus, mFC.cycles);
-		// DevCon::Status("sortRegs = %d", params sortRegs);
+		// Log::Dev.info("sortRegs = {:d}\n", params sortRegs);
 		// Note: Emitter will optimize out mov(reg1, reg1) cases...
 		if (sortRegs == 1)
 		{

@@ -390,7 +390,7 @@ void GSPanel::DirectKeyCommand( const KeyAcceleratorCode& kac )
 
 	cmd = iter->second;
 
-	DbgCon.WriteLn( "(gsFrame) Invoking command: %s", cmd->Id );
+	Log::Console.debug("(gsFrame) Invoking command: {:s}\n", cmd->Id);
 	cmd->Invoke();
 
 	if( cmd->AlsoApplyToGui && !g_ConfigPanelChanged)

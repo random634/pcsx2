@@ -39,7 +39,9 @@ static void TestClearVUs(u32 madr, u32 qwc, bool isWrite)
 		{
 			if(isWrite)
 			{
-				DbgCon.Warning("scratch pad clearing vu0");
+#ifdef LOG_PERF_SENSITIVE
+				Log::Dev.warning("scratch pad clearing vu0\n");
+#endif
 
 				CpuVU0->Clear(madr&0xfff, qwc * 16);
 			}
@@ -53,7 +55,9 @@ static void TestClearVUs(u32 madr, u32 qwc, bool isWrite)
 		{
 			if(isWrite)
 			{
-				DbgCon.Warning("scratch pad clearing vu1");
+#ifdef LOG_PERF_SENSITIVE
+				Log::Dev.warning("scratch pad clearing vu1\n");
+#endif
 
 				CpuVU1->Clear(madr&0x3fff, qwc * 16);
 			}

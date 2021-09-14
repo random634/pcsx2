@@ -715,7 +715,7 @@ __ri void mVUanalyzeJump(mV, int Is, int It, bool isJALR)
 	{
 		mVUlow.constJump.isValid  = 1;
 		mVUlow.constJump.regValue = mVUconstReg[Is].regValue;
-		//DevCon.Status("microVU%d: Constant JR/JALR Address Optimization", mVU.index);
+		//Log::Dev.info("microVU{:d}: Constant JR/JALR Address Optimization\n", mVU.index);
 	}
 	analyzeVIreg1(mVU, Is, mVUlow.VI_read[0]);
 	if (isJALR)

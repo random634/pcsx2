@@ -155,7 +155,7 @@ const Pcsx2Config EmuConfig;
 // changed "on the fly" by the *main/gui thread only*.
 Pcsx2Config::GSOptions& SetGSConfig()
 {
-	//DbgCon.WriteLn( "Direct modification of EmuConfig.GS detected" );
+	//Log::Console.debug("Direct modification of EmuConfig.GS detected\n");
 	AffinityAssert_AllowFrom_MainUI();
 	return const_cast<Pcsx2Config::GSOptions&>(EmuConfig.GS);
 }
@@ -164,7 +164,7 @@ Pcsx2Config::GSOptions& SetGSConfig()
 // Used by loadGameSettings() to set clamp modes via database at game startup.
 Pcsx2Config::RecompilerOptions& SetRecompilerConfig()
 {
-	//DbgCon.WriteLn( "Direct modification of EmuConfig.Gamefixes detected" );
+	//Log::Console.debug("Direct modification of EmuConfig.Gamefixes detected\n");
 	AffinityAssert_AllowFrom_MainUI();
 	return const_cast<Pcsx2Config::RecompilerOptions&>(EmuConfig.Cpu.Recompiler);
 }
@@ -173,14 +173,14 @@ Pcsx2Config::RecompilerOptions& SetRecompilerConfig()
 // Used by loadGameSettings() to set gamefixes via database at game startup.
 Pcsx2Config::GamefixOptions& SetGameFixConfig()
 {
-	//DbgCon.WriteLn( "Direct modification of EmuConfig.Gamefixes detected" );
+	//Log::Console.debug("Direct modification of EmuConfig.Gamefixes detected\n");
 	AffinityAssert_AllowFrom_MainUI();
 	return const_cast<Pcsx2Config::GamefixOptions&>(EmuConfig.Gamefixes);
 }
 
 TraceLogFilters& SetTraceConfig()
 {
-	//DbgCon.WriteLn( "Direct modification of EmuConfig.TraceLog detected" );
+	//Log::Console.debug("Direct modification of EmuConfig.TraceLog detected\n");
 	AffinityAssert_AllowFrom_MainUI();
 	return const_cast<TraceLogFilters&>(EmuConfig.Trace);
 }
@@ -629,7 +629,7 @@ u8* SysMmapEx(uptr base, u32 size, uptr bounds, const char *caller)
 	{
 		if( base )
 		{
-			DbgCon.Warning( "First try failed allocating %s at address 0x%x", caller, base );
+			Log::Console.warning("First try failed allocating {:s} at address 0x{:x}\n", caller, base );
 
 			// Let's try again at an OS-picked memory area, and then hope it meets needed
 			// boundschecking criteria below.

@@ -226,7 +226,7 @@ void Pcsx2App::PadKeyDispatch( const keyEvent& ev )
 
 	m_kevt.m_keyCode = vkey? vkey : ev.key;
 
-	if (DevConWriterEnabled && m_kevt.GetEventType() == wxEVT_KEY_DOWN) {
+	if (Log::Console.shouldLog(LogLevel::Debug) && m_kevt.GetEventType() == wxEVT_KEY_DOWN) {
 		wxString strFromCode = wxAcceleratorEntry(
 			(m_kevt.m_shiftDown ? wxACCEL_SHIFT : 0) | (m_kevt.m_controlDown ? wxACCEL_CTRL : 0) | (m_kevt.m_altDown ? wxACCEL_ALT : 0),
 			m_kevt.m_keyCode
@@ -508,7 +508,7 @@ void Pcsx2App::OnEmuKeyDown( wxKeyEvent& evt )
 		return;
 	}
 
-	DbgCon.WriteLn( "(app) Invoking command: %s", cmd->Id );
+	Log::Console.debug("(app) Invoking command: {:s}\n", cmd->Id);
 	cmd->Invoke();
 }
 
@@ -995,7 +995,7 @@ protected:
 	{
 		wxGetApp().ProcessMethod( AppSaveSettings );
 
-		DbgCon.WriteLn( Color_Gray, "(SysExecute) received." );
+		Log::Console.debug(LogStyle::CompatibilityGray, "(SysExecute) received.\n");
 
 		CoreThread.ResetQuick();
 		symbolMap.Clear();

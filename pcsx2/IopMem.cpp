@@ -61,7 +61,7 @@ void iopMemoryReserve::Reset()
 		psxMemRLUT = psxMemWLUT + 0x2000; //(uptr*)_aligned_malloc(0x10000 * sizeof(uptr),16);
 	}
 
-	DbgCon.WriteLn("IOP resetting main memory...");
+	Log::Console.debug("IOP resetting main memory...\n");
 
 	memset(psxMemWLUT, 0, 0x2000 * sizeof(uptr) * 2);	// clears both allocations, RLUT and WLUT
 

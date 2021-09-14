@@ -20,6 +20,10 @@
 #include <fmt/core.h>
 #include <vector>
 
+#if defined(PCSX2_DEBUG) && !defined(LOG_PERF_SENSITIVE)
+	#define LOG_PERF_SENSITIVE
+#endif
+
 /// Levels to log at.
 ///
 /// LogSources can filter logs to only display logs with levels greater than or equal to a value

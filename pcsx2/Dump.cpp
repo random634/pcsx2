@@ -53,24 +53,24 @@ void iDumpPsxRegisters(u32 startpc, u32 temp)
 	// fixme: PSXM doesn't exist any more.
 	//__Log("%spsxreg: %x %x ra:%x k0: %x %x", pstr, startpc, psxRegs.cycle, psxRegs.GPR.n.ra, psxRegs.GPR.n.k0, *(int*)PSXM(0x13c128));
 
-	for(i = 0; i < 34; i+=2) __Log("%spsx%s: %x %x", pstr, disRNameGPR[i], psxRegs.GPR.r[i], psxRegs.GPR.r[i+1]);
+	for(i = 0; i < 34; i+=2) Log::Console.trace("{:s}psx{:s}: {:x}\n", pstr, R3000A::disRNameGPR[i], psxRegs.GPR.r[i]);
 
-	DbgCon.WriteLn("%scycle: %x %x %x; counters %x %x", pstr, psxRegs.cycle, g_iopNextEventCycle, EEsCycle,
+	Log::Console.debug("{:s}cycle: {:x} {:x} {:x}; counters {:x} {:x}\n", pstr, psxRegs.cycle, g_iopNextEventCycle, EEsCycle,
 		psxNextsCounter, psxNextCounter);
 
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 2) + hw_dma(2).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 3) + hw_dma(3).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 4) + hw_dma(4).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 6) + hw_dma(6).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 7) + hw_dma(7).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 8) + hw_dma(8).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 9) + hw_dma(9).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 10) + hw_dma(10).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 11) + hw_dma(11).desc());
-	DbgCon.WriteLn(wxsFormat(L"psxdma%d ", 12) + hw_dma(12).desc());
+	Log::Console.debug("psxdma2  {:s}\n", hw_dma(2).desc());
+	Log::Console.debug("psxdma3  {:s}\n", hw_dma(3).desc());
+	Log::Console.debug("psxdma4  {:s}\n", hw_dma(4).desc());
+	Log::Console.debug("psxdma6  {:s}\n", hw_dma(6).desc());
+	Log::Console.debug("psxdma7  {:s}\n", hw_dma(7).desc());
+	Log::Console.debug("psxdma8  {:s}\n", hw_dma(8).desc());
+	Log::Console.debug("psxdma9  {:s}\n", hw_dma(9).desc());
+	Log::Console.debug("psxdma10 {:s}\n", hw_dma(10).desc());
+	Log::Console.debug("psxdma11 {:s}\n", hw_dma(11).desc());
+	Log::Console.debug("psxdma12 {:s}\n", hw_dma(12).desc());
 
 	for(i = 0; i < 7; ++i)
-		DbgCon.WriteLn("%scounter%d: mode %x count %I64x rate %x scycle %x target %I64x", pstr, i, psxCounters[i].mode, psxCounters[i].count, psxCounters[i].rate, psxCounters[i].sCycleT, psxCounters[i].target);
+		Log::Console.debug("{:s}counter{:d}: mode {:x} count {:x} rate {:x} scycle {:x} target {:x}\n", pstr, i, psxCounters[i].mode, psxCounters[i].count, psxCounters[i].rate, psxCounters[i].sCycleT, psxCounters[i].target);
 #endif
 }
 
@@ -206,7 +206,7 @@ void iDumpBlock(u32 ee_pc, u32 ee_size, uptr x86_pc, u32 x86_size)
 {
 	u32 ee_end = ee_pc + ee_size;
 
-	DbgCon.WriteLn( Color_Gray, "dump block %x:%x (x86:0x%x)", ee_pc, ee_end, x86_pc );
+	Log::Console.debug(LogStyle::CompatibilityGray, "dump block {:x}:{:x} (x86:0x{:x})\n", ee_pc, ee_end, x86_pc);
 
 	g_Conf->Folders.Logs.Mkdir();
 	wxString dump_filename = Path::Combine( g_Conf->Folders.Logs, wxsFormat(L"R5900dump_%.8X:%.8X.txt", ee_pc, ee_end) );
@@ -270,7 +270,7 @@ void iDumpBlock( int startpc, u8 * ptr )
 	u8 fpuused[33];
 	int numused, fpunumused;
 
-	DbgCon.WriteLn( Color_Gray, "dump1 %x:%x, %x", startpc, pc, cpuRegs.cycle );
+	Log::Console.debug(LogStyle::CompatibilityGray, "dump1 {:x}:{:x}, {:x}\n", startpc, pc, cpuRegs.cycle);
 
 	g_Conf->Folders.Logs.Mkdir();
 	AsciiFile eff(

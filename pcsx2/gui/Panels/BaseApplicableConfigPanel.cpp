@@ -72,7 +72,7 @@ bool ApplyStateStruct::ApplyPage( int pageid )
 		PanelApplyList_t::iterator yay = PanelList.begin();
 		while( yay != PanelList.end() )
 		{
-			//DbgCon.Status( L"Writing settings for: " + (*yay)->GetLabel() );
+			//Log::Console.debug("Writing settings for: {:s}\n", (*yay)->GetLabel() );
 			if( (pageid < 0) || (*yay)->IsOnPage( pageid ) )
 				(*yay)->Apply();
 			yay++;

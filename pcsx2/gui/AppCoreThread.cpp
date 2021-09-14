@@ -765,7 +765,7 @@ void BaseScopedCoreThread::DoResume()
 		return;
 	if (!GetSysExecutorThread().IsSelf())
 	{
-		//DbgCon.WriteLn("(ScopedCoreThreadPause) Threaded Scope Created!");
+		//Log::Console.debug("(ScopedCoreThreadPause) Threaded Scope Created!\n");
 		m_sync_resume.PostResult(m_allowResume ? ScopedCore_NonblockingResume : ScopedCore_SkipResume);
 		m_mtx_resume.Wait();
 	}

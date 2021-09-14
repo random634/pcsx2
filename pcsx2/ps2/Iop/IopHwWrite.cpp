@@ -91,12 +91,16 @@ void __fastcall iopHwWrite8_Page1( u32 addr, mem8_t val )
 		default:
 			if( masked_addr >= 0x100 && masked_addr < 0x130 )
 			{
-				DbgCon.Warning( "HwWrite8 to Counter16 [ignored] @ addr 0x%08x = 0x%02x", addr, psxHu8(addr) );
+#ifdef LOG_PERF_SENSITIVE
+				Log::Dev.warning("HwWrite8 to Counter16 [ignored] @ addr 0x{:08x} = 0x{:02x}\n", addr, psxHu8(addr));
+#endif
 				psxHu8( addr ) = val;
 			}
 			else if( masked_addr >= 0x480 && masked_addr < 0x4a0 )
 			{
-				DbgCon.Warning( "HwWrite8 to Counter32 [ignored] @ addr 0x%08x = 0x%02x", addr, psxHu8(addr) );
+#ifdef LOG_PERF_SENSITIVE
+				Log::Dev.warning("HwWrite8 to Counter32 [ignored] @ addr 0x{:08x} = 0x{:02x}\n", addr, psxHu8(addr));
+#endif
 				psxHu8( addr ) = val;
 			}
 			else if( (masked_addr >= pgmsk(HW_USB_START)) && (masked_addr < pgmsk(HW_USB_END)) )
@@ -251,7 +255,8 @@ static __fi void _HwWrite_16or32_Page1( u32 addr, T val )
 			SPU2write( addr, val );
 		else
 		{
-			DbgCon.Warning( "HwWrite32 to SPU2? @ 0x%08X .. What manner of trickery is this?!", addr );
+			Log::Dev.warning("HwWrite32 to SPU2? @ 0x{:08X} .. What manner of trickery is this?!\n", addr);
+
 			//psxHu(addr) = val;
 		}
 	}
