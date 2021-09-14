@@ -1238,19 +1238,34 @@ static ConsoleColors logStyleToConsoleColor(LogStyle style)
 	}
 }
 
-class ConsoleLogSink final : public LogSink
+class ConsoleLogSink final : public TextLogSink
 {
+	bool m_needsSleep;
+	ConsoleLogFrame* m_window;
 public:
+	ConsoleLogSink()
+		: TextLogSink(false, false)
+	{
+	}
+
+	void outputNewline() override
+	{
+		m_needsSleep |= m_window->Write(Color_Black, "\n");
+	}
+
+	void outputText(LogStyle style, std::string_view msg) override
+	{
+		m_needsSleep |= m_window->Write(logStyleToConsoleColor(style), wxString::FromUTF8(msg.data(), msg.size()));
+	}
+
 	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override
 	{
-		wxString str = wxString::FromUTF8(msg.data(), msg.size());
-		wxString indent;
-		if (source.currentIndent())
-			indent.append(source.currentIndent() * 4, ' ');
 		ScopedLogLock locker;
-		if (source.currentIndent())
-			locker.WindowPtr && locker.WindowPtr->Write(logStyleToConsoleColor(style), indent);
-		bool needsSleep = locker.WindowPtr && locker.WindowPtr->Write(logStyleToConsoleColor(style), str);
+		m_needsSleep = false;
+		m_window = locker.WindowPtr;
+		if (m_window)
+			logOnThread(level, style, source.currentIndent(), source, msg);
+		bool needsSleep = m_needsSleep;
 		locker.Release();
 		if (needsSleep)
 			wxGetApp().Ping();
