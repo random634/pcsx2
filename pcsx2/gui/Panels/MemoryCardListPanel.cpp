@@ -149,7 +149,7 @@ static int EnumerateMemoryCards( McdList& dest, const wxArrayString& files )
 	if( pushed > 0 )
 		Log::Console.info(LogStyle::Header, "Memory card Enumeration Complete.");
 	else
-		Log::Console.info(LogStyle::Header, "No valid memory card found." );
+		Log::Console.info(LogStyle::Header, "No valid memory card found.");
 
 	return pushed;
 }

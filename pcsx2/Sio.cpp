@@ -899,7 +899,7 @@ void chkTriggerInt() {
 
 static void sioWrite8inl(u8 data)
 {
-//	Log::Console.info("SIO DATA write {:02X}  mode {:08X} \n" , data, siomode);
+//	Log::Console.info("SIO DATA write {:02X}  mode {:08X} \n", data, siomode);
 	switch(siomode)
 	{
 	case SIO_START: sioWriteStart(data); break;
@@ -922,7 +922,7 @@ static void sioWrite8inl(u8 data)
 
 	sioInterrupt();
 	//chkTriggerInt();
-	//Log::Console.info("SIO0 WR DATA COMMON {:02X}  INT_STAT= {:08X}  IOPpc= {:08X} \n" , data, psxHu32(0x1070), psxRegs.pc);
+	//Log::Console.info("SIO0 WR DATA COMMON {:02X}  INT_STAT= {:08X}  IOPpc= {:08X} \n", data, psxHu32(0x1070), psxRegs.pc);
 	byteCnt++;
 }
 
@@ -951,7 +951,7 @@ void sioWriteCtrl16(u16 value)
 {
 	static u8 tcount[2];
 
-//	Log::Console.info("SIO0 WR CTRL {:02X}  IOPpc= {:08X} \n" , value, psxRegs.pc);
+//	Log::Console.info("SIO0 WR CTRL {:02X}  IOPpc= {:08X} \n", value, psxRegs.pc);
 
 	tcount[sio.port] = sio.bufCount;
 	sio.port = (value >> 13) & 1;
@@ -994,7 +994,7 @@ u8 sioRead8()
 		ret = sio.ret;
 	}
 		//	sio.StatReg &= ~TX_RDY; //all clear (transfer of byte ended)
-//	Log::Console.info("SIO DATA read {:02X}  stat= {:08X} \n" , ret, sio.StatReg);
+//	Log::Console.info("SIO DATA read {:02X}  stat= {:08X} \n", ret, sio.StatReg);
 	return ret;
 }
 

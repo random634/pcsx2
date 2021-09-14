@@ -684,7 +684,7 @@ void smap_write16(u32 addr, u16 value)
 			return;
 #define EMAC3_L_WRITE(name)                                   \
 	case name:                                                \
-		/* Log::Console.debug("DEV9: SMAP: \n" #name " 16 bit write %x", value);*/ \
+		/* Log::Console.debug("DEV9: SMAP: " #name " 16 bit write {:x}\n", value);*/ \
 		dev9Ru16(addr) = value;                               \
 		return;
 	// clang-format off
@@ -721,7 +721,7 @@ void smap_write16(u32 addr, u16 value)
 
 #define EMAC3_H_WRITE(name)                                   \
 	case name:                                                \
-		/* Log::Console.debug("DEV9: SMAP: \n" #name " 16 bit write %x", value);*/ \
+		/* Log::Console.debug("DEV9: SMAP: " #name " 16 bit write {:x}\n", value);*/ \
 		dev9Ru16(addr) = value;                               \
 		emac3_write(addr - 2);                                \
 		return;
