@@ -87,13 +87,39 @@ void LogSource::logString(LogLevel level, std::string_view string) const
 
 void LogSource::logFormat(LogLevel level, std::string_view string, fmt::format_args args) const
 {
-	std::string msg = fmt::vformat(string, args);
+	std::string msg;
+	try
+	{
+		msg = fmt::vformat(string, args);
+	}
+	catch (const std::exception& err)
+	{
+		const char* devmsg = IsDevBuild ? "Break on the catch in LogSource::logFormat for details!\n" : "";
+		msg = fmt::format("Failed to format the following string for logging: {:s}\n{:s}", err.what(), devmsg);
+		m_cachedSink->log(LogLevel::Error, LogStyle::Error, Log::Logging, msg);
+		ScopedLogIndent indent(Log::Logging);
+		m_cachedSink->log(LogLevel::Error, LogStyle::Error, Log::Logging, string);
+		return;
+	}
 	m_cachedSink->log(level, getStyle(level), *this, msg);
 }
 
 void LogSource::logFormatStyle(LogLevel level, std::string_view string, fmt::format_args args, LogStyle style) const
 {
-	std::string msg = fmt::vformat(string, args);
+	std::string msg;
+	try
+	{
+		msg = fmt::vformat(string, args);
+	}
+	catch (const std::exception& err)
+	{
+		const char* devmsg = IsDevBuild ? "Break on the catch in LogSource::logFormatStyle for details!\n" : "";
+		msg = fmt::format("Failed to format the following string for logging: {:s}\n{:s}", err.what(), devmsg);
+		m_cachedSink->log(LogLevel::Error, LogStyle::Error, Log::Logging, msg);
+		ScopedLogIndent indent(Log::Logging);
+		m_cachedSink->log(LogLevel::Error, LogStyle::Error, Log::Logging, string);
+		return;
+	}
 	m_cachedSink->log(level, style, *this, msg);
 }
 
@@ -112,6 +138,7 @@ LogStyle LogSource::getStyle(LogLevel level) const
 LogSource Log::PCSX2     ("PCSX2",       LogStyle::General,  nullptr);
 LogSource Log::Console   ("Console",     LogStyle::General,  &PCSX2);
 LogSource Log::Dev       ("DevCon",      LogStyle::General,  &PCSX2);
+LogSource Log::Logging   ("Logging",     LogStyle::General,  &Console);
 LogSource Log::SIF       ("SIF",         LogStyle::Emulator, &PCSX2);
 LogSource Log::Recording ("Recording",   LogStyle::General,  &PCSX2);
 LogSource Log::RecControl("Rec.Control", LogStyle::General,  &PCSX2);
