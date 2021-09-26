@@ -36,8 +36,11 @@
 #include "USB/USB.h"
 #include "Patch.h"
 #include "GameDatabase.h"
+#include "VMManager.h"
 
 #include "DebugTools/Breakpoints.h"
+#include "DebugTools/MIPSAnalyst.h"
+#include "DebugTools/SymbolMap.h"
 #include "R5900OpcodeTables.h"
 
 using namespace R5900;	// for R5900 disasm tools
@@ -547,7 +550,12 @@ void __fastcall eeGameStarting()
 		//Console.WriteLn( Color_Green, "(R5900) ELF Entry point! [addr=0x%08X]", ElfEntry );
 		g_GameStarted = true;
 		g_GameLoading = false;
+#ifndef PCSX2_CORE
 		GetCoreThread().GameStartingInThread();
+#else
+		VMManager::Internal::GameStartingOnCPUThread();
+#endif
+
 
 		// GameStartingInThread may issue a reset of the cpu and/or recompilers.  Check for and
 		// handle such things here:
@@ -605,7 +613,12 @@ int ParseArgumentString(u32 arg_block)
 // Called from recompilers; __fastcall define is mandatory.
 void __fastcall eeloadHook()
 {
+#ifndef PCSX2_CORE
 	const wxString &elf_override = GetCoreThread().GetElfOverride();
+#else
+	// TODO(Stenzek): Fixme.
+	wxString elf_override;
+#endif
 
 	if (!elf_override.IsEmpty())
 		cdvdReloadElfInfo(L"host:" + elf_override);

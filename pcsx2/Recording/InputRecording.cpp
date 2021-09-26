@@ -15,13 +15,15 @@
 
 #include "PrecompiledHeader.h"
 
-#include "gui/AppSaveStates.h"
+#include "SaveState.h"
 #include "Counters.h"
 
 #ifndef DISABLE_RECORDING
 
-#include "gui/AppGameDatabase.h"
+#include "gui/App.h"
+#include "gui/AppSaveStates.h"
 #include "DebugTools/Debug.h"
+#include "GameDatabase.h"
 
 #include "InputRecording.h"
 #include "InputRecordingControls.h"
@@ -452,14 +454,11 @@ wxString InputRecording::resolveGameName()
 	const wxString gameKey(SysGetDiscID());
 	if (!gameKey.IsEmpty())
 	{
-		if (IGameDatabase* gameDB = AppHost_GetGameDatabase())
+		const GameDatabaseSchema::GameEntry* game = GameDatabase::FindGame(std::string(gameKey));
+		if (game)
 		{
-			GameDatabaseSchema::GameEntry game = gameDB->findGame(std::string(gameKey));
-			if (game.isValid)
-			{
-				gameName = game.name;
-				gameName += L" (" + game.region + L")";
-			}
+			gameName = game->name;
+			gameName += L" (" + game->region + L")";
 		}
 	}
 	return !gameName.IsEmpty() ? gameName : (wxString)Path::GetFilename(g_Conf->CurrentIso);

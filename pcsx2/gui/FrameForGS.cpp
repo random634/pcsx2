@@ -17,12 +17,14 @@
 #include "App.h"
 #include "GSFrame.h"
 #include "AppAccelerators.h"
+#include "AppHost.h"
 #include "AppSaveStates.h"
 #include "Counters.h"
 #include "GS.h"
 #include "GS/GS.h"
 #include "MainFrame.h"
 #include "MSWstuff.h"
+#include "PerformanceMetrics.h"
 #ifdef _WIN32
 #include "PAD/Windows/PAD.h"
 #else
@@ -365,7 +367,7 @@ void GSPanel::OnResize(wxSizeEvent& event)
 	g_gs_window_info.surface_height = height;
 	g_gs_window_info.surface_scale = scale;
 
-	GSResizeWindow(width, height);
+	Host::GSWindowResized(width, height);
 }
 
 void GSPanel::OnCloseWindow(wxCloseEvent& evt)
@@ -844,7 +846,7 @@ void GSFrame::AppStatusEvent_OnSettingsApplied()
 
 	if( g_Conf->GSWindow.CloseOnEsc )
 	{
-		if (IsShown() && !gsopen_done)
+		if (IsShown())
 			Show( false );
 	}
 }
@@ -863,33 +865,14 @@ void GSFrame::OnUpdateTitle( wxTimerEvent& evt )
 	if (g_FrameCount == 0)
 		return;
 
-	double fps = wxGetApp().FpsManager.GetFramerate();
-
 	FastFormatUnicode cpuUsage;
-	if (m_CpuUsage.IsImplemented()) {
-		m_CpuUsage.UpdateStats();
-
-		if (!IsFullScreen()) {
-			cpuUsage.Write(L"EE: %3d%%", m_CpuUsage.GetEEcorePct());
-			cpuUsage.Write(L" | GS: %3d%%", m_CpuUsage.GetGsPct());
-
-			if (THREAD_VU1)
-				cpuUsage.Write(L" | VU: %3d%%", m_CpuUsage.GetVUPct());
-
-			pxNonReleaseCode(cpuUsage.Write(L" | UI: %3d%%", m_CpuUsage.GetGuiPct()));
-		}
+	if (!IsFullScreen()) {
+		cpuUsage.Write(L"EE: %3.0f%%", PerformanceMetrics::GetCPUThreadUsage());
+		cpuUsage.Write(L" | GS: %3.0f%%", PerformanceMetrics::GetGSThreadUsage());
 
 		if (THREAD_VU1)
-			OSDmonitor(Color_StrongGreen, "VU:", std::to_string(m_CpuUsage.GetVUPct()).c_str());
-
-		OSDmonitor(Color_StrongGreen, "EE:", std::to_string(m_CpuUsage.GetEEcorePct()).c_str());
-		OSDmonitor(Color_StrongGreen, "GS:", std::to_string(m_CpuUsage.GetGsPct()).c_str());
-		pxNonReleaseCode(OSDmonitor(Color_StrongGreen, "UI:", std::to_string(m_CpuUsage.GetGuiPct()).c_str()));
+			cpuUsage.Write(L" | VU: %3.0f%%", PerformanceMetrics::GetVUThreadUsage());
 	}
-
-	std::ostringstream out;
-	out << std::fixed << std::setprecision(2) << fps;
-	OSDmonitor(Color_StrongGreen, "FPS:", out.str());
 
 #ifdef __linux__
 	// Important Linux note: When the title is set in fullscreen the window is redrawn. Unfortunately
@@ -899,11 +882,8 @@ void GSFrame::OnUpdateTitle( wxTimerEvent& evt )
 
 	AppConfig::UiTemplateOptions& templates = g_Conf->Templates;
 
-	const float percentage = (fps * 100) / GetVerticalFrequency();
-
-	char gsDest[128];
-	gsDest[0] = 0; // No need to set whole array to NULL.
-	GSgetTitleInfo2( gsDest, sizeof(gsDest) );
+	std::string gsStats;
+	GSgetStats(gsStats);
 
 	wxString limiterStr = templates.LimiterUnlimited;
 
@@ -938,12 +918,12 @@ void GSFrame::OnUpdateTitle( wxTimerEvent& evt )
 	
 	title.Replace(L"${slot}",		pxsFmt(L"%d", States_GetCurrentSlot()));
 	title.Replace(L"${limiter}",	limiterStr);
-	title.Replace(L"${speed}",		pxsFmt(L"%3d%%", lround(percentage)));
-	title.Replace(L"${vfps}",		pxsFmt(L"%.02f", fps));
+	title.Replace(L"${speed}",		pxsFmt(L"%3d%%", lround(PerformanceMetrics::GetSpeed())));
+	title.Replace(L"${vfps}",		pxsFmt(L"%.02f", PerformanceMetrics::GetFPS()));
 	title.Replace(L"${cpuusage}",	cpuUsage);
 	title.Replace(L"${omodef}",		omodef);
 	title.Replace(L"${omodei}",		omodei);
-	title.Replace(L"${gsdx}",		fromUTF8(gsDest));
+	title.Replace(L"${gsdx}", wxString::FromUTF8(gsStats.c_str(), gsStats.size()));
 	title.Replace(L"${videomode}",	ReportVideoMode());
 	if (CoreThread.IsPaused() && !GSDump::isRunning)
 		title = templates.Paused + title;

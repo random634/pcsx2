@@ -28,14 +28,18 @@
 #include "Elfheader.h"
 #include "Counters.h"
 #include "Patch.h"
-#include "System/SysThreads.h"
+#include "Host.h"
+#include "GS.h"
 
 #include "common/pxStreams.h"
 #include "common/SafeArray.inl"
 #include "common/StringUtil.h"
+#include "GS/GS.h"
 #include "SPU2/spu2.h"
 #include "USB/USB.h"
-#ifdef _WIN32
+#if defined(PCSX2_CORE)
+#include "PAD/Host/PAD.h"
+#elif defined(_WIN32)
 #include "PAD/Windows/PAD.h"
 #else
 #include "PAD/Linux/PAD.h"
@@ -43,10 +47,9 @@
 
 #include <wx/wfstream.h>
 
-#include "gui/ConsoleLogger.h"
-
 #ifndef PCSX2_CORE
 #include "gui/App.h"
+#include "gui/ConsoleLogger.h"
 #endif
 
 #include "common/pxStreams.h"
@@ -268,7 +271,9 @@ SaveStateBase& SaveStateBase::FreezeInternals()
 	// to merit an HLE Bios sub-section... yet.
 	deci2Freeze();
 
+#ifndef DISABLE_RECORDING
 	InputRecordingFreeze();
+#endif
 
 	if( IsLoading() )
 		PostLoadPrep();
@@ -335,7 +340,7 @@ wxString Exception::SaveStateLoadError::FormatDiagnosticMessage() const
 {
 	FastFormatUnicode retval;
 	retval.Write("Savestate is corrupt or incomplete!\n");
-	OSDlog(Color_Red, false, "Error: Savestate is corrupt or incomplete!");
+	Host::AddOSDMessage("Error: Savestate is corrupt or incomplete!", 15.0f);
 	_formatDiagMsg(retval);
 	return retval;
 }
@@ -345,7 +350,7 @@ wxString Exception::SaveStateLoadError::FormatDisplayMessage() const
 	FastFormatUnicode retval;
 	retval.Write(_("The savestate cannot be loaded, as it appears to be corrupt or incomplete."));
 	retval.Write("\n");
-	OSDlog(Color_Red, false, "Error: The savestate cannot be loaded, as it appears to be corrupt or incomplete.");
+	Host::AddOSDMessage("Error: The savestate cannot be loaded, as it appears to be corrupt or incomplete.", 15.0f);
 	_formatUserMsg(retval);
 	return retval;
 }
@@ -365,15 +370,19 @@ struct SysState_Component
 
 int SysState_MTGSFreeze(FreezeAction mode, freezeData* fP)
 {
+#ifndef PCSX2_CORE
 	ScopedCoreThreadPause paused_core;
+#endif
 	MTGS_FreezeData sstate = { fP, 0 };
 	GetMTGS().Freeze(mode, sstate);
+#ifndef PCSX2_CORE
 	paused_core.AllowResume();
+#endif
 	return sstate.retval;
 }
 
 static constexpr SysState_Component SPU2{ "SPU2", SPU2freeze };
-static constexpr SysState_Component PAD{ "PAD", PADfreeze };
+static constexpr SysState_Component PAD_{ "PAD", PADfreeze };
 static constexpr SysState_Component USB{ "USB", USBfreeze };
 static constexpr SysState_Component GS{ "GS", SysState_MTGSFreeze };
 
@@ -617,8 +626,8 @@ public:
 	virtual ~SavestateEntry_PAD() = default;
 
 	wxString GetFilename() const { return L"PAD.bin"; }
-	void FreezeIn(pxInputStream& reader) const { return SysState_ComponentFreezeIn(reader, PAD); }
-	void FreezeOut(SaveStateBase& writer) const { return SysState_ComponentFreezeOut(writer, PAD); }
+	void FreezeIn(pxInputStream& reader) const { return SysState_ComponentFreezeIn(reader, PAD_); }
+	void FreezeOut(SaveStateBase& writer) const { return SysState_ComponentFreezeOut(writer, PAD_); }
 	bool IsRequired() const { return true; }
 };
 
@@ -651,7 +660,9 @@ static const std::unique_ptr<BaseSavestateEntry> SavestateEntries[] = {
 	std::unique_ptr<BaseSavestateEntry>(new SavestateEntry_VU0prog),
 	std::unique_ptr<BaseSavestateEntry>(new SavestateEntry_VU1prog),
 	std::unique_ptr<BaseSavestateEntry>(new SavestateEntry_SPU2),
+#ifndef PCSX2_CORE
 	std::unique_ptr<BaseSavestateEntry>(new SavestateEntry_USB),
+#endif
 	std::unique_ptr<BaseSavestateEntry>(new SavestateEntry_PAD),
 	std::unique_ptr<BaseSavestateEntry>(new SavestateEntry_GS),
 };
@@ -686,10 +697,12 @@ static void CheckVersion(pxInputStream& thr)
 
 void SaveState_DownloadState(ArchiveEntryList* destlist)
 {
+#ifndef PCSX2_CORE
 	if (!GetCoreThread().HasActiveMachine())
 		throw Exception::RuntimeError()
 			.SetDiagMsg(L"SysExecEvent_DownloadState: Cannot freeze/download an invalid VM state!")
 			.SetUserMsg(_("There is no active virtual machine state to download or save."));
+#endif
 
 	memSavingState saveme(destlist->GetBuffer());
 	ArchiveEntry internals(EntryFilename_InternalStructures);

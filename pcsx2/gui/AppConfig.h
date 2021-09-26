@@ -139,7 +139,8 @@ public:
 			Logs,
 			Cheats,
 			CheatsWS,
-			Resources;
+			Resources,
+			Cache;
 
 		wxDirName RunIso; // last used location for Iso loading.
 		wxDirName RunELF; // last used location for ELF loading.

@@ -19,6 +19,7 @@
 #include "ConsoleLogger.h"
 #include "MSWstuff.h"
 #include "MTVU.h" // for thread cancellation on shutdown
+#include "GameDatabase.h"
 
 #include "common/IniInterface.h"
 #include "common/StringUtil.h"
@@ -351,47 +352,6 @@ bool Pcsx2App::OnCmdLineParsed(wxCmdLineParser& parser)
 typedef void (wxEvtHandler::*pxInvokeAppMethodEventFunction)(Pcsx2AppMethodEvent&);
 typedef void (wxEvtHandler::*pxStuckThreadEventHandler)(pxMessageBoxEvent&);
 
-// --------------------------------------------------------------------------------------
-//   GameDatabaseLoaderThread
-// --------------------------------------------------------------------------------------
-class GameDatabaseLoaderThread : public pxThread, EventListener_AppStatus
-{
-	typedef pxThread _parent;
-
-public:
-	GameDatabaseLoaderThread()
-		: pxThread(L"GameDatabaseLoader")
-	{
-	}
-
-	virtual ~GameDatabaseLoaderThread()
-	{
-		try
-		{
-			_parent::Cancel();
-		}
-		DESTRUCTOR_CATCHALL
-	}
-
-protected:
-	void ExecuteTaskInThread()
-	{
-		Sleep(2);
-		wxGetApp().GetGameDatabase();
-	}
-
-	void OnCleanupInThread()
-	{
-		_parent::OnCleanupInThread();
-		wxGetApp().DeleteThread(this);
-	}
-
-	void AppStatusEvent_OnExit()
-	{
-		Block();
-	}
-};
-
 bool Pcsx2App::OnInit()
 {
 	EnableAllLogging();
@@ -463,7 +423,7 @@ bool Pcsx2App::OnInit()
 			OpenMainFrame();
 
 
-		(new GameDatabaseLoaderThread())->Start();
+		GameDatabase::QueueLoad();
 
 		// By default no IRX injection
 		EmuConfig.CurrentIRX.clear();

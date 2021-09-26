@@ -233,7 +233,7 @@ void SysLogMachineCaps()
 
 	Console.Newline();
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(PCSX2_CORE)
 	CheckIsUserOnHighPerfPowerPlan();
 #endif
 }

@@ -465,7 +465,6 @@ public:
 	static int m_shader_reg;
 
 private:
-	std::unique_ptr<GL::Context> m_gl_context;
 	int m_force_texture_clear;
 	int m_mipmap;
 	TriFiltering m_filter;
@@ -561,8 +560,6 @@ private:
 	PSConstantBuffer m_ps_cb_cache;
 	MiscConstantBuffer m_misc_cb_cache;
 
-	std::unique_ptr<GSTexture> m_font;
-
 	GSTexture* CreateSurface(int type, int w, int h, int format) final;
 	GSTexture* FetchSurface(int type, int w, int h, int format) final;
 
@@ -571,7 +568,6 @@ private:
 	void DoFXAA(GSTexture* sTex, GSTexture* dTex) final;
 	void DoShadeBoost(GSTexture* sTex, GSTexture* dTex) final;
 	void DoExternalFX(GSTexture* sTex, GSTexture* dTex) final;
-	void RenderOsd(GSTexture* dt) final;
 
 	void OMAttachRt(GSTextureOGL* rt = NULL);
 	void OMAttachDs(GSTextureOGL* ds = NULL);
@@ -590,10 +586,10 @@ public:
 	// Used by OpenGL, so the same calling convention is required.
 	static void APIENTRY DebugOutputToFile(GLenum gl_source, GLenum gl_type, GLuint id, GLenum gl_severity, GLsizei gl_length, const GLchar* gl_message, const void* userParam);
 
-	bool Create(const WindowInfo& wi) override;
-	bool Reset(int w, int h) override;
-	void Flip() override;
-	void SetVSync(int vsync) override;
+	bool Create(HostDisplay* display) override;
+
+	void ResetAPIState() override;
+	void RestoreAPIState() override;
 
 	void DrawPrimitive() final;
 	void DrawIndexedPrimitive() final;

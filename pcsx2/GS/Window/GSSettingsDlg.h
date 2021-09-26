@@ -51,13 +51,7 @@ public:
 
 class GSOSDDlg : public GSDialog
 {
-	struct
-	{
-		int r;
-		int g;
-		int b;
-		int a;
-	} m_color;
+	int m_scale = 100;
 
 	void UpdateControls();
 

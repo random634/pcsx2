@@ -108,6 +108,12 @@ namespace PathDefs
 			static const wxDirName retval(L"resources");
 			return retval;
 		}
+
+		const wxDirName& Cache()
+		{
+			static const wxDirName retval(L"cache");
+			return retval;
+		}
 	};
 
 	// Specifies the root folder for the application install.
@@ -252,6 +258,11 @@ namespace PathDefs
 #else
 		return AppRoot() + Base::Resources();
 #endif
+	}
+
+	wxDirName GetCache()
+	{
+		return GetDocuments() + Base::Cache();
 	}
 
 	wxDirName Get(FoldersEnum_t folderidx)
@@ -693,6 +704,7 @@ AppConfig::FolderOptions::FolderOptions()
 	, Cheats(PathDefs::GetCheats())
 	, CheatsWS(PathDefs::GetCheatsWS())
 	, Resources(PathDefs::GetResources())
+	, Cache(PathDefs::GetCache())
 
 	, RunIso(PathDefs::GetDocuments()) // raw default is always the Documents folder.
 	, RunELF(PathDefs::GetDocuments()) // raw default is always the Documents folder.
@@ -759,6 +771,7 @@ void AppSetEmuFolders()
 	EmuFolders::Cheats = GetResolvedFolder(FolderId_Cheats);
 	EmuFolders::CheatsWS = GetResolvedFolder(FolderId_CheatsWS);
 	EmuFolders::Resources = g_Conf->Folders.Resources;
+	EmuFolders::Cache = g_Conf->Folders.Cache;
 }
 
 // ------------------------------------------------------------------------

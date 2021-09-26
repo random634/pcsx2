@@ -15,8 +15,8 @@
 
 #include "PrecompiledHeader.h"
 #include "MainFrame.h"
-#include "AppGameDatabase.h"
 
+#include <wx/stdpaths.h>
 #include <wx/zipstrm.h>
 #include <wx/wfstream.h>
 #include <wx/imaglist.h>

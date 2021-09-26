@@ -183,7 +183,7 @@ bool GSUtil::CheckSSE()
 
 CRCHackLevel GSUtil::GetRecommendedCRCHackLevel(GSRendererType type)
 {
-	return type == GSRendererType::OGL_HW ? CRCHackLevel::Partial : CRCHackLevel::Full;
+	return type == GSRendererType::OGL ? CRCHackLevel::Partial : CRCHackLevel::Full;
 }
 
 #ifdef _WIN32
@@ -239,7 +239,7 @@ D3D_FEATURE_LEVEL GSUtil::CheckDirect3D11Level(IDXGIAdapter* adapter, D3D_DRIVER
 	return SUCCEEDED(hr) ? level : (D3D_FEATURE_LEVEL)0;
 }
 
-GSRendererType GSUtil::GetBestRenderer()
+GSRendererType GSGetBestRenderer()
 {
 	wil::com_ptr_nothrow<IDXGIFactory1> dxgi_factory;
 	if (SUCCEEDED(CreateDXGIFactory1(IID_PPV_ARGS(dxgi_factory.put()))))
@@ -253,11 +253,18 @@ GSRendererType GSUtil::GetBestRenderer()
 				D3D_FEATURE_LEVEL level = GSUtil::CheckDirect3D11Level();
 				// Check for Nvidia VendorID. Latest OpenGL features need at least DX11 level GPU
 				if (desc.VendorId == 0x10DE && level >= D3D_FEATURE_LEVEL_11_0)
-					return GSRendererType::OGL_HW;
+					return GSRendererType::OGL;
 			}
 		}
 	}
-	return GSRendererType::DX1011_HW;
+	return GSRendererType::DX11;
+}
+
+#else
+
+GSRendererType GSGetBestRenderer()
+{
+	return GSRendererType::OGL;
 }
 
 #endif

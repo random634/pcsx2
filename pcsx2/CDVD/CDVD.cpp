@@ -31,6 +31,12 @@
 #include "Elfheader.h"
 #include "ps2/BiosTools.h"
 
+#ifndef PCSX2_CORE
+#include "System/SysThreads.h"
+#else
+#include "VMManager.h"
+#endif
+
 // This typically reflects the Sony-assigned serial code for the Disc, if one exists.
 //  (examples:  SLUS-2113, etc).
 // If the disc is homebrew then it probably won't have a valid serial; in which case
@@ -2094,7 +2100,11 @@ static void cdvdWrite16(u8 rt) // SCOMMAND
 
 			case 0x0F: // sceCdPowerOff (0:1)- Call74 from Xcdvdman
 				Console.WriteLn(Color_StrongBlack, "sceCdPowerOff called. Resetting VM.");
+#ifndef PCSX2_CORE
 				GetCoreThread().Reset();
+#else
+				VMManager::Reset();
+#endif
 				break;
 
 			case 0x12: // sceCdReadILinkId (0:9)
