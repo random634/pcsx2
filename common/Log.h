@@ -84,6 +84,12 @@ enum class LogStyle : u8
 	CompatibilityRed,         ///< For easy migration of old log calls, replace / rename later
 };
 
+enum class LogLevelInheritance : u8
+{
+	Override, ///< Override the parent's log level
+	Maximum,  ///< Take the maximum log level of self and parent (never more verbose than parent)
+};
+
 class LogSource;
 
 /// A place for log messages to be sent
@@ -109,6 +115,7 @@ class LogSource
 	LogLevel m_cachedLevel; ///< The log level to be used for deciding whether to log
 	LogLevel m_localLevel;  ///< The log level assigned to this source (Unset means inherit)
 	LogStyle m_style;       ///< The style to display normal priority logs from this source
+	LogLevelInheritance m_levelInheritance; ///< How to inherit the log level
 	u8       m_indent;      ///< Current indent level
 	LogSink* m_cachedSink;  ///< The sink to be used for logging
 	LogSink* m_localSink;   ///< The sink assigned to this source (null means inherit)
@@ -156,7 +163,7 @@ public:
 	/// Can't move due to pointers used for child/parent relationship tracking
 	LogSource(LogSource&&) = delete;
 	/// Create a LogSource
-	LogSource(const char* name, LogStyle style, LogSource* parent, LogLevel baseLevel = LogLevel::Unset);
+	LogSource(const char* name, LogStyle style, LogSource* parent, LogLevelInheritance levelInherit = LogLevelInheritance::Override, LogLevel baseLevel = LogLevel::Unset);
 
 	/// Should a message with the given level be logged?
 	bool shouldLog(LogLevel level) const
@@ -234,9 +241,15 @@ public:
 	}
 
 	/// The source's current logging level
-	LogLevel level() const
+	LogLevel actualLevel() const
 	{
 		return m_cachedLevel;
+	}
+
+	/// The logging level the source was configured to be at (not neccessarily the one it's actually at, which can be affected by the parent's level)
+	LogLevel configuredLevel() const
+	{
+		return m_localLevel;
 	}
 
 	/// The source's name
@@ -263,6 +276,12 @@ public:
 		m_indent -= amt;
 	}
 
+	/// Gets this source's parent (may be null)
+	LogSource* parent() const
+	{
+		return m_parent;
+	}
+
 	/// Get the default style for the given log level
 	LogStyle getStyle(LogLevel level) const;
 
@@ -273,55 +292,6 @@ public:
 	/// Change the output of this source
 	/// Supply a nullptr to make the source inherit its parent's output
 	void setSink(LogSink* sink);
-};
-
-/// Gather multiple logs to print atomically
-class MultiPieceLog
-{
-	LogSource& m_source;
-	LogLevel m_level;
-	std::string m_log;
-public:
-	MultiPieceLog(LogSource& source, LogLevel level): m_source(source) , m_level(level) {}
-
-	template <typename S>
-	void add(const S& str)
-	{
-		if (!m_source.shouldLog(m_level))
-			return;
-		fmt::detail::check_format_string<>(str);
-		m_log += std::string_view(str);
-	}
-
-	template <typename S, typename Arg1, typename... Args>
-	void add(const S& str, const Arg1& arg1, const Args&... args)
-	{
-		if (!m_source.shouldLog(m_level))
-			return;
-		fmt::format_to(std::back_inserter(m_log), arg1, args...);
-	}
-
-	template <typename S, typename... Args>
-	void addLine(const S& s, const Args&... args)
-	{
-		if (!m_source.shouldLog(m_level))
-			return;
-		add(s, args...);
-		m_log.push_back('\n');
-	}
-
-	void flush()
-	{
-		if (m_log.empty())
-			return;
-		m_source.log(m_level, m_log);
-		m_log.clear();
-	}
-
-	~MultiPieceLog()
-	{
-		flush();
-	}
 };
 
 /// Increase a source's indent level until the end of the current scope
@@ -349,9 +319,14 @@ namespace Log
 	extern LogSource Console; ///< Random uncategorized printouts
 	extern LogSource Dev;     ///< For compatibility with old DevCon logging
 	extern LogSource Logging; ///< For issues that come up in logging itself
+	extern LogSource Trace;   ///< Parent for trace logging
 	// TODO: Sif has special logging needs...?
 	extern LogSource SIF;
 	extern LogSource EERecPerf;
+
+	extern LogSource pxEvt;
+	extern LogSource pxThread;
+	extern LogSource Patches;
 
 	extern LogSource Recording;
 	extern LogSource RecControl;
@@ -359,6 +334,11 @@ namespace Log
 	namespace EE
 	{
 		extern LogSource Base; ///< Top level log source for EE stuff
+		// Categories
+		extern LogSource Disasm;
+		extern LogSource Registers;
+		extern LogSource Events;
+
 		extern LogSource Bios;
 		extern LogSource Memory;
 		extern LogSource GIFtag;
@@ -387,6 +367,11 @@ namespace Log
 	namespace IOP
 	{
 		extern LogSource Base; ///< Top level log source for IOP stuff
+		// Categories
+		extern LogSource Disasm;
+		extern LogSource Registers;
+		extern LogSource Events;
+
 		extern LogSource Bios;
 		extern LogSource Memcards;
 		extern LogSource PAD;
@@ -398,10 +383,6 @@ namespace Log
 		extern LogSource KnownHW;
 		extern LogSource UnknownHW;
 		extern LogSource DMAHW;
-
-		extern LogSource SPU2;
-		extern LogSource USB;
-		extern LogSource FW;
 
 		extern LogSource DMAC;
 		extern LogSource Counters;
