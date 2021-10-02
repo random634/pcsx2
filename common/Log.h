@@ -325,7 +325,6 @@ namespace Log
 
 	extern LogSource pxEvt;
 	extern LogSource pxThread;
-	extern LogSource Patches;
 
 	extern LogSource Recording;
 	extern LogSource RecControl;

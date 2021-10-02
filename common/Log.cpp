@@ -161,7 +161,6 @@ LogSource Log::SIF       ("SIF",         LogStyle::Emulator, &Trace, LogLevelInh
 
 LogSource Log::pxEvt     ("pxEvent",     LogStyle::General,  &PCSX2);
 LogSource Log::pxThread  ("pxThread",    LogStyle::General,  &PCSX2);
-LogSource Log::Patches   ("Patches",     LogStyle::General,  &Console, LogLevelInheritance::Override, LogLevel::Trace);
 
 LogSource Log::Recording ("Recording",   LogStyle::General,  &PCSX2);
 LogSource Log::RecControl("Rec.Control", LogStyle::General,  &PCSX2);
