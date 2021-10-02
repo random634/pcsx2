@@ -18,7 +18,6 @@
 #include "Pcsx2Defs.h"
 #include "FmtWX.h"
 #include <fmt/core.h>
-#include <vector>
 
 #if defined(PCSX2_DEBUG) && !defined(LOG_PERF_SENSITIVE)
 	#define LOG_PERF_SENSITIVE
@@ -105,23 +104,24 @@ public:
 /// ----------------------------------------------------------------------------------------
 ///  LogSource -- For printing messages to the console.
 /// ----------------------------------------------------------------------------------------
-/// General ConsoleWrite Threading Guideline:
+/// General LogSource Threading Guideline:
 ///   PCSX2 is a threaded environment and multiple threads can write to the console asynchronously.
 ///   Individual calls to a LogSource will be written in atomic fashion, however "partial" logs may end up interrupted by logs on other threads.
 ///   In cases where you want to print multi-line blocks of uninterrupted logs, compound the entire log into a single large string and issue that in one call.
-///   A `MultiPieceLog` can assist in doing this.
+/// @warning LogSources are designed to be used as static variables.  The constructor works properly even if run before the source's parent due to being in a different source file, but will not work properly if run on a non-zeroed dynamic memory allocation.
 class LogSource
 {
-	LogLevel m_cachedLevel; ///< The log level to be used for deciding whether to log
-	LogLevel m_localLevel;  ///< The log level assigned to this source (Unset means inherit)
-	LogStyle m_style;       ///< The style to display normal priority logs from this source
+	LogLevel m_cachedLevel;  ///< The log level to be used for deciding whether to log
+	LogLevel m_localLevel;   ///< The log level assigned to this source (Unset means inherit)
+	LogStyle m_style;        ///< The style to display normal priority logs from this source
 	LogLevelInheritance m_levelInheritance; ///< How to inherit the log level
-	u8       m_indent;      ///< Current indent level
-	LogSink* m_cachedSink;  ///< The sink to be used for logging
-	LogSink* m_localSink;   ///< The sink assigned to this source (null means inherit)
-	const char* m_name;     ///< This source's name
-	LogSource* m_parent;    ///< This source's parent (if any)
-	std::vector<LogSource*> m_children; ///< All sources that have this source set as their parent
+	u8       m_indent;       ///< Current indent level
+	LogSink* m_cachedSink;   ///< The sink to be used for logging
+	LogSink* m_localSink;    ///< The sink assigned to this source (null means inherit)
+	const char* m_name;      ///< This source's name
+	LogSource* m_parent;     ///< This source's parent (if any)
+	LogSource* m_firstChild; ///< First child in linked list of children (list of sources that have this node set as their parent)
+	LogSource* m_nextChild;  ///< Next child in parent's linked list of children
 
 	/// Recalculate cached level based on local and parent values
 	void updateCachedLevel();
@@ -147,7 +147,6 @@ class LogSource
 	template <typename S>
 	void doLog(LogLevel level, const S& string) const
 	{
-		fmt::detail::check_format_string<>(string);
 		logString(level, string);
 	}
 

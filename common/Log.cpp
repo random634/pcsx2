@@ -26,9 +26,13 @@ LogSource::LogSource(const char* name, LogStyle style, LogSource* parent, LogLev
 	, m_localSink(nullptr)
 	, m_name(name)
 	, m_parent(parent)
+	, m_nextChild(nullptr)
 {
 	if (parent)
-		parent->m_children.push_back(this);
+	{
+		m_nextChild = parent->m_firstChild;
+		parent->m_firstChild = this;
+	}
 	updateCachedSink();
 	updateCachedLevel();
 }
@@ -57,7 +61,7 @@ void LogSource::updateCachedLevel()
 	if (newLevel != m_cachedLevel)
 	{
 		m_cachedLevel = newLevel;
-		for (LogSource* child : m_children)
+		for (LogSource* child = m_firstChild; child; child = child->m_nextChild)
 			child->updateCachedLevel();
 	}
 }
@@ -75,7 +79,7 @@ void LogSource::updateCachedSink()
 	if (newSink != m_cachedSink)
 	{
 		m_cachedSink = newSink;
-		for (LogSource* child : m_children)
+		for (LogSource* child = m_firstChild; child; child = child->m_nextChild)
 			child->updateCachedSink();
 	}
 }
