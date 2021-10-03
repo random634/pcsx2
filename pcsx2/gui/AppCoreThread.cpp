@@ -261,7 +261,7 @@ static int loadGameSettings(Pcsx2Config& dest, const GameDatabaseSchema::GameEnt
 		SSE_RoundMode eeRM = (SSE_RoundMode)enum_cast(game.eeRoundMode);
 		if (EnumIsValid(eeRM))
 		{
-			PatchesCon->WriteLn(L"(GameDB) Changing EE/FPU roundmode to %d [%s]", eeRM, EnumToString(eeRM));
+			PatchesCon.debug("(GameDB) Changing EE/FPU roundmode to {:d} [{:s}]\n", eeRM, wxString(EnumToString(eeRM)));
 			dest.Cpu.sseMXCSR.SetRoundMode(eeRM);
 			gf++;
 		}
@@ -272,7 +272,7 @@ static int loadGameSettings(Pcsx2Config& dest, const GameDatabaseSchema::GameEnt
 		SSE_RoundMode vuRM = (SSE_RoundMode)enum_cast(game.vuRoundMode);
 		if (EnumIsValid(vuRM))
 		{
-			PatchesCon->WriteLn(L"(GameDB) Changing VU0/VU1 roundmode to %d [%s]", vuRM, EnumToString(vuRM));
+			PatchesCon.debug("(GameDB) Changing VU0/VU1 roundmode to {:d} [{:s}]\n", vuRM, wxString(EnumToString(vuRM)));
 			dest.Cpu.sseVUMXCSR.SetRoundMode(vuRM);
 			gf++;
 		}
@@ -281,7 +281,7 @@ static int loadGameSettings(Pcsx2Config& dest, const GameDatabaseSchema::GameEnt
 	if (game.eeClampMode != GameDatabaseSchema::ClampMode::Undefined)
 	{
 		int clampMode = enum_cast(game.eeClampMode);
-		PatchesCon->WriteLn(L"(GameDB) Changing EE/FPU clamp mode [mode=%d]", clampMode);
+		PatchesCon.debug("(GameDB) Changing EE/FPU clamp mode [mode={:d}]\n", clampMode);
 		dest.Cpu.Recompiler.fpuOverflow = (clampMode >= 1);
 		dest.Cpu.Recompiler.fpuExtraOverflow = (clampMode >= 2);
 		dest.Cpu.Recompiler.fpuFullMode = (clampMode >= 3);
@@ -291,7 +291,7 @@ static int loadGameSettings(Pcsx2Config& dest, const GameDatabaseSchema::GameEnt
 	if (game.vuClampMode != GameDatabaseSchema::ClampMode::Undefined)
 	{
 		int clampMode = enum_cast(game.vuClampMode);
-		PatchesCon->WriteLn("(GameDB) Changing VU0/VU1 clamp mode [mode=%d]", clampMode);
+		PatchesCon.debug("(GameDB) Changing VU0/VU1 clamp mode [mode={:d}]\n", clampMode);
 		dest.Cpu.Recompiler.vuOverflow = (clampMode >= 1);
 		dest.Cpu.Recompiler.vuExtraOverflow = (clampMode >= 2);
 		dest.Cpu.Recompiler.vuSignOverflow = (clampMode >= 3);
@@ -310,7 +310,7 @@ static int loadGameSettings(Pcsx2Config& dest, const GameDatabaseSchema::GameEnt
 			// are effectively booleans like the gamefixes
 			bool mode = game.speedHacks.at(key) ? 1 : 0;
 			dest.Speedhacks.Set(id, mode);
-			PatchesCon->WriteLn(L"(GameDB) Setting Speedhack '" + key + "' to [mode=%d]", mode);
+			PatchesCon.debug("(GameDB) Setting Speedhack '{:s}' to [mode={:d}]\n", key, mode);
 			gf++;
 		}
 	}
@@ -325,7 +325,7 @@ static int loadGameSettings(Pcsx2Config& dest, const GameDatabaseSchema::GameEnt
 		{
 			// if the fix is present, it is said to be enabled
 			dest.Gamefixes.Set(id, true);
-			PatchesCon->WriteLn(L"(GameDB) Enabled Gamefix: " + key);
+			PatchesCon.debug("(GameDB) Enabled Gamefix: {:s}\n", key);
 			gf++;
 
 			// The LUT is only used for 1 game so we allocate it only when the gamefix is enabled (save 4MB)
@@ -349,22 +349,14 @@ void PatchesVerboseReset()
 	curGameKey = _UNKNOWN_GAME_KEY;
 }
 
-// PatchesCon points to either Console or ConsoleWriter_Null, such that if we're in Devel mode
+// PatchesCon changes level such that if we're in Devel mode
 // or the user enabled the devel/verbose console it prints all patching info whenever it's applied,
 // else it prints the patching info only once - right after boot.
-const IConsoleWriter* PatchesCon = &Console;
+LogSource PatchesCon("Patches", LogStyle::General, &Log::Console, LogLevelInheritance::Override, LogLevel::Trace);
 
 static void SetupPatchesCon(bool verbose)
 {
-	bool devel = false;
-#ifdef PCSX2_DEVBUILD
-	devel = true;
-#endif
-
-	if (verbose || DevConWriterEnabled || devel)
-		PatchesCon = &Console;
-	else
-		PatchesCon = &ConsoleWriter_Null;
+	PatchesCon.setLevel(verbose ? LogLevel::Trace : LogLevel::Unset);
 }
 
 // fixup = src + command line overrides + game overrides (according to elfCRC).
@@ -453,7 +445,7 @@ static void _ApplySettings(const Pcsx2Config& src, Pcsx2Config& fixup)
 				if (int patches = LoadPatchesFromGamesDB(GameInfo::gameCRC, game))
 				{
 					gamePatch.Printf(L" [%d Patches]", patches);
-					PatchesCon->WriteLn(Color_Green, "(GameDB) Patches Loaded: %d", patches);
+					PatchesCon.debug(LogStyle::CompatibilityGreen, "(GameDB) Patches Loaded: {:d}\n", patches);
 				}
 				if (int fixes = loadGameSettings(fixup, game))
 					gameFixes.Printf(L" [%d Fixes]", fixes);
@@ -499,7 +491,7 @@ static void _ApplySettings(const Pcsx2Config& src, Pcsx2Config& fixup)
 			// No ws cheat files found at the cheats_ws folder, try the ws cheats zip file.
 			wxString cheats_ws_archive = Path::Combine(PathDefs::GetProgramDataDir(), wxFileName(L"cheats_ws.zip"));
 			int numberDbfCheatsLoaded = LoadPatchesFromZip(GameInfo::gameCRC, cheats_ws_archive);
-			PatchesCon->WriteLn(Color_Green, "(Wide Screen Cheats DB) Patches Loaded: %d", numberDbfCheatsLoaded);
+			PatchesCon.debug(LogStyle::CompatibilityGreen, "(Wide Screen Cheats DB) Patches Loaded: {:d}\n", numberDbfCheatsLoaded);
 			gameWsHacks.Printf(L" [%d widescreen hacks]", numberDbfCheatsLoaded);
 		}
 	}

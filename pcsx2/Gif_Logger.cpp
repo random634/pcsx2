@@ -18,7 +18,7 @@
 #include "Gif_Unit.h"
 #include "Gif.h"
 
-#define GIF_PARSE DevCon.WriteLn
+#define GIF_PARSE Log::Console.debug
 
 static const char GifTag_ModeStr[4][16] = {
 	"Packed", "Reglist", "Image", "Image2"
@@ -35,14 +35,14 @@ void Gif_ParsePacket(u8* data, u32 size, GIF_PATH path) {
 	Gif_Tag gifTag;
 	u8* buffer = data;
 	u32 offset = 0;
-	GIF_PARSE("Path %d Transfer", path+1);
+	GIF_PARSE("Path {:d} Transfer\n", path+1);
 	for(;;) {
 		if (!gifTag.isValid) { // Need new Gif Tag
 			if (offset + 16 > size) return;
 
 			gifTag.setTag(&buffer[offset], 1);
 			
-			GIF_PARSE("--Gif Tag [mode=%s][pre=%d][prim=%d][nregs=%d][nloop=%d][qwc=%d][EOP=%d]",
+			GIF_PARSE("--Gif Tag [mode={:s}][pre={:d}][prim={:d}][nregs={:d}][nloop={:d}][qwc={:d}][EOP={:d}]\n",
 				GifTag_ModeStr[gifTag.tag.FLG], gifTag.tag.PRE, gifTag.tag.PRIM,
 				gifTag.nRegs, gifTag.nLoop, gifTag.len/16, gifTag.tag.EOP);
 
@@ -55,11 +55,11 @@ void Gif_ParsePacket(u8* data, u32 size, GIF_PATH path) {
 				for(u32 i = 0; i < gifTag.tag.NLOOP; i++) {
 				for(u32 j = 0; j < gifTag.nRegs;     j++) {
 					if (gifTag.regs[j] == GIF_REG_A_D) {
-						GIF_PARSE("----[Reg=A+D(0x%x)][nreg=%d][nloop=%d]",
+						GIF_PARSE("----[Reg=A+D(0x{:x})][nreg={:d}][nloop={:d}]\n",
 							buffer[offset+8], j, i);
 					}
 					else {
-						GIF_PARSE("----[Reg=%s][nreg=%d][nloop=%d]",
+						GIF_PARSE("----[Reg={:s}][nreg={:d}][nloop={:d}]\n",
 							GifTag_RegStr[gifTag.regs[j]&0xf], j, i);
 					}
 					offset += 16; // 1 QWC
@@ -67,7 +67,7 @@ void Gif_ParsePacket(u8* data, u32 size, GIF_PATH path) {
 				break;
 			case GIF_FLG_REGLIST:
 				for(u32 j = 0; j < gifTag.nRegs; j++) {
-					GIF_PARSE("----[Reg=%s][nreg=%d]", GifTag_RegStr[gifTag.regs[j]&0xf], j);
+					GIF_PARSE("----[Reg={:s}][nreg={:d}]\n", GifTag_RegStr[gifTag.regs[j]&0xf], j);
 				}
 				offset += gifTag.len; // Data length
 				break;

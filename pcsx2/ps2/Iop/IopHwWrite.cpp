@@ -122,7 +122,7 @@ void __fastcall iopHwWrite8_Page3( u32 addr, mem8_t val )
 	// all addresses are assumed to be prefixed with 0x1f803xxx:
 	pxAssert( (addr >> 12) == 0x1f803 );
 
-	if( SysConsole.iopConsole.IsActive() && (addr == 0x1f80380c) )	// STDOUT
+	if (Log::SysCon::IOP.shouldLog(LogLevel::Info) && (addr == 0x1f80380c)) // STDOUT
 	{
 		static char pbuf[1024];
 		static int pidx;

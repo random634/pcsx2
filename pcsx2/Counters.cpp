@@ -481,8 +481,8 @@ static __fi void VSyncStart(u32 sCycle)
 	frameLimit(); // limit FPS
 	gsPostVsyncStart(); // MUST be after framelimit; doing so before causes funk with frame times!
 
-	if(EmuConfig.Trace.Enabled && EmuConfig.Trace.EE.m_EnableAll)
-		SysTrace.EE.Counters.Write( "    ================  EE COUNTER VSYNC START (frame: %d)  ================", g_FrameCount );
+
+	Log::EE::Counters.debug("    ================  EE COUNTER VSYNC START (frame: {:d})  ================\n", g_FrameCount);
 
 	// EE Profiling and Debug code.
 	// FIXME: should probably be moved to VsyncInThread, and handled
@@ -543,8 +543,7 @@ static __fi void VSyncEnd(u32 sCycle)
 	}
 #endif
 
-	if(EmuConfig.Trace.Enabled && EmuConfig.Trace.EE.m_EnableAll)
-		SysTrace.EE.Counters.Write( "    ================  EE COUNTER VSYNC END (frame: %d)  ================", g_FrameCount );
+	Log::EE::Counters.debug("    ================  EE COUNTER VSYNC END (frame: {:d})  ================\n", g_FrameCount);
 
 	g_FrameCount++;
 

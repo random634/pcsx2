@@ -188,14 +188,14 @@ static int _LoadPatchFiles(const wxDirName& folderName, wxString& fileSpec, cons
 	{
 		if (buffer.Upper().Matches(fileSpec.Upper()))
 		{
-			PatchesCon->WriteLn(Color_Green, L"Found %s file: '%s'", WX_STR(friendlyName), WX_STR(buffer));
+			PatchesCon.debug(LogStyle::CompatibilityGreen, "Found {:s} file: '{:s}'\n", friendlyName, buffer);
 			int before = Patch.size();
 			f.Open(Path::Combine(dir.GetName(), buffer));
 			inifile_process(f);
 			f.Close();
 			int loaded = Patch.size() - before;
-			PatchesCon->WriteLn((loaded ? Color_Green : Color_Gray), L"Loaded %d %s from '%s' at '%s'",
-								loaded, WX_STR(friendlyName), WX_STR(buffer), WX_STR(folderName.ToString()));
+			PatchesCon.debug((loaded ? LogStyle::CompatibilityGreen : LogStyle::CompatibilityGray), "Loaded {:d} {:s} from '{:s}' at '{:s}'\n",
+				loaded, friendlyName, buffer, folderName.ToString());
 			numberFoundPatchFiles++;
 		}
 		found = dir.GetNext(&buffer);
@@ -223,8 +223,8 @@ int LoadPatchesFromZip(wxString gameCRC, const wxString& patchesArchiveFilename)
 		name.MakeUpper();
 		if (name.Find(gameCRC) == 0 && name.Find(L".PNACH") + 6u == name.Length())
 		{
-			PatchesCon->WriteLn(Color_Green, L"Loading patch '%s' from archive '%s'",
-								WX_STR(entry->GetName()), WX_STR(patchesArchiveFilename));
+			PatchesCon.debug(LogStyle::CompatibilityGreen, "Loading patch '{:s}' from archive '{:s}'\n",
+				entry->GetName(), patchesArchiveFilename);
 			wxTextInputStream pnach(zip);
 			while (!zip.Eof())
 			{
@@ -253,10 +253,10 @@ int LoadPatchesFromDir(wxString name, const wxDirName& folderName, const wxStrin
 	if (folderName.ToString().IsSameAs(PathDefs::GetCheats().ToString()) && numberFoundPatchFiles == 0)
 	{
 		wxString pathName = Path::Combine(folderName, name.MakeUpper() + L".pnach");
-		PatchesCon->WriteLn(Color_Gray, L"Not found %s file: %s", WX_STR(friendlyName), WX_STR(pathName));
+		PatchesCon.debug(LogStyle::CompatibilityGray, "Not found {:s} file: {:s}\n", friendlyName, pathName);
 	}
 
-	PatchesCon->WriteLn((loaded ? Color_Green : Color_Gray), L"Overall %d %s loaded", loaded, WX_STR(friendlyName));
+	PatchesCon.debug((loaded ? LogStyle::CompatibilityGreen : LogStyle::CompatibilityGray), "Overall {:d} {:s} loaded\n", loaded, friendlyName);
 	return loaded;
 }
 
@@ -279,12 +279,12 @@ namespace PatchFunc
 {
 	void comment(const wxString& text1, const wxString& text2)
 	{
-		PatchesCon->WriteLn(L"comment: " + text2);
+		PatchesCon.debug("comment: {:s}\n", text2);
 	}
 
 	void author(const wxString& text1, const wxString& text2)
 	{
-		PatchesCon->WriteLn(L"Author: " + text2);
+		PatchesCon.debug("Author: {:s}\n", text2);
 	}
 
 	struct PatchPieces

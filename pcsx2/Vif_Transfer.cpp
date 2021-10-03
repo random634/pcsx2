@@ -50,7 +50,7 @@ _vifT void vifTransferLoop(u32* &data) {
 			
 			
 			Log::EE::VIF.debug("New VifCMD {:x} tagsize {:x} irq {:d}\n", vifX.cmd, vifX.tag.size, vifX.irq);
-			if (IsDevBuild && SysTrace.EE.VIFcode.IsActive()) {
+			if (IsDevBuild && Log::EE::VIFcode.shouldLog(LogLevel::Debug)) {
 				// Pass 2 means "log it"
 				vifCmdHandler[idx][vifX.cmd & 0x7f](2, data);
 			}

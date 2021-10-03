@@ -673,7 +673,7 @@ void MainEmuFrame::Menu_EnableRecordingTools_Click(wxCommandEvent& event)
 	{
 		GetMenuBar()->Insert(TopLevelMenu_InputRecording, &m_menuRecording, _("&Input Record"));
 		g_InputRecording.InitVirtualPadWindows(this);
-		SysConsole.recordingConsole.Enabled = true;
+		Log::Recording.setLevel(LogLevel::Trace);
 		// Enable Recording Keybindings
 		if (GSFrame* gsFrame = wxGetApp().GetGsFramePtr())
 		{
@@ -689,7 +689,7 @@ void MainEmuFrame::Menu_EnableRecordingTools_Click(wxCommandEvent& event)
 		StopInputRecording();
 		GetMenuBar()->Remove(TopLevelMenu_InputRecording);
 		// Always turn controller logs off, but never turn it on by default
-		SysConsole.controlInfo.Enabled = checked;
+		Log::RecControl.setLevel(checked ? LogLevel::Trace : LogLevel::Warning);
 		// Return Keybindings Back to Normal
 		if (GSFrame* gsFrame = wxGetApp().GetGsFramePtr())
 		{
@@ -698,7 +698,7 @@ void MainEmuFrame::Menu_EnableRecordingTools_Click(wxCommandEvent& event)
 				viewport->RemoveRecordingAccelerators();
 			}
 		}
-		SysConsole.recordingConsole.Enabled = false;
+		Log::Recording.setLevel(LogLevel::Warning);
 		if (g_InputRecordingControls.IsPaused())
 			g_InputRecordingControls.Resume();
 	}
