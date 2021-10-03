@@ -246,17 +246,3 @@ extern const IConsoleWriter ConsoleWriter_Assert;
 extern NullConsoleWriter NullCon;
 
 extern IConsoleWriter DevConWriter;
-extern bool DevConWriterEnabled;
-
-#ifdef PCSX2_DEVBUILD
-#define DevCon DevConWriter
-#else
-#define DevCon DevConWriterEnabled&& DevConWriter
-#endif
-
-#ifdef PCSX2_DEBUG
-extern IConsoleWriter DbgConWriter;
-#define DbgCon DbgConWriter
-#else
-#define DbgCon 0 && NullCon
-#endif

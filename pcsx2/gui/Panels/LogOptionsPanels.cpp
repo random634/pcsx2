@@ -21,6 +21,17 @@
 
 #include <wx/statline.h>
 
+// Conversion between LogSource levels and our current boolean-based settings
+
+static bool isEnabled(const LogSource& source)
+{
+	return source.configuredLevel() < LogLevel::Info;
+}
+
+static void setEnabled(LogSource& source, bool enabled)
+{
+	source.setLevel(enabled ? LogLevel::Debug : LogLevel::Info);
+}
 
 using namespace pxSizerFlags;
 
@@ -99,104 +110,133 @@ CheckedStaticBox* Panels::iopLogOptionsPanel::GetStaticBox( const wxString& subg
 
 void Panels::eeLogOptionsPanel::OnSettingsChanged()
 {
-	const TraceLogFilters& conf( g_Conf->EmuOptions.Trace );
+	SetValue(isEnabled(Log::EE::Base));
 
-	SetValue( conf.EE.m_EnableAll );
-
-	m_disasmPanel	->SetValue( conf.EE.m_EnableDisasm );
-	m_evtPanel		->SetValue( conf.EE.m_EnableEvents );
-	m_hwPanel		->SetValue( conf.EE.m_EnableRegisters );
+	m_disasmPanel->SetValue(isEnabled(Log::EE::Disasm));
+	m_evtPanel   ->SetValue(isEnabled(Log::EE::Events));
+	m_hwPanel    ->SetValue(isEnabled(Log::EE::Registers));
 }
 
 void Panels::iopLogOptionsPanel::OnSettingsChanged()
 {
-	const TraceLogFilters& conf( g_Conf->EmuOptions.Trace );
+	SetValue(isEnabled(Log::IOP::Base));
 
-	SetValue( conf.IOP.m_EnableAll );
-
-	m_disasmPanel	->SetValue( conf.IOP.m_EnableDisasm );
-	m_evtPanel		->SetValue( conf.IOP.m_EnableEvents );
-	m_hwPanel		->SetValue( conf.IOP.m_EnableRegisters );
+	m_disasmPanel->SetValue(isEnabled(Log::IOP::Disasm));
+	m_evtPanel   ->SetValue(isEnabled(Log::IOP::Events));
+	m_hwPanel    ->SetValue(isEnabled(Log::IOP::Registers));
 }
 
-static SysTraceLog * const traceLogList[] =
+struct LogSourceDescriptor
 {
-	&SysTrace.SIF,
-
-	&SysTrace.EE.Bios,
-	&SysTrace.EE.Memory,
-
-	&SysTrace.EE.R5900,
-	&SysTrace.EE.COP0,
-	&SysTrace.EE.COP1,
-	&SysTrace.EE.COP2,
-	&SysTrace.EE.Cache,
-
-	&SysTrace.EE.KnownHw,
-	&SysTrace.EE.UnknownHw,
-	&SysTrace.EE.DMAhw,
-	&SysTrace.EE.IPU,
-	&SysTrace.EE.GIFtag,
-	&SysTrace.EE.VIFcode,
-	&SysTrace.EE.MSKPATH3,
-
-	&SysTrace.EE.DMAC,
-	&SysTrace.EE.Counters,
-	&SysTrace.EE.SPR,
-	&SysTrace.EE.VIF,
-	&SysTrace.EE.GIF,
-
-
-	// IOP Section
-
-	&SysTrace.IOP.Bios,
-	&SysTrace.IOP.Memcards,
-	&SysTrace.IOP.PAD,
-
-	&SysTrace.IOP.R3000A,
-	&SysTrace.IOP.COP2,
-	&SysTrace.IOP.Memory,
-
-	&SysTrace.IOP.KnownHw,
-	&SysTrace.IOP.UnknownHw,
-	&SysTrace.IOP.DMAhw,
-	&SysTrace.IOP.DMAC,
-	&SysTrace.IOP.Counters,
-	&SysTrace.IOP.CDVD,
-	&SysTrace.IOP.MDEC,
+	/// The actual log source
+	LogSource& source;
+	/// Standard UI name for this log source.  Used in menus, options dialogs.
+	const wxChar* name;
+	/// Long description for use as a tooltip or menu item description.
+	const wxChar* description;
 };
 
-static const uint traceLogCount = ArraySize(traceLogList);
+struct LogSourceCategory
+{
+	/// The log source that represents this category
+	LogSource& source;
+	/// Standard UI name for this category
+	const wxChar* name;
+};
+
+static const LogSourceDescriptor traceLogSourceList[] =
+{
+	{Log::SIF,            L"SIF (EE ↔︎ IOP)",   L""},
+
+	{Log::EE::Bios,       L"Bios",             pxDt("SYSCALL and DECI2 activity.")},
+	{Log::EE::Memory,     L"Memory",           pxDt("Direct memory accesses to unknown or unmapped EE memory space.")},
+
+	{Log::EE::R5900,      L"R5900 Core",       pxDt("Disasm of executing core instructions (excluding COPs and CACHE).")},
+	{Log::EE::COP0,       L"COP0",             pxDt("Disasm of COP0 instructions (MMU, cpu and dma status, etc).")},
+	{Log::EE::COP1,       L"COP1/FPU",         pxDt("Disasm of the EE's floating point unit (FPU) only.")},
+	{Log::EE::COP2,       L"COP2/VUmacro",     pxDt("Disasm of the EE's VU0macro co-processor instructions.")},
+	{Log::EE::Cache,      L"Cache",            pxDt("Execution of EE cache instructions.")},
+
+	{Log::EE::KnownHW,    L"Hardware Regs",    pxDt("All known hardware register accesses (very slow!); not including sub filter options below.")},
+	{Log::EE::UnknownHW,  L"Unknown Regs",     pxDt("Logs only unknown, unmapped, or unimplemented register accesses.")},
+	{Log::EE::DMAHW,      L"DMA Regs",         pxDt("Logs only DMA-related registers.")},
+	{Log::EE::IPU,        L"IPU",              pxDt("IPU activity: hardware registers, decoding operations, DMA status, etc.")},
+	{Log::EE::GIFtag,     L"GIFtags",          pxDt("All GIFtag parse activity; path index, tag type, etc.")},
+	{Log::EE::VIFcode,    L"VIFcodes",         pxDt("All VIFcode processing; command, tag style, interrupts.")},
+	{Log::EE::MSKPATH3,   L"MSKPATH3",         pxDt("All processing involved in Path3 Masking.")},
+
+	{Log::EE::DMAC,       L"DMA Controller",   pxDt("Actual data transfer logs, bus right arbitration, stalls, etc.")},
+	{Log::EE::Counters,   L"Counters",         pxDt("Tracks all EE counters events and some counter register activity.")},
+	{Log::EE::SPR,        L"Scratchpad MFIFO", pxDt("Scratchpad's MFIFO activity.")},
+	{Log::EE::VIF,        L"VIF",              pxDt("Dumps various VIF and VIFcode processing data.")},
+	{Log::EE::GIF,        L"GIF",              pxDt("Dumps various GIF and GIFtag parsing data.")},
+
+	{Log::IOP::Bios,      L"Bios",             pxDt("SYSCALL and IRX activity.")},
+	{Log::IOP::Memcards,  L"Memory Cards",     pxDt("Memory card reads, writes, erases, terminators, and other processing.")},
+	{Log::IOP::PAD,       L"Pad",              pxDt("Gamepad activity on the SIO.")},
+
+	{Log::IOP::R3000A,    L"R3000A Core",      pxDt("Disasm of executing core instructions (excluding COPs and CACHE).")},
+	{Log::IOP::COP2,      L"COP2",             pxDt("Disasm of the IOP's GPU co-processor instructions.")},
+	{Log::IOP::Memory,    L"Memory",           pxDt("Direct memory accesses to unknown or unmapped IOP memory space.")},
+
+	{Log::IOP::KnownHW,   L"Hardware Regs",    pxDt("All known hardware register accesses, not including the sub-filters below.")},
+	{Log::IOP::UnknownHW, L"Unknown Regs",     pxDt("Logs only unknown, unmapped, or unimplemented register accesses.")},
+	{Log::IOP::DMAHW,     L"DMA Regs",         pxDt("Logs only DMA-related registers.")},
+	{Log::IOP::DMAC,      L"DMA Controller",   pxDt("Actual DMA event processing and data transfer logs.")},
+	{Log::IOP::Counters,  L"Counters",         pxDt("Tracks all IOP counters events and some counter register activity.")},
+	{Log::IOP::CDVD,      L"CDVD",             pxDt("Detailed logging of CDVD hardware.")},
+	{Log::IOP::MDEC,      L"MDEC",             pxDt("Detailed logging of the Motion (FMV) Decoder hardware unit.")},
+};
+
+static const LogSourceCategory traceLogCategoriesList[] =
+{
+	{Log::EE::Base,       L"EE"},
+	{Log::EE::Disasm,     L"Disasm"},
+	{Log::EE::Registers,  L"Registers"},
+	{Log::EE::Events,     L"Events"},
+	{Log::IOP::Base,      L"IOP"},
+	{Log::IOP::Disasm,    L"Disasm"},
+	{Log::IOP::Registers, L"Registers"},
+	{Log::IOP::Events,    L"Events"},
+};
+
+static const LogSourceCategory* getCategory(LogSource* source)
+{
+	for (const LogSourceCategory& category : traceLogCategoriesList)
+	{
+		if (&category.source == source)
+			return &category;
+	}
+	return nullptr;
+}
+
+static void LogSourceEntry(IniInterface& ini, const wxString& name, LogSource& source)
+{
+	int level = static_cast<int>(source.configuredLevel());
+	ini.Entry(name, level, false);
+	source.setLevel(static_cast<LogLevel>(level));
+}
+
+static void SysTraceLog_LoadSaveCategories(IniInterface& ini)
+{
+	ScopedIniGroup path(ini, L"TraceLog");
+	LogSourceEntry(ini, L"Enabled", Log::Trace);
+	for (const LogSourceCategory& category : traceLogCategoriesList)
+	{
+		LogSourceEntry(ini, wxString::FromUTF8(category.source.name()), category.source);
+	}
+}
 
 void SysTraceLog_LoadSaveSettings( IniInterface& ini )
 {
+	SysTraceLog_LoadSaveCategories(ini);
 	ScopedIniGroup path(ini, L"TraceLogSources");
 
-	for (uint i=0; i<traceLogCount; ++i)
+	for (const LogSourceDescriptor& log : traceLogSourceList)
 	{
-		if (SysTraceLog* log = traceLogList[i])
-		{
-			pxAssertMsg(log->GetName(), "Trace log without a name!" );
-			ini.Entry( log->GetCategory() + L"." + log->GetShortName(), log->Enabled, false );
-		}
+		pxAssertMsg(log.source.name(), "Trace log without a name!");
+		LogSourceEntry(ini, wxString::FromUTF8(log.source.name()), log.source);
 	}
-}
-
-static bool traceLogEnabled( const wxString& ident )
-{
-	// Brute force search for now.  not enough different source logs to
-	// justify using a hash table, and switching over to a "complex" class
-	// type from the current simple array initializer requires effort to
-	// avoid C++ global initializer dependency hell.
-
-	for( uint i=0; i<traceLogCount; ++i )
-	{
-		if( 0 == ident.CmpNoCase(traceLogList[i]->GetCategory()) )
-			return traceLogList[i]->Enabled;
-	}
-
-	pxFailDev( wxsFormat(L"Invalid or unknown TraceLog identifier: %s", ident.c_str()) );
-	return false;
 }
 
 // --------------------------------------------------------------------------------------
@@ -204,37 +244,47 @@ static bool traceLogEnabled( const wxString& ident )
 // --------------------------------------------------------------------------------------
 Panels::LogOptionsPanel::LogOptionsPanel(wxWindow* parent )
 	: BaseApplicableConfigPanel( parent )
-	, m_checks( new pxCheckBox*[traceLogCount] )
+	, m_checks( new pxCheckBox*[std::size(traceLogSourceList)] )
 {
 	m_miscSection = new wxStaticBoxSizer( wxHORIZONTAL, this, L"Misc" );
 
 	m_eeSection		= new eeLogOptionsPanel( this );
 	m_iopSection	= new iopLogOptionsPanel( this );
 
-	for( uint i = 0; i<traceLogCount; ++i )
+	for (uint i = 0; i < std::size(traceLogSourceList); ++i)
 	{
-		const SysTraceLog& item = *traceLogList[i];
+		const LogSourceDescriptor& item = traceLogSourceList[i];
 
-		pxAssertMsg(item.GetName(), "Trace log without a name!" );
+		pxAssertMsg(item.source.name(), "Trace log without a name!" );
 
-		wxStringTokenizer token( item.GetCategory(), L"." );
-		wxSizer* addsizer = NULL;
-		wxWindow* addparent = NULL;
-
-		const wxString cpu(token.GetNextToken());
-		if( BaseCpuLogOptionsPanel* cpupanel = GetCpuPanel(cpu))
+		BaseCpuLogOptionsPanel* cpu = nullptr;
+		CheckedStaticBox* group = nullptr;
+		if (auto* parent = getCategory(item.source.parent()))
 		{
-			const wxString group(token.GetNextToken());
-			if( CheckedStaticBox* cpugroup = cpupanel->GetStaticBox(group))
+			if (auto* grandparent = getCategory(parent->source.parent()))
 			{
-				addsizer = &cpugroup->ThisSizer;
-				addparent = cpugroup;
+				cpu = GetCpuPanel(grandparent->name);
+				if (cpu)
+					group = cpu->GetStaticBox(parent->name);
 			}
 			else
 			{
-				addsizer = cpupanel->GetMiscGroup();
-				addparent = cpupanel;
+				cpu = GetCpuPanel(parent->name);
 			}
+		}
+
+		wxSizer* addsizer = NULL;
+		wxWindow* addparent = NULL;
+
+		if (cpu && group)
+		{
+			addsizer = &group->ThisSizer;
+			addparent = group;
+		}
+		else if (cpu)
+		{
+			addsizer = cpu->GetMiscGroup();
+			addparent = cpu;
 		}
 		else
 		{
@@ -242,9 +292,9 @@ Panels::LogOptionsPanel::LogOptionsPanel(wxWindow* parent )
 			addparent = m_miscSection->GetStaticBox();
 		}
 
-		*addsizer += m_checks[i] = new pxCheckBox( addparent, item.GetName() );
- 		if( m_checks[i] && item.HasDescription() )
-			m_checks[i]->SetToolTip(item.GetDescription());
+		*addsizer += m_checks[i] = new pxCheckBox(addparent, item.name);
+ 		if (m_checks[i] && item.description)
+			m_checks[i]->SetToolTip(pxGetTranslation(item.description));
 	}
 
 	m_masterEnabler = new pxCheckBox( this, _("Enable Trace Logging"),
@@ -278,17 +328,15 @@ Panels::BaseCpuLogOptionsPanel* Panels::LogOptionsPanel::GetCpuPanel( const wxSt
 
 void Panels::LogOptionsPanel::AppStatusEvent_OnSettingsApplied()
 {
-	TraceLogFilters& conf( g_Conf->EmuOptions.Trace );
-
-	m_masterEnabler->SetValue( conf.Enabled );
+	m_masterEnabler->SetValue(isEnabled(Log::Trace));
 
 	m_eeSection->OnSettingsChanged();
 	m_iopSection->OnSettingsChanged();
 
-	for (uint i=0; i<traceLogCount; ++i)
+	for (uint i = 0; i < std::size(traceLogSourceList); ++i)
 	{
-		if (!traceLogList[i] || !m_checks[i]) continue;
-		m_checks[i]->SetValue(traceLogList[i]->Enabled);
+		if (m_checks[i])
+			m_checks[i]->SetValue(isEnabled(traceLogSourceList[i].source));
 	}
 	OnUpdateEnableAll();
 }
@@ -310,15 +358,15 @@ void Panels::LogOptionsPanel::OnCheckBoxClicked(wxCommandEvent &evt)
 
 void Panels::LogOptionsPanel::Apply()
 {
-	g_Conf->EmuOptions.Trace.Enabled	= m_masterEnabler->GetValue();
+	setEnabled(Log::Trace, m_masterEnabler->GetValue());
 
 	m_eeSection->Apply();
 	m_iopSection->Apply();
 
-	for( uint i = 0; i<traceLogCount; ++i )
+	for (uint i = 0; i < std::size(traceLogSourceList); ++i)
 	{
-		if (!traceLogList[i] || !m_checks[i]) continue;
-		traceLogList[i]->Enabled = m_checks[i]->IsChecked();
+		if (m_checks[i])
+			setEnabled(traceLogSourceList[i].source, m_checks[i]->IsChecked());
 	}
 }
 
@@ -326,20 +374,16 @@ void Panels::LogOptionsPanel::Apply()
 
 void Panels::eeLogOptionsPanel::Apply()
 {
-	TraceFiltersEE& conf( g_Conf->EmuOptions.Trace.EE );
-
-	conf.m_EnableAll		= GetValue();
-	conf.m_EnableDisasm		= m_disasmPanel->GetValue();
-	conf.m_EnableRegisters	= m_hwPanel->GetValue();
-	conf.m_EnableEvents		= m_evtPanel->GetValue();
+	setEnabled(Log::EE::Base, GetValue());
+	setEnabled(Log::EE::Disasm, m_disasmPanel->GetValue());
+	setEnabled(Log::EE::Registers, m_hwPanel->GetValue());
+	setEnabled(Log::EE::Events, m_evtPanel->GetValue());
 }
 
 void Panels::iopLogOptionsPanel::Apply()
 {
-	TraceFiltersIOP& conf( g_Conf->EmuOptions.Trace.IOP );
-
-	conf.m_EnableAll		= GetValue();
-	conf.m_EnableDisasm		= m_disasmPanel->GetValue();
-	conf.m_EnableRegisters	= m_hwPanel->GetValue();
-	conf.m_EnableEvents		= m_evtPanel->GetValue();
+	setEnabled(Log::IOP::Base, GetValue());
+	setEnabled(Log::IOP::Disasm, m_disasmPanel->GetValue());
+	setEnabled(Log::IOP::Registers, m_hwPanel->GetValue());
+	setEnabled(Log::IOP::Events, m_evtPanel->GetValue());
 }

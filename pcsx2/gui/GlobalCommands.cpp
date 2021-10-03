@@ -407,10 +407,16 @@ namespace Implementations
 		// --arcum42
 
 		// FIXME: Some of the trace logs will require recompiler resets to be activated properly.
-#ifdef PCSX2_DEVBUILD
-		SetTraceConfig().Enabled = !EmuConfig.Trace.Enabled;
-		Log::Console.info(EmuConfig.Trace.Enabled ? "Logging Enabled.\n" : "Logging Disabled.\n");
-#endif
+		if (Log::Trace.configuredLevel() < LogLevel::Error)
+		{
+			Log::Trace.setLevel(LogLevel::Info);
+			Log::Console.info("Trace Logging Enabled.\n");
+		}
+		else
+		{
+			Log::Trace.setLevel(LogLevel::Error);
+			Log::Console.info("Trace Logging Disabled\n");
+		}
 	}
 
 	void Sys_FreezeGS()

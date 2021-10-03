@@ -51,10 +51,6 @@ void Console_SetActiveHandler(const IConsoleWriter& writer, FILE* flushfp)
 
 	Console = writer;
 	DevConWriter = writer;
-
-#ifdef PCSX2_DEBUG
-	DbgCon = writer;
-#endif
 }
 
 // Writes text to the Visual Studio Output window (Microsoft Windows only).

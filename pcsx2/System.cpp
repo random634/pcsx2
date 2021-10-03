@@ -178,14 +178,6 @@ Pcsx2Config::GamefixOptions& SetGameFixConfig()
 	return const_cast<Pcsx2Config::GamefixOptions&>(EmuConfig.Gamefixes);
 }
 
-TraceLogFilters& SetTraceConfig()
-{
-	//Log::Console.debug("Direct modification of EmuConfig.TraceLog detected\n");
-	AffinityAssert_AllowFrom_MainUI();
-	return const_cast<TraceLogFilters&>(EmuConfig.Trace);
-}
-
-
 // This function should be called once during program execution.
 void SysLogMachineCaps()
 {

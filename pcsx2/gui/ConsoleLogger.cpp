@@ -291,54 +291,66 @@ enum MenuId_LogSources_Offset
 	MenuId_LogSources_Offset_iopConsole,
 	MenuId_LogSources_Offset_eeRecPerf,
 
-	MenuId_LogSources_Offset_ELF = 4,
-	MenuId_LogSouces_Offset_pgif = 5,
+	MenuId_LogSources_Offset_ELF,
+	MenuId_LogSouces_Offset_pgif,
 
-	MenuId_LogSources_Offset_Event = 6,
+	MenuId_LogSources_Offset_Event,
 	MenuId_LogSources_Offset_Thread,
 	MenuId_LogSources_Offset_sysoutConsole,
 
-	MenuId_LogSources_Offset_recordingConsole = 10,
+	MenuId_LogSources_Offset_recordingConsole,
 	MenuId_LogSources_Offset_controlInfo
 };
 
-// WARNING ConsoleLogSources & ConLogDefaults must have the same size
-static ConsoleLogSource* const ConLogSources[] =
+struct ConsoleLogEntry
 {
-	(ConsoleLogSource*)&SysConsole.eeConsole,
-	(ConsoleLogSource*)&SysConsole.iopConsole,
-	(ConsoleLogSource*)&SysConsole.eeRecPerf,
-	NULL,
-	(ConsoleLogSource*)&SysConsole.ELF,
-	NULL,
-	(ConsoleLogSource*)&pxConLog_Event,
-	(ConsoleLogSource*)&pxConLog_Thread,
-	(ConsoleLogSource*)&SysConsole.sysoutConsole,
-	(ConsoleLogSource*)&SysConsole.pgifLog,
+	LogSource& source;
+	const wxChar* name;
+	const wxChar* description;
+	u8 group;
+	bool defaultEnabled;
+	LogLevel enabledLevel;
+	LogLevel disabledLevel;
+	constexpr ConsoleLogEntry(u8 group, bool defaultEnabled, LogSource& source, const wxChar* name, const wxChar* description, LogLevel enabledLevel = LogLevel::Debug, LogLevel disabledLevel = LogLevel::Warning)
+		: source(source), name(name), description(description), group(group), defaultEnabled(defaultEnabled), enabledLevel(enabledLevel), disabledLevel(disabledLevel)
+	{
+	}
+};
+
+static ConsoleLogEntry ConLogSources[] =
+{
+	{0, true,  Log::SysCon::EE,     L"EE C&onsole",           pxDt("Shows the game developer's logging text (EE processor).")},
+	{0, true,  Log::SysCon::IOP,    L"&IOP Console",          pxDt("Shows the game developer's logging text (IOP processor).")},
+	{0, false, Log::EERecPerf,      L"EErec &Performance",    pxDt("Logs manual protection, split blocks, and other things that might impact performance.")},
+	{1, false, Log::SysCon::ELF,    L"E&LF",                  pxDt("Dumps detailed information for PS2 executables (ELFs).")},
+	{2, false, Log::pxEvt,          L"S&ysVM Control Events", pxDt("Logs events as they are passed to the PS2 virtual machine.")},
+	{2, false, Log::pxThread,       L"pxThread",              pxDt("Threading activity: start, detach, sync, deletion, etc.")},
+	{2, false, Log::SysCon::SysOut, L"System Out",            pxDt("Shows strings printed to the system output stream.")},
+	{2, false, Log::SysCon::PGIF,   L"&PGIF Console",         pxDt("Shows output from pgif the emulated ps1 gpu")},
 #ifndef DISABLE_RECORDING
-	(ConsoleLogSource*)&SysConsole.recordingConsole,
-	(ConsoleLogSource*)&SysConsole.controlInfo,
+	{2, false, Log::Recording,      L"Input Recording Console", pxDt("Shows recording related logs and information.")},
+	{2, false, Log::RecControl,     L"Controller Info",         pxDt("Shows detailed controller input values for port 1, every frame.")},
 #endif
 };
 
-// WARNING ConsoleLogSources & ConLogDefaults must have the same size
-static const bool ConLogDefaults[] =
+static void setDevConsoleEnabled(bool enabled)
 {
-	true,
-	true,
-	false,
-	true,
-	false,
-	false,
-	false,
-	false,
-	false,
-#ifndef DISABLE_RECORDING
-	false,
-	false,
+	if (enabled)
+	{
+		Log::Console.setLevel(LogLevel::Trace);
+		Log::Dev.setLevel(LogLevel::Trace);
+	}
+	else
+	{
+#ifdef PCSX2_DEVBUILD
+		Log::Console.setLevel(LogLevel::Debug);
+		Log::Dev.setLevel(LogLevel::Info);
+#else
+		Log::Console.setLevel(LogLevel::Info);
+		Log::Dev.setLevel(LogLevel::Warning);
 #endif
-	false
-};
+	}
+}
 
 // Typically on startup (or during first time wizard when choosing "import"), the
 // settings are loaded from ini and if the ini doesn't exist then from ConLogDefaults,
@@ -351,18 +363,17 @@ void ConLog_LoadSaveSettings( IniInterface& ini )
 {
 	ScopedIniGroup path(ini, L"ConsoleLogSources");
 
-	ini.Entry( L"Devel", DevConWriterEnabled, false );
+	bool devEn = Log::Dev.configuredLevel() <= LogLevel::Trace;
+	ini.Entry( L"Devel", devEn, false );
+	setDevConsoleEnabled(devEn);
 
-	uint srcnt = ArraySize(ConLogSources);
-	for (uint i=0; i<srcnt; ++i)
+	for (const ConsoleLogEntry& entry : ConLogSources)
 	{
-		if (ConsoleLogSource* log = ConLogSources[i])
-		{
-			// IsSaving() is for clarity only, since log->Enabled initial value is ignored when loading.
-			if (ini.IsSaving() && !ConLogInitialized)
-				log->Enabled = ConLogDefaults[i];
-			ini.Entry( log->GetCategory() + L"." + log->GetShortName(), log->Enabled, ConLogDefaults[i] );
-		}
+		bool enabled = entry.source.configuredLevel() <= entry.enabledLevel ? true : false;
+		if (!ConLogInitialized)
+			enabled = entry.defaultEnabled;
+		ini.Entry(entry.source.name(), enabled, entry.defaultEnabled);
+		entry.source.setLevel(enabled ? entry.enabledLevel : entry.disabledLevel);
 	}
 
 	wxGetApp().EnableAllLogging();
@@ -460,16 +471,17 @@ ConsoleLogFrame::ConsoleLogFrame( MainEmuFrame *parent, const wxString& title, A
 	
 	menuSources.AppendSeparator();
 
-	uint srcnt = ArraySize(ConLogSources);
-	for (uint i=0; i<srcnt; ++i)
+	u8 group = 0;
+	for (uint i = 0; i < std::size(ConLogSources); ++i)
 	{
-		if (const BaseTraceLogSource* log = ConLogSources[i])
-		{
-			menuSources.Append( MenuId_LogSource_Start+i, log->GetName(), log->GetDescription(), wxITEM_CHECK );
-			Bind(wxEVT_MENU, &ConsoleLogFrame::OnToggleSource, this, MenuId_LogSource_Start + i);
-		}
-		else
+		const ConsoleLogEntry& entry = ConLogSources[i];
+
+		if (entry.group != group)
 			menuSources.AppendSeparator();
+		group = entry.group;
+
+		menuSources.Append(MenuId_LogSource_Start + i, entry.name, pxGetTranslation(entry.description), wxITEM_CHECK);
+		Bind(wxEVT_MENU, &ConsoleLogFrame::OnToggleSource, this, MenuId_LogSource_Start + i);
 	}
 
 	menuSources.AppendSeparator();
@@ -540,13 +552,9 @@ ConsoleLogFrame::~ConsoleLogFrame()
 
 void ConsoleLogFrame::OnEnableAllLogging(wxCommandEvent& evt)
 {
-	uint srcnt = ArraySize(ConLogSources);
-	for (uint i=0; i<srcnt; ++i)
-	{
-		if (ConsoleLogSource* log = ConLogSources[i])
-			log->Enabled = true;
-	}
-	DevConWriterEnabled = true;
+	for (const ConsoleLogEntry& entry : ConLogSources)
+		entry.source.setLevel(entry.enabledLevel);
+	setDevConsoleEnabled(true);
 	// Safe to change - it's read only in the core thread and only affects log output.
 	const_cast<Pcsx2Config&>(EmuConfig).CdvdVerboseReads = g_Conf->EmuOptions.CdvdVerboseReads = true;
 
@@ -556,13 +564,9 @@ void ConsoleLogFrame::OnEnableAllLogging(wxCommandEvent& evt)
 
 void ConsoleLogFrame::OnDisableAllLogging(wxCommandEvent& evt)
 {
-	uint srcnt = ArraySize(ConLogSources);
-	for (uint i=0; i<srcnt; ++i)
-	{
-		if (ConsoleLogSource* log = ConLogSources[i])
-			log->Enabled = false;
-	}
-	DevConWriterEnabled = false;
+	for (const ConsoleLogEntry& entry : ConLogSources)
+		entry.source.setLevel(entry.disabledLevel);
+	setDevConsoleEnabled(false);
 	// Safe to change - it's read only in the core thread and only affects log output.
 	const_cast<Pcsx2Config&>(EmuConfig).CdvdVerboseReads = g_Conf->EmuOptions.CdvdVerboseReads = false;
 
@@ -572,13 +576,9 @@ void ConsoleLogFrame::OnDisableAllLogging(wxCommandEvent& evt)
 
 void ConsoleLogFrame::OnSetDefaultLogging(wxCommandEvent& evt)
 {
-	uint srcnt = ArraySize(ConLogSources);
-	for (uint i = 0; i<srcnt; ++i)
-	{
-		if (ConsoleLogSource* log = ConLogSources[i])
-			log->Enabled = ConLogDefaults[i];
-	}
-	DevConWriterEnabled = false;
+	for (const ConsoleLogEntry& entry : ConLogSources)
+		entry.source.setLevel(entry.defaultEnabled ? entry.enabledLevel : entry.disabledLevel);
+	setDevConsoleEnabled(false);
 	// Safe to change - it's read only in the core thread and only affects log output.
 	const_cast<Pcsx2Config&>(EmuConfig).CdvdVerboseReads = g_Conf->EmuOptions.CdvdVerboseReads = false;
 
@@ -591,23 +591,22 @@ void ConsoleLogFrame::OnLoggingChanged()
 	if (!GetMenuBar()) return;
 
 	if( wxMenuItem* item = GetMenuBar()->FindItem(MenuId_LogSource_Devel) )
-		item->Check( DevConWriterEnabled );
+		item->Check( Log::Dev.configuredLevel() <= LogLevel::Trace );
 
 	if( wxMenuItem* item = GetMenuBar()->FindItem(MenuId_LogSource_CDVD_Info) )
 		item->Check( g_Conf->EmuOptions.CdvdVerboseReads );
 
-	uint srcnt = ArraySize(ConLogSources);
-	for (uint i=0; i<srcnt; ++i)
+	for (uint i = 0; i < std::size(ConLogSources); ++i)
 	{
-		if (const ConsoleLogSource* log = ConLogSources[i])
-		{
-			GetMenuBar()->Check( MenuId_LogSource_Start+i, log->IsActive() );
-		}
-#ifndef DISABLE_RECORDING
-		GetMenuBar()->Enable( MenuId_LogSource_Start + MenuId_LogSources_Offset_recordingConsole, g_Conf->EmuOptions.EnableRecordingTools);
-		GetMenuBar()->Enable( MenuId_LogSource_Start + MenuId_LogSources_Offset_controlInfo, g_Conf->EmuOptions.EnableRecordingTools);
-#endif
+		const ConsoleLogEntry& entry = ConLogSources[i];
+
+		bool enabled = entry.source.configuredLevel() <= entry.enabledLevel;
+		GetMenuBar()->Check(MenuId_LogSource_Start + i, enabled);
 	}
+#ifndef DISABLE_RECORDING
+	GetMenuBar()->Enable( MenuId_LogSource_Start + MenuId_LogSources_Offset_recordingConsole, g_Conf->EmuOptions.EnableRecordingTools);
+	GetMenuBar()->Enable( MenuId_LogSource_Start + MenuId_LogSources_Offset_controlInfo, g_Conf->EmuOptions.EnableRecordingTools);
+#endif
 }
 
 void ConsoleLogFrame::UpdateLogList()
@@ -855,20 +854,21 @@ void ConsoleLogFrame::OnToggleSource( wxCommandEvent& evt )
 	if (evt.GetId() == MenuId_LogSource_Devel)
 	{
 		if( wxMenuItem* item = GetMenuBar()->FindItem(evt.GetId()) )
-			DevConWriterEnabled = item->IsChecked();
+			setDevConsoleEnabled(item->IsChecked());
 
 		return;
 	}
 
 	uint srcid = evt.GetId() - MenuId_LogSource_Start;
 
-	if (!pxAssertDev( ArraySize(ConLogSources) > srcid, "Invalid source log index (out of bounds)" )) return;
-	if (!pxAssertDev( ConLogSources[srcid] != NULL, "Invalid source log index (NULL pointer [separator])" )) return;
+	if (!pxAssertDev(std::size(ConLogSources) > srcid, "Invalid source log index (out of bounds)"))
+		return;
 
-	if( wxMenuItem* item = GetMenuBar()->FindItem(evt.GetId()) )
+	if (wxMenuItem* item = GetMenuBar()->FindItem(evt.GetId()))
 	{
 		pxAssertDev( item->IsCheckable(), "Uncheckable log source menu item?  Seems fishy!" );
-		ConLogSources[srcid]->Enabled = item->IsChecked();
+		const ConsoleLogEntry& entry = ConLogSources[srcid];
+		entry.source.setLevel(item->IsChecked() ? entry.enabledLevel : entry.disabledLevel);
 	}
 }
 
