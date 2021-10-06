@@ -22,9 +22,12 @@
 
 #include "Common.h"
 #include "BiosTools.h"
+#include "HostSettings.h"
 #include "Config.h"
 
-#define DIRENTRY_SIZE 16
+static constexpr u32 MIN_BIOS_SIZE = 4 * _1mb;
+static constexpr u32 MAX_BIOS_SIZE = 8 * _1mb;
+static constexpr u32 DIRENTRY_SIZE = 16;
 
 // --------------------------------------------------------------------------------------
 // romdir structure (packing required!)
@@ -54,6 +57,7 @@ bool NoOSD;
 bool AllowParams1;
 bool AllowParams2;
 std::string BiosDescription;
+std::string BiosPath;
 BiosDebugInformation CurrentBiosInformation;
 
 static bool LoadBiosVersion(std::FILE* fp, u32& version, std::string& description, u32& region, std::string& zone)
@@ -186,14 +190,13 @@ template <size_t _size>
 static void LoadExtraRom(const char* ext, u8 (&dest)[_size])
 {
 	// Try first a basic extension concatenation (normally results in something like name.bin.rom1)
-	const std::string Bios(EmuConfig.FullpathToBios());
-	std::string Bios1(StringUtil::StdStringFromFormat("%s.%s", Bios.c_str(), ext));
+	std::string Bios1(StringUtil::StdStringFromFormat("%s.%s", BiosPath.c_str(), ext));
 
 	s64 filesize;
 	if ((filesize = FileSystem::GetPathFileSize(Bios1.c_str())) <= 0)
 	{
 		// Try the name properly extensioned next (name.rom1)
-		Bios1 = FileSystem::ReplaceExtension(Bios, ext);
+		Bios1 = FileSystem::ReplaceExtension(BiosPath, ext);
 		if ((filesize = FileSystem::GetPathFileSize(Bios1.c_str())) <= 0)
 		{
 			Console.WriteLn(Color_Gray, "BIOS %s module not found, skipping...", ext);
@@ -226,6 +229,33 @@ static void LoadIrx(const std::string& filename, u8* dest, size_t maxSize)
 	return;
 }
 
+static std::string FindBiosImage()
+{
+	const std::string dir(StringUtil::wxStringToUTF8String(EmuFolders::Bios.ToString()));
+	Console.WriteLn("Searching for a BIOS image in '%s'...", dir.c_str());
+
+	FileSystem::FindResultsArray results;
+	if (!FileSystem::FindFiles(dir.c_str(), "*.*", FILESYSTEM_FIND_FILES, &results))
+		return std::string();
+
+	u32 version, region;
+	std::string description, zone;
+	for (const FILESYSTEM_FIND_DATA& fd : results)
+	{
+		if (fd.Size < MIN_BIOS_SIZE || fd.Size > MAX_BIOS_SIZE)
+			continue;
+
+		if (IsBIOS(fd.FileName.c_str(), version, description, region, zone))
+		{
+			Console.WriteLn("Using BIOS '%s' (%s %s)", fd.FileName.c_str(), description.c_str(), zone.c_str());
+			return std::move(fd.FileName);
+		}
+	}
+
+	Console.Error("Unable to auto locate a BIOS image");
+	return std::string();
+}
+
 // Loads the configured bios rom file into PS2 memory.  PS2 memory must be allocated prior to
 // this method being called.
 //
@@ -240,10 +270,22 @@ bool LoadBIOS()
 {
 	pxAssertDev(eeMem->ROM != NULL, "PS2 system memory has not been initialized yet.");
 
+	std::string Bios;
 	if (EmuConfig.BaseFilenames.Bios.empty())
+	{
+#ifdef PCSX2_CORE
+		Bios = FindBiosImage();
+		if (Bios.empty())
+			return false;
+#else
 		return false;
+#endif
+	}
+	else
+	{
+		Bios = EmuConfig.FullpathToBios();
+	}
 
-	const std::string Bios(EmuConfig.FullpathToBios());
 	auto fp = FileSystem::OpenManagedCFile(Bios.c_str(), "rb");
 	if (!fp)
 		return false;
@@ -270,6 +312,7 @@ bool LoadBIOS()
 
 	BiosChecksum = 0;
 	ChecksumIt(BiosChecksum, eeMem->ROM);
+	BiosPath = std::move(Bios);
 
 	Console.SetTitle(StringUtil::StdStringFromFormat("Running BIOS (%s v%u.%u)",
 		zone.c_str(), BiosVersion >> 8, BiosVersion & 0xff));
@@ -297,4 +340,16 @@ bool IsBIOS(const char* filename, u32& version, std::string& description, u32& r
 	// FPS2BIOS is smaller and of variable size
 	//if (inway.Length() < 512*1024) return false;
 	return LoadBiosVersion(fp.get(), version, description, region, zone);
+}
+
+bool IsBIOSAvailable()
+{
+	// We can't use EmuConfig here since it may not be loaded yet.
+	std::string filename(Host::GetStringSettingValue("Filenames", "BIOS"));
+	if (!filename.empty())
+		return FileSystem::FileExists(filename.c_str());
+
+	// No bios configured, check for one in the BIOS directory.
+	filename = FindBiosImage();
+	return !filename.empty() && FileSystem::FileExists(filename.c_str());
 }
