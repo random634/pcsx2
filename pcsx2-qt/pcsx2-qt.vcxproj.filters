@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{1f18feb4-85f0-455d-927a-d4d6b226d8a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="moc">
+      <UniqueIdentifier>{1ab68559-2163-40b5-818b-d2a7ff210c12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(SolutionDir)3rdparty\wxwidgets3.0\include\wx\msw\wx.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\GS\GS.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\PAD\Windows\PAD.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\PCSX2.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\USB\usb-pad\raw\raw-config.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\SPU2\Windows\SPU2.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\USB\Win32\USBDialog.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\USB\usb-pad\dx\versionproxy.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\pcsx2\windows\wxResources.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PrecompiledHeader.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="QtHost.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="$(IntDir)moc_MainWindow.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)qrc_resources.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_DisplayWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="EmuThread.cpp" />
+    <ClCompile Include="GameListModel.cpp" />
+    <ClCompile Include="GameListWidget.cpp" />
+    <ClCompile Include="QtUtils.cpp" />
+    <ClCompile Include="$(IntDir)moc_GameListWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)moc_GameListModel.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)moc_EmuThread.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsDialog.cpp" />
+    <ClCompile Include="InterfaceSettingsWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_SettingsDialog.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)moc_InterfaceSettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="GameListSettingsWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_GameListSettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="BIOSSettingsWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_BIOSSettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemSettingsWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_SystemSettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="EmulationSettingsWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_EmulationSettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="GameListRefreshThread.cpp" />
+    <ClCompile Include="DisplaySettingsWidget.cpp" />
+    <ClCompile Include="GraphicsSettingsWidget.cpp" />
+    <ClCompile Include="$(IntDir)moc_DisplaySettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)moc_GameListRefreshThread.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)moc_GraphicsSettingsWidget.cpp">
+      <Filter>moc</Filter>
+    </ClCompile>
+    <ClCompile Include="QtKeyCodes.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\pcsx2\windows\PCSX2.manifest">
+      <Filter>Resources</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PrecompiledHeader.h" />
+    <ClInclude Include="QtHost.h" />
+    <ClInclude Include="QtUtils.h" />
+    <ClInclude Include="SettingWidgetBinder.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="MainWindow.h" />
+    <QtMoc Include="DisplayWidget.h" />
+    <QtMoc Include="EmuThread.h" />
+    <QtMoc Include="GameListModel.h" />
+    <QtMoc Include="GameListWidget.h" />
+    <QtMoc Include="SettingsDialog.h" />
+    <QtMoc Include="InterfaceSettingsWidget.h" />
+    <QtMoc Include="GameListSettingsWidget.h" />
+    <QtMoc Include="BiosSettingsWidget.h" />
+    <QtMoc Include="SystemSettingsWidget.h" />
+    <QtMoc Include="EmulationSettingsWidget.h" />
+    <QtMoc Include="GameListRefreshThread.h" />
+    <QtMoc Include="DisplaySettingsWidget.h" />
+    <QtMoc Include="GraphicsSettingsWidget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtResource Include="resources\resources.qrc">
+      <Filter>Resources</Filter>
+    </QtResource>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUi Include="mainwindow.ui" />
+    <QtUi Include="SettingsDialog.ui" />
+    <QtUi Include="GameListSettingsWidget.ui" />
+    <QtUi Include="BiosSettingsWidget.ui" />
+    <QtUi Include="SystemSettingsWidget.ui" />
+    <QtUi Include="EmulationSettingsWidget.ui" />
+    <QtUi Include="DisplaySettingsWidget.ui" />
+    <QtUi Include="GraphicsSettingsWidget.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="InterfaceSettingsWidget.ui" />
+  </ItemGroup>
+</Project>
