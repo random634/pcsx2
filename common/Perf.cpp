@@ -16,9 +16,6 @@
 #include "common/Perf.h"
 #include "common/Pcsx2Types.h"
 #include "common/Dependencies.h"
-#ifdef __unix__
-#include <unistd.h>
-#endif
 #ifdef ENABLE_VTUNE
 #include "jitprofiling.h"
 #endif
@@ -41,8 +38,7 @@ namespace Perf
 	InfoVector vu("VU");
 	InfoVector vif("VIF");
 
-// Perf is only supported on linux
-#if defined(__linux__) && (defined(ProfileWithPerf) || defined(ENABLE_VTUNE))
+#if defined(ProfileWithPerf) || defined(ENABLE_VTUNE)
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Implementation of the Info object
@@ -164,6 +160,7 @@ namespace Perf
 
 	void dump()
 	{
+#ifdef ProfileWithPerf
 		char file[256];
 		snprintf(file, 250, "/tmp/perf-%d.map", getpid());
 		FILE* fp = fopen(file, "w");
@@ -175,6 +172,7 @@ namespace Perf
 
 		if (fp)
 			fclose(fp);
+#endif
 	}
 
 	void dump_and_reset()
