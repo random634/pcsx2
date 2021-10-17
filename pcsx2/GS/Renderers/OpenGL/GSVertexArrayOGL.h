@@ -42,6 +42,8 @@ class GSBufferOGL
 	const GLenum m_target;
 	GLuint m_buffer_name;
 	uint8* m_buffer_ptr;
+	void* m_tmp_buffer;
+	uint32 m_tmp_buffer_count;
 	const bool m_buffer_storage;
 	GLsync m_fence[5];
 
@@ -51,6 +53,8 @@ public:
 		, m_count(0)
 		, m_limit(0)
 		, m_target(target)
+		, m_tmp_buffer(nullptr)
+		, m_tmp_buffer_count(0)
 		, m_buffer_storage(GLLoader::found_GL_ARB_buffer_storage)
 	{
 		glGenBuffers(1, &m_buffer_name);
@@ -104,6 +108,8 @@ public:
 				glDeleteSync(m_fence[i]);
 			}
 		}
+		if (m_tmp_buffer)
+			free(m_tmp_buffer);
 		glDeleteBuffers(1, &m_buffer_name);
 	}
 
@@ -118,6 +124,19 @@ public:
 
 		if (m_count >= m_limit)
 			throw GSErrorGlVertexArrayTooSmall();
+
+		if (!m_buffer_storage)
+		{
+			if (m_start + m_count > m_limit)
+				m_start = 0;
+
+			if (m_tmp_buffer_count < m_count)
+			{
+				m_tmp_buffer_count = m_count;
+				m_tmp_buffer = realloc(m_tmp_buffer, m_count * STRIDE);
+			}
+			return m_tmp_buffer;
+		}
 
 		size_t offset = m_start * STRIDE;
 		size_t length = m_count * STRIDE;
@@ -185,14 +204,7 @@ public:
 			}
 		}
 
-		if (m_buffer_storage)
-		{
-			return m_buffer_ptr + offset;
-		}
-		else
-		{
-			return glMapBufferRange(m_target, offset, length, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-		}
+		return m_buffer_ptr + offset;
 	}
 
 	void unmap()
@@ -203,7 +215,7 @@ public:
 		}
 		else
 		{
-			glUnmapBuffer(m_target);
+			glBufferSubData(m_target, m_start * STRIDE, m_count * STRIDE, m_tmp_buffer);
 		}
 	}
 
@@ -212,9 +224,19 @@ public:
 #ifdef ENABLE_OGL_DEBUG_MEM_BW
 		g_vertex_upload_byte += count * STRIDE;
 #endif
-		void* dst = map(count);
-		memcpy(dst, src, count * STRIDE);
-		unmap();
+		if (m_buffer_storage)
+		{
+			void* dst = map(count);
+			memcpy(dst, src, count * STRIDE);
+			unmap();
+		}
+		else
+		{
+			m_count = count;
+			if (m_start + m_count > m_limit)
+				m_start = 0;
+			glBufferSubData(m_target, m_start * STRIDE, m_count * STRIDE, src);
+		}
 	}
 
 	void EndScene()
