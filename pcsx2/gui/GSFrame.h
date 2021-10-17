@@ -64,6 +64,7 @@ protected:
 
 	void OnCloseWindow( wxCloseEvent& evt );
 	void OnResize(wxSizeEvent& event);
+	void OnDPIChange(wxDPIChangedEvent& event);
 	void OnMouseEvent( wxMouseEvent& evt );
 	void OnHideMouseTimeout( wxTimerEvent& evt );
 	void OnKeyDownOrUp( wxKeyEvent& evt );

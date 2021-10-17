@@ -216,6 +216,7 @@ GSPanel::GSPanel( wxWindow* parent )
 
 	Bind(wxEVT_CLOSE_WINDOW, &GSPanel::OnCloseWindow, this);
 	Bind(wxEVT_SIZE, &GSPanel::OnResize, this);
+	Bind(wxEVT_DPI_CHANGED, &GSPanel::OnDPIChange, this);
 	Bind(wxEVT_KEY_UP, &GSPanel::OnKeyDownOrUp, this);
 	Bind(wxEVT_KEY_DOWN, &GSPanel::OnKeyDownOrUp, this);
 
@@ -366,6 +367,20 @@ void GSPanel::OnResize(wxSizeEvent& event)
 	g_gs_window_info.surface_scale = scale;
 
 	GSResizeWindow(width, height);
+}
+
+void GSPanel::OnDPIChange(wxDPIChangedEvent& event)
+{
+	if( IsBeingDeleted() ) return;
+	event.Skip();
+
+	if (g_gs_window_info.type == WindowInfo::Type::Surfaceless)
+		return;
+
+	g_gs_window_info.surface_width  = g_gs_window_info.surface_width  / event.GetOldDPI().GetWidth()  * event.GetNewDPI().GetWidth();
+	g_gs_window_info.surface_height = g_gs_window_info.surface_height / event.GetOldDPI().GetHeight() * event.GetNewDPI().GetHeight();
+
+	GSResizeWindow(g_gs_window_info.surface_width, g_gs_window_info.surface_height);
 }
 
 void GSPanel::OnCloseWindow(wxCloseEvent& evt)
