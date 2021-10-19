@@ -56,7 +56,7 @@ GSRasterizer::GSRasterizer(IDrawScanline* ds, int id, int threads, GSPerfMon* pe
 
 	while (row < rows)
 	{
-		for (int i = 0; i < threads; i++, row++)
+		for (int i = 0; i < threads && row < rows; i++, row++)
 		{
 			m_scanline[row] = i == id ? 1 : 0;
 		}
@@ -1191,7 +1191,7 @@ GSRasterizerList::GSRasterizerList(int threads, GSPerfMon* perfmon)
 
 	while (row < rows)
 	{
-		for (int i = 0; i < threads; i++, row++)
+		for (int i = 0; i < threads && row < rows; i++, row++)
 		{
 			m_scanline[row] = (uint8)i;
 		}
