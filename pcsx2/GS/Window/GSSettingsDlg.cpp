@@ -307,7 +307,7 @@ void GSSettingsDlg::UpdateControls()
 		const bool dx11 = renderer == GSRendererType::DX11;
 		const bool ogl = renderer == GSRendererType::OGL || renderer == GSRendererType::SW;
 
-		const bool hw = renderer == GSRendererType::DX11 || renderer == GSRendererType::OGL;
+		const bool hw = renderer == GSRendererType::DX11 || renderer == GSRendererType::OGL || renderer == GSRendererType::VK;
 		const bool sw = renderer == GSRendererType::SW;
 		const bool null = renderer == GSRendererType::Null;
 

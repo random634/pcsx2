@@ -180,6 +180,7 @@ void MainWindow::connectVMThreadSignals(EmuThread* thread)
     GSRendererType::DX11,
 #endif
     GSRendererType::OGL,
+    GSRendererType::VK,
     GSRendererType::SW,
     GSRendererType::Null
   };

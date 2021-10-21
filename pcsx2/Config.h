@@ -107,6 +107,7 @@ enum class GSRendererType : s8
 	Null = 11,
 	OGL = 12,
 	SW = 13,
+	VK = 14,
 };
 
 // Ordering was done to keep compatibility with older ini file.
