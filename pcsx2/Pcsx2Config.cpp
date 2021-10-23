@@ -56,9 +56,11 @@ void TraceLogFilters::LoadSave(SettingsWrapper& wrap)
 }
 
 const wxChar* const tbl_SpeedhackNames[] =
-	{
-		L"mvuFlag",
-		L"InstantVU1"};
+{
+	L"mvuFlag",
+	L"InstantVU1",
+	L"MTVU"
+};
 
 const __fi wxChar* EnumToString(SpeedhackId id)
 {
@@ -75,6 +77,9 @@ void Pcsx2Config::SpeedhackOptions::Set(SpeedhackId id, bool enabled)
 			break;
 		case Speedhack_InstantVU1:
 			vu1Instant = enabled;
+			break;
+		case Speedhack_MTVU:
+			vuThread = enabled;
 			break;
 			jNO_DEFAULT;
 	}
