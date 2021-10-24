@@ -640,7 +640,7 @@ void GSgetInternalResolution(int* width, int* height)
 
 void GSgetStats(std::string& info)
 {
-	GSPerfMon& pm = s_gs->m_perfmon;
+	GSPerfMon& pm = g_perfmon;
 
 	const char* api_name = HostDisplay::RenderAPIToString(s_render_api);
 
@@ -652,7 +652,8 @@ void GSgetStats(std::string& info)
 
 		const double fps = 1000.0f / pm.Get(GSPerfMon::Frame);
 		const double fillrate = pm.Get(GSPerfMon::Fillrate);
-		info = format("%d S | %d P | %d D | %.2f U | %.2f D | %.2f mpps | %d%% WCPU",
+		info = format("%s SW | %d S | %d P | %d D | %.2f U | %.2f D | %.2f mpps | %d%% WCPU",
+			api_name,
 			(int)pm.Get(GSPerfMon::SyncPoint),
 			(int)pm.Get(GSPerfMon::Prim),
 			(int)pm.Get(GSPerfMon::Draw),
@@ -663,10 +664,12 @@ void GSgetStats(std::string& info)
 	}
 	else
 	{
-		info = format("%d S | %d P | %d D | %.2f U | %.2f D",
-			(int)pm.Get(GSPerfMon::SyncPoint),
+		info = format("%s HW | %d P | %d D | %d DC | %d RB | %.2f U | %.2f D",
+			api_name,
 			(int)pm.Get(GSPerfMon::Prim),
 			(int)pm.Get(GSPerfMon::Draw),
+			(int)std::ceil(pm.Get(GSPerfMon::DrawCalls)),
+			(int)std::ceil(pm.Get(GSPerfMon::Readbacks)),
 			pm.Get(GSPerfMon::Swizzle) / 1024,
 			pm.Get(GSPerfMon::Unswizzle) / 1024);
 	}

@@ -34,6 +34,8 @@ public:
 		Frame,
 		Prim,
 		Draw,
+		DrawCalls,
+		Readbacks,
 		Swizzle,
 		Unswizzle,
 		Fillrate,
@@ -80,3 +82,5 @@ public:
 	}
 	~GSPerfMonAutoTimer() { m_pm->Stop(m_timer); }
 };
+
+extern GSPerfMon g_perfmon;

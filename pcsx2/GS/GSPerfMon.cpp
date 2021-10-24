@@ -17,6 +17,8 @@
 #include "GSPerfMon.h"
 #include "GS_types.h"
 
+GSPerfMon g_perfmon;
+
 GSPerfMon::GSPerfMon()
 	: m_frame(0)
 	, m_lastframe(0)
