@@ -413,11 +413,29 @@ void frameLimitReset()
 	m_iStart = GetCPUTicks();
 }
 
+extern u32 mtvuwaitstats[256];
+static u32 frameno = 0;
+
 // Convenience function to update UI thread and set patches. 
 static __fi void frameLimitUpdateCore()
 {
 	GetCoreThread().VsyncInThread();
 	Cpu->CheckExecutionState();
+	if (frameno++ % 128 == 0) {
+		u64 total = 0;
+		for (u32 x : mtvuwaitstats)
+			total += x;
+		wxString out;
+		for (size_t i = 0; i < std::size(mtvuwaitstats); i++) {
+			u32 cnt = mtvuwaitstats[i];
+			if (!cnt)
+				continue;
+			u32 ns = SPIN_TIME_NS / std::size(mtvuwaitstats) * i;
+			u32 pct = static_cast<u64>(cnt) * 10000 / total;
+			Console.WriteLn("%5uns: %02u.%02u%% (%6u/%llu)", ns, pct / 100, pct % 100, cnt, total);
+		}
+		memset(mtvuwaitstats, 0, sizeof(mtvuwaitstats));
+	}
 }
 
 // Framelimiter - Measures the delta time between calls and stalls until a

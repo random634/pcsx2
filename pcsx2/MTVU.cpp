@@ -129,11 +129,32 @@ void VU_Thread::ExecuteTaskInThread()
 	PCSX2_PAGEFAULT_EXCEPT;
 }
 
+u32 mtvuwaitstats[256];
+
+static void localwait(Semaphore& sem)
+{
+	u32 waited = 0;
+	while (true)
+	{
+		if (sem.TryWait())
+		{
+			u32 idx = std::min<u32>((waited * std::size(mtvuwaitstats)) / SPIN_TIME_NS, std::size(mtvuwaitstats) - 2);
+			mtvuwaitstats[idx]++;
+			return;
+		}
+		if (waited >= SPIN_TIME_NS)
+			break;
+		waited += ShortSpin();
+	}
+	mtvuwaitstats[std::size(mtvuwaitstats) - 1]++;
+	sem.WaitWithoutYield();
+}
+
 void VU_Thread::ExecuteRingBuffer()
 {
 	for (;;)
 	{
-		semaEvent.WaitWithoutYield();
+		localwait(semaEvent);
 		ScopedLockBool lock(mtxBusy, isBusy);
 		while (m_ato_read_pos.load(std::memory_order_relaxed) != GetWritePos())
 		{
