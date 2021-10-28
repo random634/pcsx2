@@ -76,8 +76,8 @@ u32 ShortSpin()
 	}
 
 	u32 time = 0;
-	// Sleep for approximately 500ns
-	for (; time < 500; time += inc)
+	// Sleep for approximately 200ns
+	for (; time < 200; time += inc)
 		MultiPause();
 
 	return time;
