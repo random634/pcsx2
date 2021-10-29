@@ -1890,6 +1890,15 @@ void GSDeviceOGL::OMSetBlendState(uint8 blend_index, uint8 blend_factor, bool is
 		{
 			GLState::blend = false;
 			glDisable(GL_BLEND);
+#ifdef __APPLE__
+			if (GLLoader::vendor_id_intel)
+			{
+				// On Intel graphics, leaving any SRC1 input while blending is disabled freezes the GPU
+				GLState::f_sRGB = GL_ONE;
+				GLState::f_dRGB = GL_ZERO;
+				glBlendFunc(GL_ONE, GL_ZERO);
+			}
+#endif
 		}
 	}
 }
