@@ -1132,6 +1132,13 @@ Mutex& Pcsx2App::GetProgramLogLock()
 	return m_mtx_ProgramLog;
 }
 
+void SetConsoleTitle(const wxString& title)
+{
+	wxCommandEvent evt(pxEvt_SetTitleText);
+	evt.SetString(title);
+	wxGetApp().ProgramLog_PostEvent(evt);
+}
+
 // --------------------------------------------------------------------------------------
 //  ConsoleToWindow Implementations
 // --------------------------------------------------------------------------------------

@@ -246,3 +246,4 @@ extern const IConsoleWriter ConsoleWriter_Assert;
 extern NullConsoleWriter NullCon;
 
 extern IConsoleWriter DevConWriter;
+extern void SetConsoleTitle(const wxString& title);

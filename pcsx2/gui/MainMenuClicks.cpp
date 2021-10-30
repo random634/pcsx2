@@ -858,7 +858,7 @@ void MainEmuFrame::Menu_SysShutdown_Click(wxCommandEvent& event)
 		if (m_capturingVideo)
 			VideoCaptureToggle();
 		UI_DisableSysShutdown();
-		Console.SetTitle("PCSX2 Program Log");
+		SetConsoleTitle("PCSX2 Program Log");
 		CoreThread.Reset();
 	}
 }

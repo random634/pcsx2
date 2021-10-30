@@ -295,7 +295,7 @@ void LoadBIOS()
 		pxInputStream memfp( Bios, new wxMemoryInputStream( eeMem->ROM, sizeof(eeMem->ROM) ) );
 		LoadBiosVersion( memfp, BiosVersion, BiosDescription, BiosRegion, biosZone );
 
-		Console.SetTitle( pxsFmt( L"Running BIOS (%s v%u.%u)",
+		SetConsoleTitle( pxsFmt( L"Running BIOS (%s v%u.%u)",
 			WX_STR(biosZone), BiosVersion >> 8, BiosVersion & 0xff
 		));
 

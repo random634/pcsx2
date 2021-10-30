@@ -453,7 +453,7 @@ void cdvdReloadElfInfo(wxString elfoverride)
 			wxString fname = elfpath.AfterLast('\\').AfterLast(':'); // Also catch elf paths which lack a backslash, and only have a colon.
 			wxString fname2 = fname.BeforeFirst(';');
 			DiscSerial = fname2;
-			Console.SetTitle(DiscSerial);
+			SetConsoleTitle(DiscSerial);
 			return;
 		}
 
