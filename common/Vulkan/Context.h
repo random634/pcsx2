@@ -6,7 +6,11 @@
 #pragma once
 
 #include "common/Pcsx2Defs.h"
+
 #include "common/Vulkan/Loader.h"
+
+#include "common/Vulkan/vk_mem_alloc.h"
+
 #include <array>
 #include <atomic>
 #include <condition_variable>
@@ -70,6 +74,7 @@ namespace Vulkan
 		__fi VkInstance GetVulkanInstance() const { return m_instance; }
 		__fi VkPhysicalDevice GetPhysicalDevice() const { return m_physical_device; }
 		__fi VkDevice GetDevice() const { return m_device; }
+		__fi VmaAllocator GetAllocator() const { return m_allocator; }
 		__fi VkQueue GetGraphicsQueue() const { return m_graphics_queue; }
 		__fi u32 GetGraphicsQueueFamilyIndex() const { return m_graphics_queue_family_index; }
 		__fi VkQueue GetPresentQueue() const { return m_present_queue; }
@@ -196,6 +201,7 @@ namespace Vulkan
 		void DeferDeviceMemoryDestruction(VkDeviceMemory object);
 		void DeferFramebufferDestruction(VkFramebuffer object);
 		void DeferImageDestruction(VkImage object);
+		void DeferImageDestruction(VkImage object, VmaAllocation allocation);
 		void DeferImageViewDestruction(VkImageView object);
 		void DeferPipelineDestruction(VkPipeline pipeline);
 
@@ -233,6 +239,8 @@ namespace Vulkan
 			u32 num_required_device_extensions, const char** required_device_layers,
 			u32 num_required_device_layers, const VkPhysicalDeviceFeatures* required_features);
 
+		bool CreateAllocator();
+		void DestroyAllocator();
 		bool CreateCommandBuffers();
 		void DestroyCommandBuffers();
 		bool CreateGlobalDescriptorPool();
@@ -268,6 +276,7 @@ namespace Vulkan
 		VkInstance m_instance = VK_NULL_HANDLE;
 		VkPhysicalDevice m_physical_device = VK_NULL_HANDLE;
 		VkDevice m_device = VK_NULL_HANDLE;
+		VmaAllocator m_allocator = VK_NULL_HANDLE;
 
 		VkCommandBuffer m_current_command_buffer = VK_NULL_HANDLE;
 

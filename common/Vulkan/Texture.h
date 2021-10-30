@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <memory>
 
+#include "common/Vulkan/vk_mem_alloc.h"
+
 namespace Vulkan
 {
 	class Texture
@@ -20,7 +22,7 @@ namespace Vulkan
 		__fi bool IsValid() const { return (m_image != VK_NULL_HANDLE); }
 
 		/// An image is considered owned/managed if we control the memory.
-		__fi bool IsOwned() const { return (m_device_memory != VK_NULL_HANDLE); }
+		__fi bool IsOwned() const { return (m_allocation != VK_NULL_HANDLE); }
 
 		__fi u32 GetWidth() const { return m_width; }
 		__fi u32 GetHeight() const { return m_height; }
@@ -33,7 +35,7 @@ namespace Vulkan
 		__fi VkImageLayout GetLayout() const { return m_layout; }
 		__fi VkImageViewType GetViewType() const { return m_view_type; }
 		__fi VkImage GetImage() const { return m_image; }
-		__fi VkDeviceMemory GetDeviceMemory() const { return m_device_memory; }
+		__fi VmaAllocation GetAllocation() const { return m_allocation; }
 		__fi VkImageView GetView() const { return m_view; }
 
 		bool Create(u32 width, u32 height, u32 levels, u32 layers, VkFormat format, VkSampleCountFlagBits samples,
@@ -69,7 +71,7 @@ namespace Vulkan
 		VkImageLayout m_layout = VK_IMAGE_LAYOUT_UNDEFINED;
 
 		VkImage m_image = VK_NULL_HANDLE;
-		VkDeviceMemory m_device_memory = VK_NULL_HANDLE;
+		VmaAllocation m_allocation = VK_NULL_HANDLE;
 		VkImageView m_view = VK_NULL_HANDLE;
 	};
 

@@ -57,6 +57,7 @@ namespace Vulkan
 		DestroyRenderPassCache();
 		DestroyGlobalDescriptorPool();
 		DestroyCommandBuffers();
+		DestroyAllocator();
 
 		if (m_owns_device && m_device != VK_NULL_HANDLE)
 			vkDestroyDevice(m_device, nullptr);
@@ -380,7 +381,7 @@ namespace Vulkan
 
 		// Attempt to create the device.
 		if (!g_vulkan_context->CreateDevice(surface, enable_validation_layer, nullptr, 0, nullptr, 0, nullptr) ||
-			!g_vulkan_context->CreateGlobalDescriptorPool() || !g_vulkan_context->CreateCommandBuffers() ||
+			!g_vulkan_context->CreateAllocator() || !g_vulkan_context->CreateGlobalDescriptorPool() || !g_vulkan_context->CreateCommandBuffers() ||
 			(enable_surface && (*out_swap_chain = SwapChain::Create(wi_copy, surface, true)) == nullptr))
 		{
 			// Since we are destroying the instance, we're also responsible for destroying the surface.
@@ -415,7 +416,8 @@ namespace Vulkan
 		if (!g_vulkan_context->CreateDevice(surface, enable_validation_layer, required_device_extensions,
 				num_required_device_extensions, required_device_layers,
 				num_required_device_layers, required_features) ||
-			!g_vulkan_context->CreateGlobalDescriptorPool() || !g_vulkan_context->CreateCommandBuffers())
+			!g_vulkan_context->CreateGlobalDescriptorPool() || !g_vulkan_context->CreateCommandBuffers() ||
+			!g_vulkan_context->CreateAllocator())
 		{
 			g_vulkan_context.reset();
 			return false;
@@ -638,6 +640,33 @@ namespace Vulkan
 			vkGetDeviceQueue(m_device, m_present_queue_family_index, 0, &m_present_queue);
 		}
 		return true;
+	}
+
+	bool Context::CreateAllocator()
+	{
+		VmaAllocatorCreateInfo ci = {};
+		ci.vulkanApiVersion = VK_API_VERSION_1_0;
+		ci.physicalDevice = m_physical_device;
+		ci.device = m_device;
+		ci.instance = m_instance;
+
+		VkResult res = vmaCreateAllocator(&ci, &m_allocator);
+		if (res != VK_SUCCESS)
+		{
+			LOG_VULKAN_ERROR(res, "vmaCreateAllocator failed: ");
+			return false;
+		}
+
+		return true;
+	}
+
+	void Context::DestroyAllocator()
+	{
+		if (m_allocator == VK_NULL_HANDLE)
+			return;
+
+		vmaDestroyAllocator(m_allocator);
+		m_allocator = VK_NULL_HANDLE;
 	}
 
 	bool Context::CreateCommandBuffers()
@@ -1135,6 +1164,12 @@ namespace Vulkan
 	{
 		FrameResources& resources = m_frame_resources[m_current_frame];
 		resources.cleanup_resources.push_back([this, object]() { vkDestroyImage(m_device, object, nullptr); });
+	}
+
+	void Context::DeferImageDestruction(VkImage object, VmaAllocation allocation)
+	{
+		FrameResources& resources = m_frame_resources[m_current_frame];
+		resources.cleanup_resources.push_back([this, object, allocation]() { vmaDestroyImage(m_allocator, object, allocation); });
 	}
 
 	void Context::DeferImageViewDestruction(VkImageView object)

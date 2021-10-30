@@ -18,7 +18,7 @@ namespace Vulkan
 		, m_view_type(move.m_view_type)
 		, m_layout(move.m_layout)
 		, m_image(move.m_image)
-		, m_device_memory(move.m_device_memory)
+		, m_allocation(move.m_allocation)
 		, m_view(move.m_view)
 	{
 		move.m_width = 0;
@@ -30,7 +30,7 @@ namespace Vulkan
 		move.m_view_type = VK_IMAGE_VIEW_TYPE_2D;
 		move.m_layout = VK_IMAGE_LAYOUT_UNDEFINED;
 		move.m_image = VK_NULL_HANDLE;
-		move.m_device_memory = VK_NULL_HANDLE;
+		move.m_allocation = VK_NULL_HANDLE;
 		move.m_view = VK_NULL_HANDLE;
 	}
 
@@ -54,7 +54,7 @@ namespace Vulkan
 		std::swap(m_view_type, move.m_view_type);
 		std::swap(m_layout, move.m_layout);
 		std::swap(m_image, move.m_image);
-		std::swap(m_device_memory, move.m_device_memory);
+		std::swap(m_allocation, move.m_allocation);
 		std::swap(m_view, move.m_view);
 
 		return *this;
@@ -63,7 +63,7 @@ namespace Vulkan
 	bool Texture::Create(u32 width, u32 height, u32 levels, u32 layers, VkFormat format, VkSampleCountFlagBits samples,
 		VkImageViewType view_type, VkImageTiling tiling, VkImageUsageFlags usage)
 	{
-		VkImageCreateInfo image_info = {VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+		const VkImageCreateInfo image_info = {VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 			nullptr,
 			0,
 			VK_IMAGE_TYPE_2D,
@@ -79,41 +79,19 @@ namespace Vulkan
 			nullptr,
 			VK_IMAGE_LAYOUT_UNDEFINED};
 
+		VmaAllocationCreateInfo aci = {};
+		aci.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+
 		VkImage image = VK_NULL_HANDLE;
-		VkResult res = vkCreateImage(g_vulkan_context->GetDevice(), &image_info, nullptr, &image);
+		VmaAllocation allocation = VK_NULL_HANDLE;
+		VkResult res = vmaCreateImage(g_vulkan_context->GetAllocator(), &image_info, &aci, &image, &allocation, nullptr);
 		if (res != VK_SUCCESS)
 		{
-			LOG_VULKAN_ERROR(res, "vkCreateImage failed: ");
+			LOG_VULKAN_ERROR(res, "vmaCreateImage failed: ");
 			return false;
 		}
 
-		// Allocate memory to back this texture, we want device local memory in this case
-		VkMemoryRequirements memory_requirements;
-		vkGetImageMemoryRequirements(g_vulkan_context->GetDevice(), image, &memory_requirements);
-
-		VkMemoryAllocateInfo memory_info = {
-			VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, nullptr, memory_requirements.size,
-			g_vulkan_context->GetMemoryType(memory_requirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)};
-
-		VkDeviceMemory device_memory;
-		res = vkAllocateMemory(g_vulkan_context->GetDevice(), &memory_info, nullptr, &device_memory);
-		if (res != VK_SUCCESS)
-		{
-			LOG_VULKAN_ERROR(res, "vkAllocateMemory failed: ");
-			vkDestroyImage(g_vulkan_context->GetDevice(), image, nullptr);
-			return false;
-		}
-
-		res = vkBindImageMemory(g_vulkan_context->GetDevice(), image, device_memory, 0);
-		if (res != VK_SUCCESS)
-		{
-			LOG_VULKAN_ERROR(res, "vkBindImageMemory failed: ");
-			vkDestroyImage(g_vulkan_context->GetDevice(), image, nullptr);
-			vkFreeMemory(g_vulkan_context->GetDevice(), device_memory, nullptr);
-			return false;
-		}
-
-		VkImageViewCreateInfo view_info = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+		const VkImageViewCreateInfo view_info = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 			nullptr,
 			0,
 			image,
@@ -131,8 +109,7 @@ namespace Vulkan
 		if (res != VK_SUCCESS)
 		{
 			LOG_VULKAN_ERROR(res, "vkCreateImageView failed: ");
-			vkDestroyImage(g_vulkan_context->GetDevice(), image, nullptr);
-			vkFreeMemory(g_vulkan_context->GetDevice(), device_memory, nullptr);
+			vmaDestroyImage(g_vulkan_context->GetAllocator(), image, allocation);
 			return false;
 		}
 
@@ -147,7 +124,7 @@ namespace Vulkan
 		m_samples = samples;
 		m_view_type = view_type;
 		m_image = image;
-		m_device_memory = device_memory;
+		m_allocation = allocation;
 		m_view = view;
 		return true;
 	}
@@ -156,7 +133,7 @@ namespace Vulkan
 		VkFormat format, VkSampleCountFlagBits samples)
 	{
 		// Only need to create the image view, this is mainly for swap chains.
-		VkImageViewCreateInfo view_info = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+		const VkImageViewCreateInfo view_info = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 			nullptr,
 			0,
 			existing_image,
@@ -205,20 +182,15 @@ namespace Vulkan
 		}
 
 		// If we don't have device memory allocated, the image is not owned by us (e.g. swapchain)
-		if (m_device_memory != VK_NULL_HANDLE)
+		if (m_allocation != VK_NULL_HANDLE)
 		{
 			pxAssert(m_image != VK_NULL_HANDLE);
 			if (defer)
-				g_vulkan_context->DeferImageDestruction(m_image);
+				g_vulkan_context->DeferImageDestruction(m_image, m_allocation);
 			else
-				vkDestroyImage(g_vulkan_context->GetDevice(), m_image, nullptr);
+				vmaDestroyImage(g_vulkan_context->GetAllocator(), m_image, m_allocation);
 			m_image = VK_NULL_HANDLE;
-
-			if (defer)
-				g_vulkan_context->DeferDeviceMemoryDestruction(m_device_memory);
-			else
-				vkFreeMemory(g_vulkan_context->GetDevice(), m_device_memory, nullptr);
-			m_device_memory = VK_NULL_HANDLE;
+			m_allocation = VK_NULL_HANDLE;
 		}
 
 		m_width = 0;
@@ -229,9 +201,6 @@ namespace Vulkan
 		m_samples = VK_SAMPLE_COUNT_1_BIT;
 		m_view_type = VK_IMAGE_VIEW_TYPE_2D;
 		m_layout = VK_IMAGE_LAYOUT_UNDEFINED;
-		m_image = VK_NULL_HANDLE;
-		m_device_memory = VK_NULL_HANDLE;
-		m_view = VK_NULL_HANDLE;
 	}
 
 	void Texture::OverrideImageLayout(VkImageLayout new_layout)
