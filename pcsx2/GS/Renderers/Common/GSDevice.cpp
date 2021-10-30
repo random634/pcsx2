@@ -126,6 +126,7 @@ void GSDevice::Recycle(GSTexture* t)
 		t->Uncommit();
 #endif
 		t->last_frame_used = m_frame;
+		t->SetDiscarded();
 
 		m_pool.push_front(t);
 

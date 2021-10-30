@@ -17,6 +17,7 @@
 #include "GSRendererVK.h"
 #include "common/Vulkan/Context.h"
 #include "common/Vulkan/Util.h"
+#include "common/Align.h"
 
 GSRendererVK::GSRendererVK(std::unique_ptr<GSDevice> dev)
 	: GSRendererHW(std::move(dev), new GSTextureCacheVK(this))
@@ -1040,7 +1041,7 @@ void GSRendererVK::DrawPrims(GSTexture* rt, GSTexture* ds, GSTextureCache::Sourc
 		const Vulkan::Util::DebugScope debugScope(g_vulkan_context->GetDevice(),
 			"Create RT copy for sampling {%d,%d} %dx%d [%dx%d]",
 			dRect.left, dRect.top, dRect.width(), dRect.height(), rtsize.x, rtsize.y);
-			
+
 		rt_copy = dev->CreateRenderTarget(rtsize.x, rtsize.y, rt->GetFormat());
 		if (rt_copy)
 		{
@@ -1088,12 +1089,24 @@ void GSRendererVK::DrawPrims(GSTexture* rt, GSTexture* ds, GSTextureCache::Sourc
 	const GSVector4& hacked_scissor = m_channel_shuffle ? GSVector4(0, 0, 1024, 1024) : m_context->scissor.in;
 	const GSVector4i scissor = GSVector4i(GSVector4(rtscale).xyxy() * hacked_scissor).rintersect(GSVector4i(rtsize).zwxy());
 	dev->OMSetRenderTargets(hdr_rt ? hdr_rt : rt, ds, &scissor);
-	dev->PSSetShaderResource(0, tex ? tex->m_texture : nullptr);
-	dev->PSSetShaderResource(1, tex ? tex->m_palette : nullptr);
-	if (!dev->InRenderPass())
+	if (tex)
 	{
-		const GSVector4i rc(0, 0, rtsize.x, rtsize.y);
-		dev->BeginRenderPass(dev->GetTFXRenderPass(rt != nullptr, ds != nullptr, hdr_rt != nullptr, VK_ATTACHMENT_LOAD_OP_LOAD), rc);
+		dev->PSSetShaderResource(0, tex->m_texture);
+		dev->PSSetShaderResource(1, tex->m_palette);
+	}
+
+	// Align the render area to 128x128, hopefully avoiding render pass restarts for small render area changes (e.g. Ratchet and Clank).
+	const GSVector4i render_area(Common::AlignDownPow2(scissor.left, 128), Common::AlignDownPow2(scissor.top, 128),
+		std::min(Common::AlignUpPow2(scissor.right, 128), rtsize.x), std::min(Common::AlignUpPow2(scissor.bottom, 128), rtsize.y));
+
+	const bool new_target = (!rt || rt->CheckDiscarded()) && (!ds || ds->CheckDiscarded());
+	const VkRenderPass rp = dev->GetTFXRenderPass(rt != nullptr, ds != nullptr, hdr_rt != nullptr, new_target ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD);
+	if (!dev->CheckRenderPass(rp, render_area))
+	{
+		if (new_target)
+			dev->BeginClearRenderPass(rp, render_area, GSVector4::zero());
+		else
+			dev->BeginRenderPass(rp, render_area);
 	}
 
 	SetupIA(sx, sy);

@@ -590,6 +590,7 @@ public:
 	bool InRenderPass();
 	void BeginRenderPass(VkRenderPass rp, const GSVector4i& rect);
 	void BeginClearRenderPass(VkRenderPass rp, const GSVector4i& rect, const GSVector4& clear_color);
+	bool CheckRenderPass(VkRenderPass rp, const GSVector4i& rect);
 	void EndRenderPass();
 
 	void SetViewport(const VkViewport& viewport);

@@ -484,7 +484,7 @@ void GSDeviceVK::DoStretchRect(GSTexture* sTex, const GSVector4& sRect, GSTextur
 	{
 		const GSVector4i dst_rc(dRect);
 		const GSVector4i tex_rc(0, 0, size.x, size.y);
-		const bool is_whole_target = dst_rc.eq(tex_rc);
+		const bool is_whole_target = dTex->CheckDiscarded() || dst_rc.eq(tex_rc);
 
 		SetFramebuffer(fb);
 		if (dTex->GetType() == GSTexture::DepthStencil)
@@ -1837,6 +1837,25 @@ void GSDeviceVK::BeginClearRenderPass(VkRenderPass rp, const GSVector4i& rect, c
 		&cv};
 
 	vkCmdBeginRenderPass(g_vulkan_context->GetCurrentCommandBuffer(), &begin_info, VK_SUBPASS_CONTENTS_INLINE);
+}
+
+bool GSDeviceVK::CheckRenderPass(VkRenderPass rp, const GSVector4i& rect)
+{
+	if (m_current_render_pass != rp)
+		return false;
+
+	// TODO: Is there a way to do this with GSVector?
+	if (rect.left < m_current_render_pass_area.left || rect.top < m_current_render_pass_area.top ||
+			rect.right > m_current_render_pass_area.right || rect.bottom > m_current_render_pass_area.bottom)
+	{
+#ifdef PCSX2_DEVBUILD
+		Console.Error("RP check failed: {%d,%d %dx%d} vs {%d,%d %dx%d}", rect.left, rect.top, rect.width(), rect.height(),
+			m_current_render_pass_area.left, m_current_render_pass_area.top, m_current_render_pass_area.width(), m_current_render_pass_area.height());
+#endif
+		return false;
+	}
+
+	return true;
 }
 
 void GSDeviceVK::EndRenderPass()
