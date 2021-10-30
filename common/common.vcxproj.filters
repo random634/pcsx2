@@ -178,6 +178,9 @@
     <ClCompile Include="MD5Digest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vulkan\vk_mem_alloc.cpp">
+      <Filter>Source Files\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assertions.h">
@@ -408,6 +411,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScopedGuard.h" />
+    <ClInclude Include="ScopedGuard.h" />
+    <ClInclude Include="Vulkan\vk_mem_alloc.h">
+      <Filter>Header Files\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

@@ -72,6 +72,7 @@ target_sources(common PRIVATE
 	Vulkan/StreamBuffer.cpp
 	Vulkan/Context.cpp
 	Vulkan/Builders.cpp
+	Vulkan/vk_mem_alloc.cpp
 	)
 
 
@@ -151,6 +152,7 @@ target_sources(common PRIVATE
 	Vulkan/StagingBuffer.h
 	Vulkan/Loader.h
 	Vulkan/Util.h
+	Vulkan/vk_mem_alloc.h
 	)
 
 if(USE_VTUNE)
