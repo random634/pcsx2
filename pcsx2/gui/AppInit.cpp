@@ -620,7 +620,6 @@ void Pcsx2App::CleanupOnExit()
 	// FIXME: performing a wxYield() here may fix that problem. -- air
 
 	pxDoAssert = pxAssertImpl_LogIt;
-	Console_SetActiveHandler(ConsoleWriter_Stdout);
 }
 
 void Pcsx2App::CleanupResources()

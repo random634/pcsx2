@@ -1739,8 +1739,7 @@ static void memory_protect_recompiled_code(u32 startpc, u32 size)
 				xJC(DispatchPageReset);
 
 				// note: clearcnt is measured per-page, not per-block!
-				ConsoleColorScope cs(Color_Gray);
-				Log::EERecPerf.info("Manual block @ {:08X} : size ={:>3d}  page/offs = 0x{:05X}/0x{:03X}  inpgsz = {:d}  clearcnt = {:d}\n",
+				Log::EERecPerf.info(LogStyle::CompatibilityGray, "Manual block @ {:08X} : size ={:>3d}  page/offs = 0x{:05X}/0x{:03X}  inpgsz = {:d}  clearcnt = {:d}\n",
 					startpc, size, inpage_ptr >> 12, inpage_ptr & 0xfff, inpage_sz, manual_counter[inpage_ptr >> 12]);
 			}
 			else

@@ -76,8 +76,6 @@ LinuxPipeThread::~LinuxPipeThread()
 	// messages aren't lost.
 	dup2(fileno(m_fp), m_pipe_fd[1]);
 
-	if (m_stdstream == stdout)
-		Console_SetStdout(stdout);
 	fclose(m_fp);
 
 	// Read end of pipe should only be closed after the thread terminates to
@@ -99,11 +97,6 @@ void LinuxPipeThread::ExecuteTaskInThread()
 
 	close(m_pipe_fd[1]);
 	m_pipe_fd[1] = stdstream_fd;
-
-	// Send console output to the original stdout, otherwise there'll be an
-	// infinite loop.
-	if (m_stdstream == stdout)
-		Console_SetStdout(m_fp);
 
 	char buffer[2049];
 	while (ssize_t bytes_read = read(m_pipe_fd[0], buffer, sizeof(buffer) - 1)) {

@@ -219,7 +219,7 @@ static void DoFirstTimeWizard()
 		if (wiz.GetReturnCode() != pxID_RestartWizard)
 			throw Exception::StartupAborted( L"User canceled FirstTime Wizard." );
 
-		Console.WriteLn( Color_StrongBlack, "Restarting First Time Wizard!" );
+		Log::Console.info(LogStyle::CompatibilityStrongBlack, "Restarting First Time Wizard!\n");
 	}
 }
 

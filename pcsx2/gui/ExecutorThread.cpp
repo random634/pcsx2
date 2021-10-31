@@ -19,32 +19,7 @@
 
 using namespace pxSizerFlags;
 
-// --------------------------------------------------------------------------------------
-//  ConsoleLogSource_Event  (implementations)
-// --------------------------------------------------------------------------------------
-
-bool ConsoleLogSource_Event::Write( const pxEvtQueue* evtHandler, const SysExecEvent* evt, const wxChar* msg ) {
-	return _parent::Write( pxsFmt(L"(%s:%s) ", WX_STR(evtHandler->GetEventHandlerName()), WX_STR(evt->GetEventName())) + msg );
-}
-bool ConsoleLogSource_Event::Warn( const pxEvtQueue* evtHandler, const SysExecEvent* evt, const wxChar* msg )	{
-	return _parent::Write( pxsFmt(L"(%s:%s) ", WX_STR(evtHandler->GetEventHandlerName()), WX_STR(evt->GetEventName())) + msg );
-}
-bool ConsoleLogSource_Event::Error( const pxEvtQueue* evtHandler, const SysExecEvent* evt, const wxChar* msg ) {
-	return _parent::Write( pxsFmt(L"(%s:%s) ", WX_STR(evtHandler->GetEventHandlerName()), WX_STR(evt->GetEventName())) + msg );
-}
-
-ConsoleLogSource_Event::ConsoleLogSource_Event()
-{
-	static const TraceLogDescriptor myDesc =
-	{
-		L"SysEvents",	L"S&ysVM Control Events",
-		pxLt("Logs events as they are passed to the PS2 virtual machine."),
-	};
-	
-	m_Descriptor = &myDesc;
-}
-
-ConsoleLogSource_Event pxConLog_Event;
+LogSource logEvent("SysEvents", LogStyle::General, &Log::PCSX2);
 
 // --------------------------------------------------------------------------------------
 //  SysExecEvent  (implementations)
@@ -210,9 +185,8 @@ void pxEvtQueue::ProcessEvents( pxEvtList& list, bool isIdle )
 
 			synclock.Release();
 
-			pxEvtLog.Write( this, deleteMe.get(), wxsFormat(L"Executing... [%s]%s",
-				deleteMe->AllowCancelOnExit() ? L"Cancelable" : L"Noncancelable", isIdle ? L"(Idle)" : wxEmptyString).wc_str()
-			);
+			logEvent.info("({:s}:{:s}) Executing... [{:s}]{:s}\n", GetEventHandlerName(), deleteMe->GetEventName(),
+				deleteMe->AllowCancelOnExit() ? "Cancelable" : "Noncancelable", isIdle ? "(Idle)" : "");
 
 			if( deleteMe->AllowCancelOnExit() )
 				deleteMe->_DoInvokeEvent();
@@ -223,16 +197,15 @@ void pxEvtQueue::ProcessEvents( pxEvtList& list, bool isIdle )
 			}
 
 			u64 qpc_end = GetCPUTicks();
-			pxEvtLog.Write( this, deleteMe.get(), wxsFormat(L"Event completed in %ums",
-				(u32)(((qpc_end-m_qpc_Start)*1000) / GetTickFrequency())).wc_str()
-			);
+			logEvent.info("({:s}:{:s}) Event completed in {:d}ms\n", GetEventHandlerName(), deleteMe->GetEventName(),
+				static_cast<u32>(((qpc_end - m_qpc_Start) * 1000) / GetTickFrequency()));
 
 			synclock.Acquire();
 			m_qpc_Start = 0;		// lets the main thread know the message completed.
 		}
 		else
 		{
-			pxEvtLog.Write( this, deleteMe.get(), L"Skipping Event: %s" );
+			logEvent.info("({:s}) Skipping Event: {:s}\n", GetEventHandlerName(), deleteMe->GetEventName());
 			deleteMe->PostResult();
 		}
 	}
@@ -273,8 +246,9 @@ void pxEvtQueue::PostEvent( SysExecEvent* evt )
 	}
 
 	ScopedLock synclock( m_mtx_pending );
-	
-	pxEvtLog.Write( this, evt, pxsFmt(L"Posting event! (pending=%d, idle=%d)", m_pendingEvents.size(), m_idleEvents.size()) );
+
+	logEvent.info("({:s}:{:s}) Posting event! (pending={:d}, idle={:d})\n", GetEventHandlerName(), evt->GetEventName(),
+		m_pendingEvents.size(), m_idleEvents.size());
 
 	m_pendingEvents.push_back( sevt.release() );
 	if( m_pendingEvents.size() == 1)
@@ -298,7 +272,8 @@ void pxEvtQueue::PostIdleEvent( SysExecEvent* evt )
 
 	ScopedLock synclock( m_mtx_pending );
 
-	pxEvtLog.Write( this, evt, pxsFmt(L"Posting event! (pending=%d, idle=%d) [idle]", m_pendingEvents.size(), m_idleEvents.size()) );
+	logEvent.info("({:s}:{:s}) Posting event! (pending={:d}, idle={:d}) [idle]\n", GetEventHandlerName(), evt->GetEventName(),
+		m_pendingEvents.size(), m_idleEvents.size());
 
 	if( m_pendingEvents.empty() )
 	{

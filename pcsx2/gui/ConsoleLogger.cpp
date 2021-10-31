@@ -1069,64 +1069,6 @@ void Pcsx2App::ProgramLog_PostEvent( wxEvent& evt )
 		proglog->GetEventHandler()->AddPendingEvent( evt );
 }
 
-// --------------------------------------------------------------------------------------
-//  ConsoleImpl_ToFile
-// --------------------------------------------------------------------------------------
-
-static void __concall ConsoleToFile_Newline()
-{
-#if defined(__unix__)
-	if ((g_Conf) && (g_Conf->EmuOptions.ConsoleToStdio)) ConsoleWriter_Stdout.Newline();
-#endif
-
-#if defined(__unix__)
-	fputc( '\n', emuLog );
-#else
-	fputs( "\r\n", emuLog );
-#endif
-}
-
-static void __concall ConsoleToFile_DoWrite( const wxString& fmt )
-{
-#if defined(__unix__)
-	if ((g_Conf) && (g_Conf->EmuOptions.ConsoleToStdio)) ConsoleWriter_Stdout.WriteRaw(fmt);
-#endif
-
-	px_fputs( emuLog, fmt.ToUTF8() );
-}
-
-static void __concall ConsoleToFile_DoWriteLn( const wxString& fmt )
-{
-	ConsoleToFile_DoWrite( fmt );
-	ConsoleToFile_Newline();
-
-	if (emuLog != NULL) fflush( emuLog );
-}
-
-static void __concall ConsoleToFile_SetTitle( const wxString& title )
-{
-	ConsoleWriter_Stdout.SetTitle(title);
-}
-
-static void __concall ConsoleToFile_DoSetColor( ConsoleColors color )
-{
-	ConsoleWriter_Stdout.DoSetColor(color);
-}
-
-extern const IConsoleWriter	ConsoleWriter_File;
-const IConsoleWriter	ConsoleWriter_File =
-{
-	ConsoleToFile_DoWrite,
-	ConsoleToFile_DoWriteLn,
-	ConsoleToFile_DoSetColor,
-
-	ConsoleToFile_DoWrite,
-	ConsoleToFile_Newline,
-	ConsoleToFile_SetTitle,
-
-	0
-};
-
 Mutex& Pcsx2App::GetProgramLogLock()
 {
 	return m_mtx_ProgramLog;
@@ -1138,87 +1080,6 @@ void SetConsoleTitle(const wxString& title)
 	evt.SetString(title);
 	wxGetApp().ProgramLog_PostEvent(evt);
 }
-
-// --------------------------------------------------------------------------------------
-//  ConsoleToWindow Implementations
-// --------------------------------------------------------------------------------------
-template< const IConsoleWriter& secondary >
-static void __concall ConsoleToWindow_SetTitle( const wxString& title )
-{
-	secondary.SetTitle(title);
-	wxCommandEvent evt( pxEvt_SetTitleText );
-	evt.SetString( title );
-	wxGetApp().ProgramLog_PostEvent( evt );
-}
-
-template< const IConsoleWriter& secondary >
-static void __concall ConsoleToWindow_DoSetColor( ConsoleColors color )
-{
-	secondary.DoSetColor(color);
-}
-
-template< const IConsoleWriter& secondary >
-static void __concall ConsoleToWindow_Newline()
-{
-	secondary.Newline();
-
-	ScopedLogLock locker;
-	bool needsSleep = locker.WindowPtr && locker.WindowPtr->Newline();
-	locker.Release();
-	if( needsSleep ) wxGetApp().Ping();
-}
-
-template< const IConsoleWriter& secondary >
-static void __concall ConsoleToWindow_DoWrite( const wxString& fmt )
-{
-	if( secondary.WriteRaw != NULL )
-		secondary.WriteRaw( fmt );
-
-	ScopedLogLock locker;
-	bool needsSleep = locker.WindowPtr && locker.WindowPtr->Write( Console.GetColor(), fmt );
-	locker.Release();
-	if( needsSleep ) wxGetApp().Ping();
-}
-
-template< const IConsoleWriter& secondary >
-static void __concall ConsoleToWindow_DoWriteLn( const wxString& fmt )
-{
-	if( secondary.DoWriteLn != NULL )
-		secondary.DoWriteLn( fmt );
-
-	ScopedLogLock locker;
-	bool needsSleep = locker.WindowPtr && locker.WindowPtr->Write( Console.GetColor(), fmt + L'\n' );
-	locker.Release();
-	if( needsSleep ) wxGetApp().Ping();
-}
-
-typedef void __concall DoWriteFn(const wxString&);
-
-static const IConsoleWriter	ConsoleWriter_Window =
-{
-	ConsoleToWindow_DoWrite<ConsoleWriter_Stdout>,
-	ConsoleToWindow_DoWriteLn<ConsoleWriter_Stdout>,
-	ConsoleToWindow_DoSetColor<ConsoleWriter_Stdout>,
-
-	ConsoleToWindow_DoWrite<ConsoleWriter_Stdout>,
-	ConsoleToWindow_Newline<ConsoleWriter_Stdout>,
-	ConsoleToWindow_SetTitle<ConsoleWriter_Stdout>,
-
-	0
-};
-
-static const IConsoleWriter	ConsoleWriter_WindowAndFile =
-{
-	ConsoleToWindow_DoWrite<ConsoleWriter_File>,
-	ConsoleToWindow_DoWriteLn<ConsoleWriter_File>,
-	ConsoleToWindow_DoSetColor<ConsoleWriter_File>,
-
-	ConsoleToWindow_DoWrite<ConsoleWriter_File>,
-	ConsoleToWindow_Newline<ConsoleWriter_File>,
-	ConsoleToWindow_SetTitle<ConsoleWriter_File>,
-
-	0
-};
 
 static ConsoleColors logStyleToConsoleColor(LogStyle style)
 {
@@ -1314,14 +1175,12 @@ void Pcsx2App::EnableAllLogging()
 	Log::PCSX2.setSink(&logSinks);
 
 	const bool logBoxOpen = (m_ptr_ProgramLog != NULL);
-	const IConsoleWriter* newHandler = NULL;
 
 	if( emuLog )
 	{
 		emulogLogSink.m_file = emuLog;
 		logSinks.m_outputs[LogSinkEmulog] = &emulogLogSink;
 		if( !m_StderrRedirHandle ) m_StderrRedirHandle = std::unique_ptr<PipeRedirectionBase>(NewPipeRedir(stderr));
-		newHandler = logBoxOpen ? (IConsoleWriter*)&ConsoleWriter_WindowAndFile : (IConsoleWriter*)&ConsoleWriter_File;
 	}
 	else
 	{
@@ -1330,11 +1189,6 @@ void Pcsx2App::EnableAllLogging()
 		if( logBoxOpen )
 		{
 			if (!m_StderrRedirHandle) m_StderrRedirHandle = std::unique_ptr<PipeRedirectionBase>(NewPipeRedir(stderr));
-			newHandler = &ConsoleWriter_Window;
-		}
-		else
-		{
-			newHandler = &ConsoleWriter_Stdout;
 		}
 	}
 	logSinks.m_outputs[LogSinkConsole] = logBoxOpen ? &consoleLogSink : nullptr;
@@ -1342,7 +1196,6 @@ void Pcsx2App::EnableAllLogging()
 		logSinks.m_outputs[LogSinkDefault] = &defaultLogSink;
 	else
 		logSinks.m_outputs[LogSinkDefault] = nullptr;
-	Console_SetActiveHandler( *newHandler );
 }
 
 // Used to disable the emuLog disk logger, typically used when disabling or re-initializing the
@@ -1352,8 +1205,6 @@ void Pcsx2App::DisableDiskLogging() const
 	AffinityAssert_AllowFrom_MainUI();
 
 	logSinks.m_outputs[LogSinkEmulog] = nullptr;
-	const bool logBoxOpen = (GetProgramLog() != NULL);
-	Console_SetActiveHandler( logBoxOpen ? (IConsoleWriter&)ConsoleWriter_Window : (IConsoleWriter&)ConsoleWriter_Stdout );
 
 	// Semi-hack: It's possible, however very unlikely, that a secondary thread could attempt
 	// to write to the logfile just before we disable logging, and would thus have a pending write
@@ -1371,7 +1222,6 @@ void Pcsx2App::DisableDiskLogging() const
 void Pcsx2App::DisableWindowLogging() const
 {
 	AffinityAssert_AllowFrom_MainUI();
-	Console_SetActiveHandler( (emuLog!=NULL) ? (IConsoleWriter&)ConsoleWriter_File : (IConsoleWriter&)ConsoleWriter_Stdout );
 	logSinks.m_outputs[LogSinkConsole] = nullptr;
 }
 
