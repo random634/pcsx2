@@ -160,31 +160,46 @@ void FileLogSink::outputText(LogStyle style, std::string_view msg)
 	}
 }
 
-#ifdef __POSIX__
-FileLogSink defaultLogSink(stdout);
-#else
-OutputDebugStringLogSink::OutputDebugStringLogSink()
-	: FileLogSink(false)
+#ifdef _WIN32
+class OutputDebugStringLogSink final : public TextLogSink
 {
-}
+	/// Lock
+	std::mutex m_mtx;
+public:
+	OutputDebugStringLogSink()
+		: TextLogSink(false)
+	{
+	}
 
-void OutputDebugStringLogSink::outputNewline()
-{
-	OutputDebugStringW(L"\r\n");
-}
+	void outputNewline() override
+	{
+		OutputDebugStringW(L"\r\n");
+	}
 
-void OutputDebugStringLogSink::outputText(LogStyle style, std::string_view msg)
-{
-	// TODO: Don't use wx
-	wxString str = wxString::FromUTF8(msg.data(), msg.size());
-	OutputDebugStringW(str.wx_str());
-}
+	void outputText(LogStyle style, std::string_view msg) override
+	{
+		// TODO: Don't use wx
+		wxString str = wxString::FromUTF8(msg.data(), msg.size());
+		OutputDebugStringW(str.wx_str());
+	}
 
-void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg)
-{
-	if (!IsDebuggerPresent())
-		return;
-	std::lock_guard<std::mutex> l(m_mtx);
-	logOnThread(level, style, source.currentIndent(), source, msg);
-}
+	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override
+	{
+		if (!IsDebuggerPresent())
+			return;
+		std::lock_guard<std::mutex> l(m_mtx);
+		logOnThread(level, style, source.currentIndent(), source, msg);
+	}
+};
 #endif
+
+LogSink* defaultLogSink()
+{
+	// Purposely leak so we don't have to deal with destruction order fun
+#ifdef _WIN32
+	static OutputDebugStringLogSink* sink = new OutputDebugStringLogSink();
+#else
+	static FileLogSink* sink = new FileLogSink(stdout);
+#endif
+	return sink;
+}

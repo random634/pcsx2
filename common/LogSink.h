@@ -49,19 +49,4 @@ public:
 	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override;
 };
 
-#ifdef __POSIX__
-extern FileLogSink defaultLogSink;
-#else
-class OutputDebugStringLogSink final : public TextLogSink
-{
-	/// Lock
-	std::mutex m_mtx;
-public:
-	OutputDebugStringLogSink();
-	void outputNewline() override;
-	void outputText(LogStyle style, std::string_view msg) override;
-	void log(LogLevel level, LogStyle style, const LogSource& source, std::string_view msg) override;
-};
-
-extern OutputDebugStringLogSink defaultLogSink;
-#endif
+LogSink* defaultLogSink();

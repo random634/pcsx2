@@ -74,7 +74,7 @@ void LogSource::updateCachedSink()
 	else if (m_parent)
 		newSink = m_parent->m_cachedSink;
 	else
-		newSink = &defaultLogSink;
+		newSink = defaultLogSink();
 
 	if (newSink != m_cachedSink)
 	{

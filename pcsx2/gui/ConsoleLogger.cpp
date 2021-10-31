@@ -1193,7 +1193,7 @@ void Pcsx2App::EnableAllLogging()
 	}
 	logSinks.m_outputs[LogSinkConsole] = logBoxOpen ? &consoleLogSink : nullptr;
 	if (!logBoxOpen || (g_Conf && g_Conf->EmuOptions.ConsoleToStdio))
-		logSinks.m_outputs[LogSinkDefault] = &defaultLogSink;
+		logSinks.m_outputs[LogSinkDefault] = defaultLogSink();
 	else
 		logSinks.m_outputs[LogSinkDefault] = nullptr;
 }
