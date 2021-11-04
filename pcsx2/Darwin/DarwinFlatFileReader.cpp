@@ -36,7 +36,7 @@ FlatFileReader::~FlatFileReader(void)
 	Close();
 }
 
-bool FlatFileReader::Open(const wxString& fileName)
+bool FlatFileReader::Open(std::string fileName)
 {
     m_filename = fileName;
 

@@ -18,9 +18,23 @@
 
 #if defined(__APPLE__)
 #include <objc/message.h>
+#include <dispatch/dispatch.h>
 
 static bool CreateMetalLayer(WindowInfo* wi)
 {
+	// if (![NSThread isMainThread])
+	if (!reinterpret_cast<BOOL(*)(Class, SEL)>(objc_msgSend)(objc_getClass("NSThread"), sel_getUid("isMainThread")))
+	{
+		struct Ctx { bool ret; WindowInfo* wi; } ctx;
+		ctx.wi = wi;
+		dispatch_sync_f(dispatch_get_main_queue(), &ctx, [](void* p)
+		{
+			Ctx& ctx = *static_cast<Ctx*>(p);
+			ctx.ret = CreateMetalLayer(ctx.wi);
+		});
+		return ctx.ret;
+	}
+
 	id view = reinterpret_cast<id>(wi->window_handle);
 
 	Class clsCAMetalLayer = objc_getClass("CAMetalLayer");

@@ -51,5 +51,6 @@ else()
   target_sources(glslang PRIVATE glslang/OSDependent/Unix/ossource.cpp)
 endif()
 
+target_compile_features(glslang PRIVATE cxx_std_17)
 target_include_directories(glslang PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 

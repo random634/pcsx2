@@ -37,6 +37,8 @@ struct WindowInfo
 	/// Abstract handle to the window. This depends on the surface type.
 	void* window_handle = nullptr;
 
+	void* surface_handle = nullptr;
+
 	/// Width of the surface in pixels.
 	u32 surface_width = 0;
 

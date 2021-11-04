@@ -341,8 +341,9 @@ ThreadCPUTimer::Value ThreadCPUTimer::GetCurrentValue() const
   return value;
 #else
 	clockid_t cid;
-  if (!m_thread_handle || pthread_getcpuclockid((pthread_t)m_thread_handle, &cid) != 0)
-    return 0;
+	return 0;
+//  if (!m_thread_handle || pthread_getcpuclockid((pthread_t)m_thread_handle, &cid) != 0)
+//    return 0;
 
 	struct timespec ts;
   if (clock_gettime(cid, &ts) != 0)

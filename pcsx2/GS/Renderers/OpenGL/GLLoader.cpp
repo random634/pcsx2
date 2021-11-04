@@ -284,22 +284,22 @@ namespace GLLoader
 
 		// Mandatory for both renderer
 		{
-			// GL4.1
-			mandatory("GL_ARB_separate_shader_objects");
-			// GL4.2
-			mandatory("GL_ARB_shading_language_420pack");
-			mandatory("GL_ARB_texture_storage");
-			// GL4.3
-			mandatory("GL_KHR_debug");
-			// GL4.4
-			mandatory("GL_ARB_buffer_storage");
+//			// GL4.1
+//			mandatory("GL_ARB_separate_shader_objects");
+//			// GL4.2
+//			mandatory("GL_ARB_shading_language_420pack");
+//			mandatory("GL_ARB_texture_storage");
+//			// GL4.3
+//			mandatory("GL_KHR_debug");
+//			// GL4.4
+//			mandatory("GL_ARB_buffer_storage");
 		}
 
 		// Only for HW renderer
 		if (GSConfig.UseHardwareRenderer())
 		{
-			mandatory("GL_ARB_copy_image");
-			mandatory("GL_ARB_clip_control");
+//			mandatory("GL_ARB_copy_image");
+//			mandatory("GL_ARB_clip_control");
 		}
 
 		// Extra
