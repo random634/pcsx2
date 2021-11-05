@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Checkout Submodules
-        run: git submodule update --init --recursive -j $env:NUMBER_OF_PROCESSORS
+        run: git submodule update --init --recursive --no-recommend-shallow -j $env:NUMBER_OF_PROCESSORS
 
       - name: Setup Buildcache
         uses: mikehardy/buildcache-action@v1.2.2
