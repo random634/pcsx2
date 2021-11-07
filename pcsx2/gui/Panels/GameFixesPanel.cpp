@@ -44,6 +44,10 @@ Panels::GameFixesPanel::GameFixesPanel( wxWindow* parent )
 			_("FPU Negative Div Hack - For Gundam games."),
 			wxEmptyString
 		},
+    {
+			_("FPU Compare Hack - For Digimon Rumble Arena 2."),
+			wxEmptyString
+		},
 		{
 			_("Preload TLB hack to avoid tlb miss on Goemon"),
 			wxEmptyString

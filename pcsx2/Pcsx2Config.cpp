@@ -308,6 +308,7 @@ const wxChar* const tbl_GamefixNames[] =
 	{
 		L"FpuMul",
 		L"FpuNegDiv",
+    L"FpuCompare",
 		L"GoemonTlb",
 		L"SkipMPEG",
 		L"OPHFlag",
@@ -377,6 +378,9 @@ void Pcsx2Config::GamefixOptions::Set(GamefixId id, bool enabled)
 		case Fix_FpuNegDiv:
 			FpuNegDivHack = enabled;
 			break;
+    case Fix_FpuCompare:
+    	FpuCompareHack = enabled;
+      break;
 		case Fix_XGKick:
 			XgKickHack = enabled;
 			break;
@@ -428,6 +432,8 @@ bool Pcsx2Config::GamefixOptions::Get(GamefixId id) const
 			return FpuMulHack;
 		case Fix_FpuNegDiv:
 			return FpuNegDivHack;
+    case Fix_FpuCompare:
+      return FpuCompareHack;
 		case Fix_XGKick:
 			return XgKickHack;
 		case Fix_EETiming:
@@ -464,6 +470,7 @@ void Pcsx2Config::GamefixOptions::LoadSave(SettingsWrapper& wrap)
 	SettingsWrapBitBool(VuAddSubHack);
 	SettingsWrapBitBool(FpuMulHack);
 	SettingsWrapBitBool(FpuNegDivHack);
+	SettingsWrapBitBool(FpuCompareHack);
 	SettingsWrapBitBool(XgKickHack);
 	SettingsWrapBitBool(EETimingHack);
 	SettingsWrapBitBool(SkipMPEGHack);

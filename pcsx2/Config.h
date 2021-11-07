@@ -31,6 +31,7 @@ enum GamefixId
 
 	Fix_FpuMultiply = GamefixId_FIRST,
 	Fix_FpuNegDiv,
+	Fix_FpuCompare,
 	Fix_GoemonTlbMiss,
 	Fix_SkipMpeg,
 	Fix_OPHFlag,
@@ -386,6 +387,7 @@ struct Pcsx2Config
 		bool
 			FpuMulHack : 1, // Tales of Destiny hangs.
 			FpuNegDivHack : 1, // Gundam games messed up camera-view.
+      FpuCompareHack : 1,         // Digimon Rumble Arena 2, fixes spinning/hanging on intro-menu.
 			GoemonTlbHack : 1, // Gomeon tlb miss hack. The game need to access unmapped virtual address. Instead to handle it as exception, tlb are preloaded at startup
 			SkipMPEGHack : 1, // Skips MPEG videos (Katamari and other games need this)
 			OPHFlagHack : 1, // Bleach Blade Battlers
@@ -645,6 +647,7 @@ namespace EmuFolders
 #define CHECK_VUADDSUBHACK (EmuConfig.Gamefixes.VuAddSubHack) // Special Fix for Tri-ace games, they use an encryption algorithm that requires VU addi opcode to be bit-accurate.
 #define CHECK_FPUMULHACK (EmuConfig.Gamefixes.FpuMulHack) // Special Fix for Tales of Destiny hangs.
 #define CHECK_FPUNEGDIVHACK (EmuConfig.Gamefixes.FpuNegDivHack) // Special Fix for Gundam games messed up camera-view.
+#define CHECK_FPUCOMPAREHACK		(EmuConfig.Gamefixes.FpuCompareHack) // Special Fix for Digimon Rumble Arena 2, fixes spinning/hanging on intro-menu.
 #define CHECK_XGKICKHACK (EmuConfig.Gamefixes.XgKickHack) // Special Fix for Erementar Gerad, adds more delay to VU XGkick instructions. Corrects the color of some graphics.
 #define CHECK_EETIMINGHACK (EmuConfig.Gamefixes.EETimingHack) // Fix all scheduled events to happen in 1 cycle.
 #define CHECK_SKIPMPEGHACK (EmuConfig.Gamefixes.SkipMPEGHack) // Finds sceMpegIsEnd pattern to tell the game the mpeg is finished (Katamari and a lot of games need this)
